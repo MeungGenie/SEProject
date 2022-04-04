@@ -37,7 +37,7 @@ public class Board extends JFrame {
 	
 	public static final int HEIGHT = 20;
 	public static final int WIDTH = 10;
-	public static final char BORDER_CHAR = ' ';
+	public static final char BORDER_CHAR = 'X';
 	
 	private JTextPane tetrisArea;
 	private JTextPane nextArea;
@@ -51,6 +51,9 @@ public class Board extends JFrame {
 	private KeyListener playerKeyListener;
 	private SimpleAttributeSet stylesetBr;
 	private SimpleAttributeSet stylesetNx;
+	private SimpleAttributeSet stylesetCur;
+	private StyledDocument boardDoc;
+	private StyledDocument nextDoc;
 	private Timer timer;
 	private Block curr;
 	private Block next;
@@ -64,7 +67,7 @@ public class Board extends JFrame {
 	private static final int initInterval = 1000;
 	
 	public Board() {
-		super("SeoulTech SE tetris");
+		super("SeoulTech SE Tetris");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		//Board display setting.
@@ -76,11 +79,11 @@ public class Board extends JFrame {
 				BorderFactory.createLineBorder(Color.DARK_GRAY, 5));
 		tetrisArea.setBorder(border);
 		
-		
 		nextArea = new JTextPane();
 		nextArea.setEditable(false);
 		nextArea.setBackground(Color.BLACK);
 		nextArea.setBorder(border);
+	
 		
 		scorePanel = new JPanel();
 		EtchedBorder scoreBorder = new EtchedBorder();
@@ -110,8 +113,6 @@ public class Board extends JFrame {
 		levelPanel.add(Box.createVerticalStrut(5));
 		levelPanel.add(levelLb2);
 		
-		//JButton pause = new JButton();
-		
 		
 		leftPanel = new JPanel();
 		leftPanel.add(tetrisArea);
@@ -128,6 +129,7 @@ public class Board extends JFrame {
 		panel.add(rightPanel);
 		
 		add(panel);
+	
 		
 		//Set timer for block drops.
 		timer = new Timer(initInterval, new ActionListener() {			
@@ -146,7 +148,7 @@ public class Board extends JFrame {
 		setFocusable(true);
 		requestFocus();
 		
-		//Create the first block and draw.
+		//Create the first block and draw
 		curr = getRandomBlockNormal();
 		next = getRandomBlockNormal();
 		
@@ -158,14 +160,21 @@ public class Board extends JFrame {
 		StyleConstants.setForeground(stylesetBr, Color.WHITE);
 		StyleConstants.setAlignment(stylesetBr, StyleConstants.ALIGN_CENTER);
 		
-		//Document default style.
+		stylesetCur = new SimpleAttributeSet();
+		StyleConstants.setFontSize(stylesetCur, 20);
+		StyleConstants.setFontFamily(stylesetCur, "Courier New");
+		StyleConstants.setBold(stylesetCur, true);
+		StyleConstants.setAlignment(stylesetCur, StyleConstants.ALIGN_CENTER);
+			
 		stylesetNx = new SimpleAttributeSet();
 		StyleConstants.setFontSize(stylesetNx, 25);
 		StyleConstants.setFontFamily(stylesetNx, "Courier New");
 		StyleConstants.setBold(stylesetNx, true);
-		StyleConstants.setForeground(stylesetNx, next.getColor());
-		StyleConstants.setAlignment(stylesetNx, StyleConstants.ALIGN_CENTER);		
+		StyleConstants.setAlignment(stylesetNx, StyleConstants.ALIGN_CENTER);	
 		
+		boardDoc = tetrisArea.getStyledDocument();
+		nextDoc = nextArea.getStyledDocument();
+	
 		placeBlock();
 		drawBoard();
 		placeNext();
@@ -176,7 +185,7 @@ public class Board extends JFrame {
 
 	private Block getRandomBlockNormal() {
 		Random rnd = new Random(System.currentTimeMillis());
-		int block = rnd.nextInt(7);
+		int block = rnd.nextInt(6);
 		switch(block) {
 		case 0:
 			return new IBlock();
@@ -195,7 +204,6 @@ public class Board extends JFrame {
 		}
 		return new LBlock();
 	}
-	
 
 	private Block getRandomBlockEasy() {
 		double min = 1;
@@ -254,28 +262,15 @@ public class Board extends JFrame {
 	}
 	
 	private void placeBlock() {
-		StyledDocument doc = tetrisArea.getStyledDocument();
-		SimpleAttributeSet styles = new SimpleAttributeSet();
-		StyleConstants.setForeground(styles, curr.getColor());
 		for(int j=0; j<curr.height(); j++) {
-			int rows = y+j == 0 ? 0 : y+j-1;
-			int offset = rows * (WIDTH+3) + x + 1;
-			doc.setCharacterAttributes(offset, curr.width(), styles, true);
 			for(int i=0; i<curr.width(); i++) {
 				board[y+j][x+i] = curr.getShape(i, j);
-				
 			}
 		}
 	}
 	
 	private void placeNext() {
-		StyledDocument doc = nextArea.getStyledDocument();
-		SimpleAttributeSet styles = new SimpleAttributeSet();
-		StyleConstants.setForeground(styles, next.getColor());
 		for(int j = 0; j < next.height(); j++) {
-			int rows = y+j == 0 ? 0 : y+j-1;
-			int offset = rows * 8 + x + 1;
-			doc.setCharacterAttributes(offset, next.width(), styles, true);
 			for(int i=0; i<next.width(); i++) {
 				nextBoard[nextY+j][nextX+i] = next.getShape(i, j);
 			}
@@ -327,11 +322,7 @@ public class Board extends JFrame {
 		}
 		placeBlock();
 	}
-	
-	public void rotate() {
-		curr.rotate();
-	}
-	
+
 	public void drawBoard() {
 		StringBuffer sb = new StringBuffer();
 		for(int t=0; t<WIDTH+2; t++) sb.append(BORDER_CHAR);
@@ -350,9 +341,14 @@ public class Board extends JFrame {
 		}
 		for(int t=0; t<WIDTH+2; t++) sb.append(BORDER_CHAR);
 		tetrisArea.setText(sb.toString());
-		StyledDocument doc = tetrisArea.getStyledDocument();
-		doc.setParagraphAttributes(0, doc.getLength(), stylesetBr, false);
-		tetrisArea.setStyledDocument(doc);
+		boardDoc.setCharacterAttributes(0, boardDoc.getLength(), stylesetBr, false);
+		
+		for(int j = 0; j < curr.height(); j++) {
+			int rows = y+j == 0 ? 1 : y+j+1;
+			int offset = rows * (WIDTH+3) + x + 1;
+			StyleConstants.setForeground(stylesetCur, curr.getColor());
+			boardDoc.setCharacterAttributes(offset, curr.width(), stylesetCur, true);
+		}
 	}
 	
 	public void drawNext() {
@@ -369,11 +365,9 @@ public class Board extends JFrame {
 			sb.append("\n");
 		}
 		nextArea.setText(sb.toString());
-		StyledDocument doc = nextArea.getStyledDocument();
-		doc.setParagraphAttributes(0, doc.getLength(), stylesetNx, false);
-		nextArea.setStyledDocument(doc);
+		StyleConstants.setForeground(stylesetNx, next.getColor());
+		nextDoc.setParagraphAttributes(0, nextDoc.getLength(), stylesetNx, false);
 	}
-	
 	
 	
 	public void reset() {
