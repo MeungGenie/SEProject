@@ -7,6 +7,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Random;
 
 import javax.swing.BorderFactory;
@@ -306,7 +308,35 @@ public class Board extends JFrame {
 			}
 		}
 	}
-
+	
+	ArrayList<Integer> line = new ArrayList<Integer>();
+	 
+	ArrayList<Integer> lineCheck() {
+		ArrayList<Integer> Item = new ArrayList<Integer>();
+		int count;
+		for(int i = 0; i < HEIGHT; i++) {
+			count = 0;
+			for(int j = 0; j < WIDTH; j++)
+				if(board[i][j] == 1) 
+					count++;
+			if(count == WIDTH) Item.add(i);
+		}
+		return Item;
+	}
+ 
+	void lineRemove() {
+		line = lineCheck();
+		Iterator<Integer> iter = line.iterator();
+		int index = 0;
+		while(iter.hasNext()) {
+			index = iter.next();
+			for(int i = index; i > 1; i--)
+				for(int j = 0; j < WIDTH; j++)
+					board[i][j] = board[i-1][j];
+		}
+		index = 0;	 
+	}
+	
 	protected void moveDown() {
 		eraseCurr();
 		if(y < HEIGHT - curr.height()) y++;
@@ -321,6 +351,7 @@ public class Board extends JFrame {
 			y = 0;
 		}
 		placeBlock();
+		lineRemove();
 	}
 	
 	protected void moveRight() {
