@@ -91,7 +91,6 @@ public class Board extends JFrame {
 		nextArea.setBackground(Color.BLACK);
 		nextArea.setBorder(border);
 		nextArea.setPreferredSize(new Dimension(150, 200));
-	
 		
 		scorePanel = new JPanel();
 		EtchedBorder scoreBorder = new EtchedBorder();
@@ -101,6 +100,10 @@ public class Board extends JFrame {
 		scoreLb1.setForeground(Color.darkGray);
 		scoreLb1.setAlignmentX(CENTER_ALIGNMENT);
 		scoreLb2 = new JLabel(Integer.toString(score));
+		JLabel scoreLb1 = new JLabel("Scores");
+		scoreLb1.setForeground(Color.darkGray);
+		scoreLb1.setAlignmentX(CENTER_ALIGNMENT);
+		JLabel scoreLb2 = new JLabel(Integer.toString(score));
 		scoreLb2.setForeground(Color.RED);
 		scorePanel.setLayout(new BoxLayout(scorePanel, BoxLayout.Y_AXIS));
 		scorePanel.add(scoreLb1);
@@ -115,6 +118,10 @@ public class Board extends JFrame {
 		levelLb1.setForeground(Color.darkGray);
 		levelLb1.setAlignmentX(CENTER_ALIGNMENT);
 		levelLb2 = new JLabel(Integer.toString(level));		
+		JLabel levelLb1 = new JLabel("Level");
+		levelLb1.setForeground(Color.darkGray);
+		levelLb1.setAlignmentX(CENTER_ALIGNMENT);
+		JLabel levelLb2 = new JLabel(Integer.toString(level));
 		levelLb2.setForeground(Color.BLUE);
 		levelPanel.setLayout(new BoxLayout(levelPanel, BoxLayout.Y_AXIS));
 		levelPanel.add(levelLb1);
@@ -136,7 +143,7 @@ public class Board extends JFrame {
 		panel.add(rightPanel);
 		
 		add(panel);
-		
+
 		//Set timer for block drops.
 		timer = new Timer(initInterval, new ActionListener() {			
 			@Override
@@ -155,8 +162,8 @@ public class Board extends JFrame {
 		requestFocus();
 		
 		//Create the first block and draw
-		curr = getRandomBlock();
-		next = getRandomBlock();
+		curr = getRandomBlockNormal();
+		next = getRandomBlockNormal();
 		
 		//Document default style.
 		stylesetBr = new SimpleAttributeSet();
@@ -180,7 +187,7 @@ public class Board extends JFrame {
 		
 		boardDoc = tetrisArea.getStyledDocument();
 		nextDoc = nextArea.getStyledDocument();
-		
+
 		placeBlock();
 		drawBoard();
 		placeNext();
@@ -189,9 +196,9 @@ public class Board extends JFrame {
 		timer.start();
 	}
 
-	private Block getRandomBlock() {
+	private Block getRandomBlockNormal() {
 		Random rnd = new Random(System.currentTimeMillis());
-		int block = rnd.nextInt(6);
+		int block = rnd.nextInt(7);
 		switch(block) {
 		case 0:
 			return new IBlock();
@@ -209,6 +216,62 @@ public class Board extends JFrame {
 			return new OBlock();			
 		}
 		return new LBlock();
+	}
+
+	private Block getRandomBlockEasy() {
+		double min = 1;
+		double max = 100;
+		double weighted = Math.random() * (max - min) + min;
+		if (weighted <= (80/7 + 20))
+			return new IBlock();
+		else 
+		{
+			Random rnd = new Random(System.currentTimeMillis());
+			int block = rnd.nextInt(7);
+			switch(block) {
+			case 0:
+				return new JBlock();
+			case 1:
+				return new LBlock();
+			case 2:
+				return new ZBlock();
+			case 3:
+				return new SBlock();
+			case 4:
+				return new TBlock();
+			case 5:
+				return new OBlock();			
+			}
+			return new LBlock();
+		}
+	}
+	
+	private Block getRandomHard() {
+		double min = 1;
+		double max = 100;
+		double weighted = Math.random() * (max - min) + min;
+		if (weighted <= (120/7 - 20))
+			return new IBlock();
+		else 
+		{
+			Random rnd = new Random(System.currentTimeMillis());
+			int block = rnd.nextInt(7);
+			switch(block) {
+			case 0:
+				return new JBlock();
+			case 1:
+				return new LBlock();
+			case 2:
+				return new ZBlock();
+			case 3:
+				return new SBlock();
+			case 4:
+				return new TBlock();
+			case 5:
+				return new OBlock();			
+			}
+			return new LBlock();
+		}
 	}
 	
 	
@@ -251,7 +314,7 @@ public class Board extends JFrame {
 			placeBlock();
 			curr = next;
 			eraseNext();
-			next = getRandomBlock();
+			next = getRandomBlockNormal();
 			placeNext();
 			drawNext();
 			x = 3;
@@ -326,13 +389,20 @@ public class Board extends JFrame {
 		nextBoard = new int[4][5];
 		x = 3;
 		y = 0;
-		curr = getRandomBlock();
-		next = getRandomBlock();
+		curr = getRandomBlockNormal();
+		next = getRandomBlockNormal();
 		placeBlock();
 		drawBoard();	
 		placeNext();
 		drawNext();
+		this.board = new int[20][10];
 	}
+	
+	protected void blockRotate() {
+	      eraseCurr();
+	      curr.rotate();
+	      placeBlock();
+	   }
 
 	public class PlayerKeyListener implements KeyListener {
 		@Override
@@ -356,10 +426,9 @@ public class Board extends JFrame {
 				drawBoard();
 				break;
 			case KeyEvent.VK_UP:
-				eraseCurr();
-				curr.rotate();
-				drawBoard();
-				break;
+	            blockRotate();
+	            drawBoard();
+	            break;
 			case KeyEvent.VK_ESCAPE:
 				timer.stop();
 				String[] stopOption = {"Restart", "Play", "Exit"};
@@ -425,4 +494,5 @@ public class Board extends JFrame {
 		levelLb1.setFont(new Font(null, Font.BOLD, size));
 		levelLb2.setFont(new Font(null, Font.BOLD, size));
 	}
+	
 }
