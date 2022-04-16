@@ -11,10 +11,5 @@ public class SBlock extends Block {
 		};
 		color = Color.GREEN;
 		colorBlind = new Color(247, 193, 121);
-		numOfBlockType = 2;
-	}
-	
-	public int[] getBlock() {
-	    return shape[r];
 	}
 }

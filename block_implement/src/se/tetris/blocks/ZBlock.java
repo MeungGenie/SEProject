@@ -12,10 +12,5 @@ public class ZBlock extends Block {
 		};
 		color = Color.RED;
 		colorBlind = new Color(99, 106, 141);
-		numOfBlockType = 2;
-	}
-	
-	public int[] getBlock() {
-	    return shape[r];
 	}
 }

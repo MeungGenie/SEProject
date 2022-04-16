@@ -7,9 +7,7 @@ public abstract class Block {
 	protected int[][] shape;
 	protected Color color;
 	protected Color colorBlind;
-	protected int r;
-    protected int numOfBlockType;
-	
+
 	public Block() {
 		shape = new int[][]{ 
 			{1, 1}, 
@@ -31,7 +29,13 @@ public abstract class Block {
 	}
 	
 	public void rotate() {
-		r = (r+1) % numOfBlockType;
+		int[][] rotate = new int [shape[0].length][shape.length];
+		for (int i = 0; i < rotate.length; i++) {
+			for (int j = 0; j < rotate[i].length; j++) {
+				rotate[i][j] = shape[shape.length-1-j][i];
+			}
+		}
+		shape = rotate;
 	}
 	
 	public int height() {

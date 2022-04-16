@@ -11,10 +11,5 @@ public class OBlock extends Block {
 		};
 		color = Color.YELLOW;
 		colorBlind = new Color(187, 190, 242);
-		numOfBlockType = 1;
-	}
-	
-	public int[] getBlock() {
-	    return shape[r];
 	}
 }

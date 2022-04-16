@@ -11,10 +11,5 @@ public class LBlock extends Block {
 		};
 		color = Color.PINK;
 		colorBlind = new Color(165, 148, 159);
-		numOfBlockType = 4;
-	}
-	
-	public int[] getBlock() {
-	    return shape[r];
 	}
 }

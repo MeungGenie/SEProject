@@ -11,10 +11,5 @@ public class TBlock extends Block {
 		};
 		color = Color.MAGENTA;
 		colorBlind = new Color(154, 127, 112);
-		numOfBlockType = 4;
-	}
-	
-	public int[] getBlock() {
-	    return shape[r];
 	}
 }
