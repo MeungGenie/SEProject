@@ -149,8 +149,8 @@ public class Board extends JFrame {
 		requestFocus();
 		
 		//Create the first block and draw
-		curr = getRandomBlock();
-		next = getRandomBlock();
+		curr = getRandomBlockNormal();
+		next = getRandomBlockNormal();
 		
 		//Document default style.
 		stylesetBr = new SimpleAttributeSet();
@@ -183,7 +183,7 @@ public class Board extends JFrame {
 		timer.start();
 	}
 
-	private Block getRandomBlock() {
+	private Block getRandomBlockNormal() {
 		Random rnd = new Random(System.currentTimeMillis());
 		int block = rnd.nextInt(6);
 		switch(block) {
@@ -203,6 +203,62 @@ public class Board extends JFrame {
 			return new OBlock();			
 		}
 		return new LBlock();
+	}
+
+	private Block getRandomBlockEasy() {
+		double min = 1;
+		double max = 100;
+		double weighted = Math.random() * (max - min) + min;
+		if (weighted <= (80/7 + 20))
+			return new IBlock();
+		else 
+		{
+			Random rnd = new Random(System.currentTimeMillis());
+			int block = rnd.nextInt(7);
+			switch(block) {
+			case 0:
+				return new JBlock();
+			case 1:
+				return new LBlock();
+			case 2:
+				return new ZBlock();
+			case 3:
+				return new SBlock();
+			case 4:
+				return new TBlock();
+			case 5:
+				return new OBlock();			
+			}
+			return new LBlock();
+		}
+	}
+	
+	private Block getRandomHard() {
+		double min = 1;
+		double max = 100;
+		double weighted = Math.random() * (max - min) + min;
+		if (weighted <= (120/7 - 20))
+			return new IBlock();
+		else 
+		{
+			Random rnd = new Random(System.currentTimeMillis());
+			int block = rnd.nextInt(7);
+			switch(block) {
+			case 0:
+				return new JBlock();
+			case 1:
+				return new LBlock();
+			case 2:
+				return new ZBlock();
+			case 3:
+				return new SBlock();
+			case 4:
+				return new TBlock();
+			case 5:
+				return new OBlock();			
+			}
+			return new LBlock();
+		}
 	}
 	
 	private void placeBlock() {
@@ -244,7 +300,7 @@ public class Board extends JFrame {
 			placeBlock();
 			curr = next;
 			eraseNext();
-			next = getRandomBlock();
+			next = getRandomBlockNormal();
 			placeNext();
 			drawNext();
 			x = 3;
@@ -353,4 +409,4 @@ public class Board extends JFrame {
 		}
 	}
 	
-}
+} 
