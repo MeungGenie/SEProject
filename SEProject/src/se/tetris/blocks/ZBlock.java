@@ -11,10 +11,6 @@ public class ZBlock extends Block {
 				{1, 0}
 		};
 		color = Color.RED;
-		numOfBlockType = 2;
 	}
-	
-	public int[] getBlock() {
-	    return shape[r];
-	}
+
 }

@@ -11,10 +11,6 @@ public class IBlock extends Block {
 		
 		color = Color.CYAN;
 		colorBlind = Color.CYAN;
-		numOfBlockType = 2;
 	}
-	
-	public int[] getBlock() {
-	    return shape[r];
-	}
+
 }

@@ -10,10 +10,6 @@ public class LBlock extends Block {
 			{1, 0, 0}
 		};
 		color = Color.ORANGE;
-		numOfBlockType = 4;
 	}
-	
-	public int[] getBlock() {
-	    return shape[r];
-	}
+
 }

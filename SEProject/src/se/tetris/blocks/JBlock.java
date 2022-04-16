@@ -10,6 +10,7 @@ public class JBlock extends Block {
 				{0, 0, 1}
 		};
 		color = Color.BLUE;
+<<<<<<< HEAD
 		numOfBlockType = 4;
 	}
 	
@@ -17,3 +18,7 @@ public class JBlock extends Block {
 	    return shape[r];
 	}
 }
+=======
+	}
+}
+>>>>>>> 6891bcb2e52f8b9c764a909bcdf61c63d8836986
