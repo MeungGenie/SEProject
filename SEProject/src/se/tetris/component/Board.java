@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Arrays;
 import java.util.Random;
 
 import javax.swing.BorderFactory;
@@ -70,6 +71,7 @@ public class Board extends JFrame {
 	int nextY = 1;
 	int score = 0;
 	int level = 0;
+	int check = 0;
 	
 	private static final int initInterval = 1000;
 	
@@ -162,8 +164,8 @@ public class Board extends JFrame {
 		requestFocus();
 		
 		//Create the first block and draw
-		curr = getRandomBlock();
-		next = getRandomBlock();
+		curr = getRandomBlockNormal();
+		next = getRandomBlockNormal();
 		
 		//Document default style.
 		stylesetBr = new SimpleAttributeSet();
@@ -196,9 +198,9 @@ public class Board extends JFrame {
 		timer.start();
 	}
 
-	private Block getRandomBlock() {
+	private Block getRandomBlockNormal() {
 		Random rnd = new Random(System.currentTimeMillis());
-		int block = rnd.nextInt(6);
+		int block = rnd.nextInt(7);
 		switch(block) {
 		case 0:
 			return new IBlock();
@@ -217,12 +219,69 @@ public class Board extends JFrame {
 		}
 		return new LBlock();
 	}
+
+	private Block getRandomBlockEasy() {
+		double min = 1;
+		double max = 100;
+		double weighted = Math.random() * (max - min) + min;
+		if (weighted <= (80/7 + 20))
+			return new IBlock();
+		else 
+		{
+			Random rnd = new Random(System.currentTimeMillis());
+			int block = rnd.nextInt(7);
+			switch(block) {
+			case 0:
+				return new JBlock();
+			case 1:
+				return new LBlock();
+			case 2:
+				return new ZBlock();
+			case 3:
+				return new SBlock();
+			case 4:
+				return new TBlock();
+			case 5:
+				return new OBlock();			
+			}
+			return new LBlock();
+		}
+	}
+	
+	private Block getRandomHard() {
+		double min = 1;
+		double max = 100;
+		double weighted = Math.random() * (max - min) + min;
+		if (weighted <= (120/7 - 20))
+			return new IBlock();
+		else 
+		{
+			Random rnd = new Random(System.currentTimeMillis());
+			int block = rnd.nextInt(7);
+			switch(block) {
+			case 0:
+				return new JBlock();
+			case 1:
+				return new LBlock();
+			case 2:
+				return new ZBlock();
+			case 3:
+				return new SBlock();
+			case 4:
+				return new TBlock();
+			case 5:
+				return new OBlock();			
+			}
+			return new LBlock();
+		}
+	}
 	
 	
 	private void placeBlock() {
 		for(int j=0; j<curr.height(); j++) {
 			for(int i=0; i<curr.width(); i++) {
-				board[y+j][x+i] = curr.getShape(i, j);
+				if (curr.getShape(i, j) == 1)
+					board[y+j][x+i] = curr.getShape(i, j);
 			}
 		}
 	}
@@ -238,7 +297,8 @@ public class Board extends JFrame {
 	private void eraseCurr() {
 		for(int i=x; i<x+curr.width(); i++) {
 			for(int j=y; j<y+curr.height(); j++) {
-				board[j][i] = 0;
+				if(curr.getShape(i-x,j-y) == 1)
+					board[j][i] = 0;
 			}
 		}
 	}
@@ -253,12 +313,23 @@ public class Board extends JFrame {
 
 	protected void moveDown() {
 		eraseCurr();
+		if (collisionCheck() == true) {
+			saveBoard();
+			curr = next;
+			eraseNext();
+			next = getRandomBlockNormal();
+			placeNext();
+			drawNext();
+			x = 3;
+			y = 0;			
+		}	
 		if(y < HEIGHT - curr.height()) y++;
 		else {
 			placeBlock();
+			saveBoard();
 			curr = next;
 			eraseNext();
-			next = getRandomBlock();
+			next = getRandomBlockNormal();
 			placeNext();
 			drawNext();
 			x = 3;
@@ -289,7 +360,7 @@ public class Board extends JFrame {
 			sb.append(BORDER_CHAR);
 			for(int j=0; j < board[i].length; j++) {
 				if(board[i][j] == 1) {
-					sb.append("ยกรก");
+					sb.append("กแ");
 				} else {
 					sb.append(" ");
 				}
@@ -315,7 +386,7 @@ public class Board extends JFrame {
 		for(int i=0; i < nextBoard.length; i++) {
 			for(int j=0; j < nextBoard[i].length; j++) {
 				if(nextBoard[i][j] == 1) {
-					sb.append("ยกรก");
+					sb.append("กแ");
 				} else {
 					sb.append(" ");
 				}
@@ -333,14 +404,47 @@ public class Board extends JFrame {
 		nextBoard = new int[4][5];
 		x = 3;
 		y = 0;
-		curr = getRandomBlock();
-		next = getRandomBlock();
+		curr = getRandomBlockNormal();
+		next = getRandomBlockNormal();
 		placeBlock();
 		drawBoard();	
 		placeNext();
 		drawNext();
 		this.board = new int[20][10];
 	}
+	
+	public boolean collisionCheck() {
+		for (int i = 0; i < curr.height(); i++) {
+			for (int j = 0; j < curr.width(); j++) {
+				if (curr.getShape(j, i) == 1 && i + y < 19) {
+					int check = board[i + y + 1][j + x];
+					if (check == 1) {
+						return true;
+					}
+				}
+			}
+		}
+	
+		return false;
+	}
+	
+	
+	public void saveBoard() {
+		for (int i = 0; i < curr.height(); i++) {
+			for (int j = 0; j < curr.width(); j++) {
+				if (curr.getShape(j, i) == 1) {
+					board[y + i][j + x] = 1;
+				}
+			}
+		}
+	}
+	
+	
+	protected void blockRotate() {
+	      eraseCurr();
+	      curr.rotate();
+	      placeBlock();
+	   }
 
 	public class PlayerKeyListener implements KeyListener {
 		@Override
@@ -364,9 +468,8 @@ public class Board extends JFrame {
 				drawBoard();
 				break;
 			case KeyEvent.VK_UP:
-				eraseCurr();
-				curr.rotate();
-				drawBoard();
+	            blockRotate();
+	            drawBoard();
 				break;
 			case KeyEvent.VK_ESCAPE:
 				timer.stop();
