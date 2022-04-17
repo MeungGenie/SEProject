@@ -2,6 +2,7 @@ package se.tetris.main;
 
 import se.tetris.component.Board;
 import se.tetris.component.Start;
+import se.tetris.component.Score;
 
 public class Tetris {
 
@@ -11,8 +12,5 @@ public class Tetris {
 		startView.setSize(400, 600);
 		startView.setVisible(true);
 		
-		//Board main = new Board();
-		//main.setSize(400, 600);
-		//main.setVisible(true);
 	}
 }

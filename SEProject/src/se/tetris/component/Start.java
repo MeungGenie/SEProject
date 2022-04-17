@@ -30,10 +30,13 @@ import javax.swing.text.StyledDocument;
 
 
 import se.tetris.component.Board;
+import se.tetris.component.Score;
+
 
 
 public class Start extends JFrame {
 	private int stdclickcount = 0;
+	private int std2clickcount = 0;
 	public Start() {
 
 		setTitle("SeoulTech SE Tettris");
@@ -89,6 +92,21 @@ public class Start extends JFrame {
 					Board main = new Board();
 					main.setSize(400, 600);
 					main.setVisible(true);	
+				}
+				
+			}
+		});
+		
+		scoreBtn.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				std2clickcount += 1;
+				
+				if(std2clickcount == 1) {
+					Score scoreView = new Score();
+					scoreView.setSize(400, 600);
+					scoreView.setVisible(true);
 				}
 				
 			}
