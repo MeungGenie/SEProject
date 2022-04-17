@@ -1,4 +1,4 @@
-package se.tetris.board;
+package se.tetris.component;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -384,7 +384,7 @@ public class Board extends JFrame {
 			sb.append(BORDER_CHAR);
 			for(int j=0; j < board[i].length; j++) {
 				if(board[i][j] == 1) {
-					sb.append("■");
+					sb.append("?��");
 				}
 				else {
 					sb.append(" ");
@@ -412,7 +412,7 @@ public class Board extends JFrame {
 		for(int i=0; i < nextBoard.length; i++) {
 			for(int j=0; j < nextBoard[i].length; j++) {
 				if(nextBoard[i][j] == 1) {
-					sb.append("■");
+					sb.append("?��");
 				}
 				else {
 					sb.append(" ");

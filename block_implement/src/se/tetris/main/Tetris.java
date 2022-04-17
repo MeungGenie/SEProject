@@ -1,5 +1,5 @@
 package se.tetris.main;
-import se.tetris.board.Board;
+import se.tetris.component.Board;
 
 public class Tetris {
 
