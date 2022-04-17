@@ -71,7 +71,6 @@ public class Board extends JFrame {
 	int nextY = 1;
 	int score = 0;
 	int level = 0;
-	int check = 0;
 	
 	private static final int initInterval = 1000;
 	
@@ -340,13 +339,13 @@ public class Board extends JFrame {
 	
 	protected void moveRight() {
 		eraseCurr();
-		if(x < WIDTH - curr.width()) x++;
+		if(x < WIDTH - curr.width() && board[y][x + curr.width()] == 0) x++;
 		placeBlock();
 	}
 
 	protected void moveLeft() {
 		eraseCurr();
-		if(x > 0) {
+		if(x > 0 && board[y][x - 1] == 0) {
 			x--;
 		}
 		placeBlock();
@@ -416,9 +415,13 @@ public class Board extends JFrame {
 	public boolean collisionCheck() {
 		for (int i = 0; i < curr.height(); i++) {
 			for (int j = 0; j < curr.width(); j++) {
+				// && j + x < 9 && j + x > 0
 				if (curr.getShape(j, i) == 1 && i + y < 19) {
-					int check = board[i + y + 1][j + x];
-					if (check == 1) {
+					//int checkLeft = board[i + y + 1][j + x - 1];
+					//int checkRight = board[i + y + 1][j + x + 1];
+					int checkBottom = board[i + y + 1][j + x];
+					//|| checkLeft == 1 || checkRight == 1
+					if (checkBottom == 1) {
 						return true;
 					}
 				}
@@ -427,6 +430,13 @@ public class Board extends JFrame {
 	
 		return false;
 	}
+	
+	/*
+	public boolean isGameOver() {
+		
+	}
+	*/
+	
 	
 	
 	public void saveBoard() {
