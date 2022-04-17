@@ -310,7 +310,6 @@ public class Board extends JFrame {
 	}
 	
 	ArrayList<Integer> line = new ArrayList<Integer>();
-	 
 	ArrayList<Integer> lineCheck() {
 		ArrayList<Integer> Item = new ArrayList<Integer>();
 		int count;
@@ -318,7 +317,10 @@ public class Board extends JFrame {
 			count = 0;
 			for(int j = 0; j < WIDTH; j++)
 				if(board[i][j] == 1) 
+				{
 					count++;
+				}
+					
 			if(count == WIDTH) Item.add(i);
 		}
 		return Item;
@@ -328,15 +330,21 @@ public class Board extends JFrame {
 		line = lineCheck();
 		Iterator<Integer> iter = line.iterator();
 		int index = 0;
+		int eraseCnt = 0;
 		while(iter.hasNext()) {
 			index = iter.next();
-			for(int i = index; i > 1; i--)
-				for(int j = 0; j < WIDTH; j++)
+			for(int i = index; i > 1; i--) {
+				for(int j = 0; j < WIDTH; j++) {
 					board[i][j] = board[i-1][j];
+					
+				}
+			}
 		}
+
 		index = 0;	 
+		eraseCnt++;
 	}
-	
+
 	protected void moveDown() {
 		eraseCurr();
 		if(y < HEIGHT - curr.height()) y++;
@@ -350,8 +358,8 @@ public class Board extends JFrame {
 			x = 3;
 			y = 0;
 		}
-		placeBlock();
 		lineRemove();
+		placeBlock();
 	}
 	
 	protected void moveRight() {
@@ -377,7 +385,8 @@ public class Board extends JFrame {
 			for(int j=0; j < board[i].length; j++) {
 				if(board[i][j] == 1) {
 					sb.append("■");
-				} else {
+				}
+				else {
 					sb.append(" ");
 				}
 			}
@@ -404,7 +413,8 @@ public class Board extends JFrame {
 			for(int j=0; j < nextBoard[i].length; j++) {
 				if(nextBoard[i][j] == 1) {
 					sb.append("■");
-				} else {
+				}
+				else {
 					sb.append(" ");
 				}
 			}
