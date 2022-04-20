@@ -47,4 +47,8 @@ public abstract class Block {
 			return shape[0].length;
 		return 0;
 	}
+	
+	public void setShape(int [][] inputShape) {
+		shape = inputShape;
+	}
 }

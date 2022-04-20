@@ -10,6 +10,6 @@ public class JBlock extends Block {
 				{0, 0, 1}
 		};
 		color = Color.BLUE;
-		colorBlind = new Color(126, 98, 61);
+		colorBlind = new Color(0, 124, 126);
 	}
 }
