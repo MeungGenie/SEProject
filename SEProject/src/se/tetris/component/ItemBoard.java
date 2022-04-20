@@ -67,6 +67,10 @@ public class ItemBoard extends JFrame {
 	int level = 0;
 	int eraseCnt = 0;
 	boolean itemFlag = false;
+	boolean itemDrop = false;
+	int itemX = 0;
+	int itemY = 0;
+	int itemType;
 	
 	private static final int initInterval = 1000;
 	
@@ -283,45 +287,70 @@ public class ItemBoard extends JFrame {
 			if ((eraseCnt != 0) && (eraseCnt % 3 == 0))
 				itemFlag = true;
 		}
-		System.out.println(eraseCnt);
-		index = 0;	 
 	}
-
+	
+	public void itemLineRemove() {
+		itemFlag = false;
+		line = new ArrayList<Integer>() {{add(itemY);}};
+		Iterator<Integer> iter = line.iterator();
+		int index = 0;
+		while(iter.hasNext()) {
+			index = iter.next();
+			for(int i = index; i > 1; i--) {
+				for(int j = 0; j < WIDTH; j++) {
+					board[i][j] = board[i-1][j];
+				}
+			}
+			/*
+			eraseCnt++;
+			if ((eraseCnt != 0) && (eraseCnt % 3 == 0))
+				itemFlag = true;
+				
+			 */
+		}
+	}
+	
+	public void collisionOccur() {
+		saveBoard();
+		if (itemDrop == true) {
+			itemX = x + getItemX();
+			itemY = y + getItemY();
+			switch(itemType) {
+				case 2: //LR
+					itemLineRemove();
+				case 5://CR
+					cRItem();
+			}
+			itemDrop = false;
+		}
+		curr = next;
+		eraseNext();
+		next = getRandomBlockNormal();
+		placeNext();
+		drawNext();
+		x = 3;
+		y = 0;
+		if (isGameOver() == true) {
+			timer.stop();
+			//종료 화면과 잇기
+		}
+	}
+	
+	
 	protected void moveDown() {
 		eraseCurr();
 		if (collisionBottom() == true) {
-			saveBoard();
-			curr = next;
-			eraseNext();
-			next = getRandomBlockNormal();
-			placeNext();
-			drawNext();
-			x = 3;
-			y = 0;
-			if (isGameOver() == true) {
-				timer.stop();
-			}
+			collisionOccur();
 		}	
 		else if(y < HEIGHT - curr.height()) y++;
 		else {
-			placeBlock();
-			saveBoard();
-			curr = next;
-			eraseNext();
-			next = getRandomBlockNormal();
-			placeNext();
-			drawNext();
-			x = 3;
-			y = 0;
-			if (isGameOver() == true) 
-				timer.stop();
+			collisionOccur();
 		}
 		lineRemove();
 		if (itemFlag == true) {
 			itemSet();
+			itemDrop = true;
 		}
-			
-		
 		placeBlock();
 	}
 	
@@ -355,6 +384,8 @@ public class ItemBoard extends JFrame {
 					case 3:
 					case 4:
 					case 5:
+						sb.append("C");
+						break;
 					default:
 						sb.append(" ");
 					
@@ -424,11 +455,17 @@ public class ItemBoard extends JFrame {
 	
 	public void itemSet() {
 		Random rnd = new Random(System.currentTimeMillis());
-		int item = 0; // change to rnd.nextInt(5);
-		switch(item) {
-			case 0://LRemoveBlock
+		itemType = 2; // change to rnd.nextInt(4) + 2;
+		switch(itemType) {
+			case 2://LRemoveBlock
 				LRemoveBlock LR = new LRemoveBlock(curr);
-				curr = LR.getLRBlock();
+				curr = LR.getItemBlock();
+				break;
+			case 3:
+			case 4:
+			case 5:
+				CRemoveBlock CR = new CRemoveBlock(curr);
+				curr = CR.getItemBlock();
 				break;
 		}
 	}
@@ -436,7 +473,7 @@ public class ItemBoard extends JFrame {
 	public boolean collisionBottom() {
 		for (int i = 0; i < curr.height(); i++) {
 			for (int j = 0; j < curr.width(); j++) {
-				if (curr.getShape(j, i) == 1 && i + y < 19) {
+				if (curr.getShape(j, i) != 0 && i + y < 19) {
 					int checkBottom = board[i + y + 1][j + x];
 					if (checkBottom == 1) {
 						return true;
@@ -451,7 +488,7 @@ public class ItemBoard extends JFrame {
 	public boolean collisionRight() {
 		for (int i = 0; i < curr.height(); i++) {
 			for (int j = 0; j < curr.width(); j++) {
-				if (curr.getShape(j, i) == 1 && j + x < 9) {
+				if (curr.getShape(j, i) != 0 && j + x < 9) {
 					int checkRight = board[i + y][j + x + 1];
 					if(checkRight == 1) {
 						return true;
@@ -465,7 +502,7 @@ public class ItemBoard extends JFrame {
 	public boolean collisionLeft() {
 		for (int i = 0; i < curr.height(); i++) {
 			for (int j = 0; j < curr.width(); j++) {
-				if (curr.getShape(j, i) == 1 && j + x > 0) {
+				if (curr.getShape(j, i) != 0 && j + x > 0) {
 					int checkLeft = board[i + y][j + x - 1];
 					if(checkLeft == 1) {
 						return true;
@@ -475,10 +512,6 @@ public class ItemBoard extends JFrame {
 		}
 		return false;
 	}
-	
-	
-
-	
 	
 	
 	public void saveBoard() {
@@ -504,17 +537,19 @@ public class ItemBoard extends JFrame {
 		return false;	
 	}
 	
+	/*
 	public boolean ltRotateColl() {
 		for(int j=0; j<curr.height(); j++) {
 			for(int i=0; i<curr.width(); i++) {
 				if (curr.getShape(i, j) == 1)
-					if (x + i > 9) {
+					if (x - i < 0) {
 						return true;
 					}
 			}
 		}
 		return false;	
 	}
+	*/
 	
 	public boolean btRotateColl() {
 		for(int j=0; j<curr.height(); j++) {
@@ -540,6 +575,37 @@ public class ItemBoard extends JFrame {
 		}
 		placeBlock();
 		drawBoard();
+	}
+	
+	public void lRItem() {
+		itemLineRemove();
+	}
+	
+	public void cRItem() {
+		for (int i = 0; i < HEIGHT; i++) {
+			board[i][itemX] = 0;
+		}
+		itemLineRemove();	
+	}
+	
+	public int getItemX() {
+		for (int i = 0; i < curr.height(); i++) {
+			for (int j = 0; j < curr.width(); j++) {
+				if(curr.getShape(j, i) > 1)
+					return j;
+			}
+		}
+		return 0;
+	}
+	
+	public int getItemY() {
+		for (int i = 0; i < curr.height(); i++) {
+			for (int j = 0; j < curr.width(); j++) {
+				if(curr.getShape(j, i) > 1)
+					return i;
+			}
+		}
+		return 0;
 	}
 	
 	
