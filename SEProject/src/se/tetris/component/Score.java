@@ -4,12 +4,16 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 import javax.swing.BorderFactory;
@@ -21,6 +25,9 @@ import javax.swing.JTextPane;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 import javax.swing.Timer;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.CompoundBorder;
@@ -87,23 +94,73 @@ class ScoreItem {
 	
 }
 
-
-public class Score extends JFrame  {
+class tabViewBox extends JFrame{
 	
-	
-
-	
-	public Score() {
+	public tabViewBox() {
 		setTitle("SeoulTech SE Tettris");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setSize(400, 600);
 		
-		GridLayout grid = new GridLayout(12,1,0,10);
+		setBackground(Color.white);
+		display();
+	}
+	
+	public void display() {
+		JTabbedPane tabView = new JTabbedPane();
+		
+		stdTable stdScoreView = new stdTable();
+		itemTable itemScoreView = new itemTable();
+		tabView.addTab("기본 모드 랭킹", stdScoreView);
+		tabView.addTab("아이템 모드 랭킹", itemScoreView);
+		
+		add(tabView);
+	}
+}
 
-		Container scoreView = getContentPane();
+class stdTable extends JPanel{
+	stdTable(){
+		String[] title = {"랭킹", "닉네임", "점수"};
+		String[][] data = {
+				{"1", "임영뭉","10000"},
+				{"2", "임영뭉","10000"},
+				{"3", "임영뭉","10000"},
+		};
+		JTable table = new JTable(data, title);
+		JScrollPane scrollview = new JScrollPane(table);
+		scrollview.setPreferredSize(new Dimension(350,500));
+		scrollview.setBackground(Color.white);
+		add(scrollview, BorderLayout.CENTER);
+		setBackground(Color.white);
+	}
+}
+
+class itemTable extends JPanel{
+	itemTable(){
+		String[] title = {"랭킹", "닉네임", "점수"};
+		String[][] data = {
+				{"1", "임영뭉1","10000"},
+				{"2", "임영뭉2","10000"},
+				{"3", "임영뭉3","10000"},
+		};
 		
-		scoreView.setLayout(grid);
 		
-		scoreView.setBackground(Color.WHITE);
+		JTable table = new JTable(data, title);
+		JScrollPane scrollview = new JScrollPane(table);
+		scrollview.setPreferredSize(new Dimension(350,500));
+		scrollview.setBackground(Color.white);
+		add(scrollview, BorderLayout.CENTER);
+		setBackground(Color.white);
+	}
+}
+
+
+public class Score extends tabViewBox {
+	
+	
+	public Score() {
+
+	
+
 		
 		JLabel Title = new JLabel("SeoulTech SE Tettris Score");
 		Title.setFont(new Font("Serif",Font.BOLD,17));
@@ -118,35 +175,9 @@ public class Score extends JFrame  {
 		//btnGroup.setBackground(Color.white);
 		//btnGroup.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 		
-		
-		
-		ScoreItem[] SL = {  new ScoreItem(1,10,"과1",10), new ScoreItem(2,5,"과2",9),
-							new ScoreItem(3,2,"과3",8), new ScoreItem(4,1,"과4",7),
-							new ScoreItem(5,2,"과5",6), new ScoreItem(6,1,"과6",5),
-							new ScoreItem(7,2,"과7",4), new ScoreItem(8,3,"과8",3),
-							new ScoreItem(9,1,"과9",2), new ScoreItem(10,1,"과10",1)};
-		
-		scoreView.add(Title);
-		
-		
-		for(int i=0; i<SL.length; i++) {
-			
-			JPanel scoreBoardN = new JPanel();
-			JLabel rankN = new JLabel(Integer.toString(SL[i].ranking));
-			JLabel nickN = new JLabel(SL[i].nickname);
-			JLabel scoreN = new JLabel( Long.toString(SL[i].Scroe));
-			
-			scoreBoardN.add(rankN);
-			scoreBoardN.add(nickN);
-			scoreBoardN.add(scoreN);
-			
-			scoreView.add(scoreBoardN);	
-		}
-		
-		
+		tabViewBox tabScoreView = new tabViewBox();
 
 		
-		scoreView.add(Team);
 		
 	}
 	

@@ -9,11 +9,7 @@ public class LBlock extends Block {
 			{1, 1, 1},
 			{1, 0, 0}
 		};
-		color = Color.ORANGE;
-		numOfBlockType = 4;
-	}
-	
-	public int[] getBlock() {
-	    return shape[r];
+		color = Color.PINK;
+		colorBlind = new Color(165, 148, 159);
 	}
 }

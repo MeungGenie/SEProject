@@ -10,10 +10,6 @@ public class JBlock extends Block {
 				{0, 0, 1}
 		};
 		color = Color.BLUE;
-		numOfBlockType = 4;
-	}
-	
-	public int[] getBlock() {
-	    return shape[r];
+		colorBlind = new Color(126, 98, 61);
 	}
 }

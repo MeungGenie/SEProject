@@ -8,13 +8,7 @@ public class IBlock extends Block {
 		this.shape = new int[][] { 
 				{1, 1, 1, 1}
 		};
-		
 		color = Color.CYAN;
-		colorBlind = Color.CYAN;
-		numOfBlockType = 2;
-	}
-	
-	public int[] getBlock() {
-	    return shape[r];
+		colorBlind = new Color(0, 58, 97);
 	}
 }

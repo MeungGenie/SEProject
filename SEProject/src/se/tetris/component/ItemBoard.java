@@ -1,7 +1,6 @@
 package se.tetris.component;
 
 import java.awt.Color;
-import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -27,20 +26,11 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
-import se.tetris.blocks.Block;
-import se.tetris.blocks.IBlock;
-import se.tetris.blocks.JBlock;
-import se.tetris.blocks.LBlock;
-import se.tetris.blocks.OBlock;
-import se.tetris.blocks.SBlock;
-import se.tetris.blocks.TBlock;
-import se.tetris.blocks.ZBlock;
+import se.tetris.blocks.*;
 
-import se.tetris.setting.SettingCode;
 
-public class Board extends JFrame {
+public class ItemBoard extends JFrame {
 
-	public static Board boardMain;
 	private static final long serialVersionUID = 2434035659171694595L;
 	
 	public static final int HEIGHT = 20;
@@ -76,16 +66,11 @@ public class Board extends JFrame {
 	int score = 0;
 	int level = 0;
 	int eraseCnt = 0;
+	boolean itemFlag = false;
 	
-	//initInterval ³­ÀÌµµ¿¡ µû¶ó Á¶Àý
-    //public static int initEasyInterval = 2000;
-    //public static int initNormalInterval = 1000;
-    //public static int initHardInterval = 500;
-	////////////////////////////
-    public static int initInterval = SettingCode.getInitInterval();
-	private static int blockNumber = 0;
-
-	public Board() {
+	private static final int initInterval = 1000;
+	
+	public ItemBoard() {
 		super("SeoulTech SE Tetris");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
@@ -108,18 +93,20 @@ public class Board extends JFrame {
 		EtchedBorder scoreBorder = new EtchedBorder();
 		scorePanel.setBorder(scoreBorder);
 		scorePanel.setPreferredSize(new Dimension(150, 50));
-		
 		scoreLb1 = new JLabel("Scores");
 		scoreLb1.setForeground(Color.darkGray);
 		scoreLb1.setAlignmentX(CENTER_ALIGNMENT);
-		
 		scoreLb2 = new JLabel(Integer.toString(score));
+		JLabel scoreLb1 = new JLabel("Scores");
+		scoreLb1.setForeground(Color.darkGray);
+		scoreLb1.setAlignmentX(CENTER_ALIGNMENT);
+		JLabel scoreLb2 = new JLabel(Integer.toString(score));
 		scoreLb2.setForeground(Color.RED);
-		
 		scorePanel.setLayout(new BoxLayout(scorePanel, BoxLayout.Y_AXIS));
 		scorePanel.add(scoreLb1);
 		scorePanel.add(Box.createVerticalStrut(5));
 		scorePanel.add(scoreLb2);
+		
 		
 		levelPanel = new JPanel();
 		levelPanel.setBorder(scoreBorder);
@@ -155,13 +142,13 @@ public class Board extends JFrame {
 		add(panel);
 
 		//Set timer for block drops.
-		timer = new Timer(getInterval(blockNumber), new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                moveDown();
-                drawBoard();
-            }
-        });
+		timer = new Timer(initInterval, new ActionListener() {			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				moveDown();
+				drawBoard();
+			}
+		});
 		
 		//Initialize board for the game.
 		board = new int[HEIGHT][WIDTH];
@@ -227,68 +214,12 @@ public class Board extends JFrame {
 		}
 		return new LBlock();
 	}
-
-	private Block getRandomBlockEasy() {
-		double min = 1;
-		double max = 100;
-		double weighted = Math.random() * (max - min) + min;
-		if (weighted <= (80/7 + 20))
-			return new IBlock();
-		else 
-		{
-			Random rnd = new Random(System.currentTimeMillis());
-			int block = rnd.nextInt(7);
-			switch(block) {
-			case 0:
-				return new JBlock();
-			case 1:
-				return new LBlock();
-			case 2:
-				return new ZBlock();
-			case 3:
-				return new SBlock();
-			case 4:
-				return new TBlock();
-			case 5:
-				return new OBlock();			
-			}
-			return new LBlock();
-		}
-	}
-	
-	private Block getRandomHard() {
-		double min = 1;
-		double max = 100;
-		double weighted = Math.random() * (max - min) + min;
-		if (weighted <= (120/7 - 20))
-			return new IBlock();
-		else 
-		{
-			Random rnd = new Random(System.currentTimeMillis());
-			int block = rnd.nextInt(7);
-			switch(block) {
-			case 0:
-				return new JBlock();
-			case 1:
-				return new LBlock();
-			case 2:
-				return new ZBlock();
-			case 3:
-				return new SBlock();
-			case 4:
-				return new TBlock();
-			case 5:
-				return new OBlock();			
-			}
-			return new LBlock();
-		}
-	}
 	
 	
 	private void placeBlock() {
 		for(int j=0; j<curr.height(); j++) {
 			for(int i=0; i<curr.width(); i++) {
-				if (curr.getShape(i, j) == 1)
+				if (curr.getShape(i, j) != 0)
 					board[y+j][x+i] = curr.getShape(i, j);
 			}
 		}
@@ -305,7 +236,7 @@ public class Board extends JFrame {
 	private void eraseCurr() {
 		for(int i=x; i<x+curr.width(); i++) {
 			for(int j=y; j<y+curr.height(); j++) {
-				if(curr.getShape(i-x,j-y) == 1)
+				if(curr.getShape(i-x,j-y) != 0)
 					board[j][i] = 0;
 			}
 		}
@@ -318,7 +249,7 @@ public class Board extends JFrame {
 			}
 		}
 	}
-
+	
 	ArrayList<Integer> line = new ArrayList<Integer>();
 	ArrayList<Integer> lineCheck() {
 		ArrayList<Integer> Item = new ArrayList<Integer>();
@@ -326,7 +257,8 @@ public class Board extends JFrame {
 		for(int i = 0; i < HEIGHT; i++) {
 			count = 0;
 			for(int j = 0; j < WIDTH; j++)
-				if(board[i][j] == 1) {
+				if(board[i][j] == 1) 
+				{
 					count++;
 				}
 					
@@ -336,6 +268,7 @@ public class Board extends JFrame {
 	}
  
 	void lineRemove() {
+		itemFlag = false;
 		line = lineCheck();
 		Iterator<Integer> iter = line.iterator();
 		int index = 0;
@@ -346,46 +279,17 @@ public class Board extends JFrame {
 					board[i][j] = board[i-1][j];
 				}
 			}
-			index = 0;	
 			eraseCnt++;
-			getScore(eraseCnt);
-			setScore();
 			if ((eraseCnt != 0) && (eraseCnt % 3 == 0))
-				System.out.println("1"+ eraseCnt);
+				itemFlag = true;
 		}
+		System.out.println(eraseCnt);
+		index = 0;	 
 	}
-	
-	public boolean collisionRight() {
-		for (int i = 0; i < curr.height(); i++) {
-			for (int j = 0; j < curr.width(); j++) {
-				if (curr.getShape(j, i) == 1 & j + x < 9) {
-					int checkRight = board[i + y][j + x + 1];
-					if(checkRight == 1) {
-						return true;
-					}
-				}
-			}
-		}
-      return false;
-	}
-   
-	public boolean collisionLeft() {
-		for (int i = 0; i < curr.height(); i++) {
-			for (int j = 0; j < curr.width(); j++) {
-				if (curr.getShape(j, i) == 1 & j + x > 0) {
-					int checkLeft = board[i + y][j + x - 1];
-					if(checkLeft == 1) {
-						return true;
-					}
-				}
-			}
-		}
-      return false;
-	}
-	
+
 	protected void moveDown() {
 		eraseCurr();
-		if (collisionCheck() == true) {
+		if (collisionBottom() == true) {
 			saveBoard();
 			curr = next;
 			eraseNext();
@@ -393,10 +297,12 @@ public class Board extends JFrame {
 			placeNext();
 			drawNext();
 			x = 3;
-			y = 0;			
+			y = 0;
+			if (isGameOver() == true) {
+				timer.stop();
+			}
 		}	
-		
-		if(y < HEIGHT - curr.height()) y++;
+		else if(y < HEIGHT - curr.height()) y++;
 		else {
 			placeBlock();
 			saveBoard();
@@ -407,23 +313,29 @@ public class Board extends JFrame {
 			drawNext();
 			x = 3;
 			y = 0;
+			if (isGameOver() == true) 
+				timer.stop();
 		}
-		
 		lineRemove();
+		if (itemFlag == true) {
+			itemSet();
+		}
+			
+		
 		placeBlock();
 	}
 	
 	protected void moveRight() {
-	      eraseCurr();
-	      if(x < WIDTH - curr.width() && collisionRight() == false) x++;
-	      placeBlock();
-	   }
+		eraseCurr();
+		if(x < WIDTH - curr.width() && collisionRight() == false) x++;
+		placeBlock();
+	}
 
-   protected void moveLeft() {
-      eraseCurr();
-      if(x > 0 && collisionLeft() == false) x--;
-      placeBlock();
-   }
+	protected void moveLeft() {
+		eraseCurr();
+		if(x > 0 && collisionLeft() == false) x--;
+		placeBlock();
+	}
 
 	public void drawBoard() {
 		StringBuffer sb = new StringBuffer();
@@ -432,16 +344,25 @@ public class Board extends JFrame {
 		for(int i=0; i < board.length; i++) {
 			sb.append(BORDER_CHAR);
 			for(int j=0; j < board[i].length; j++) {
-				if(board[i][j] == 1) {
-					sb.append("¡á");
-				} else {
-					sb.append(" ");
+				int blockType = board[i][j];
+				switch(blockType) {
+					case 1:
+						sb.append("â– ");
+						break;
+					case 2:
+						sb.append("L");
+						break;
+					case 3:
+					case 4:
+					case 5:
+					default:
+						sb.append(" ");
+					
 				}
 			}
 			sb.append(BORDER_CHAR);
 			sb.append("\n");
 		}
-		
 		for(int t=0; t<WIDTH+2; t++) sb.append(BORDER_CHAR);
 		tetrisArea.setText(sb.toString());
 		boardDoc.setCharacterAttributes(0, boardDoc.getLength(), stylesetBr, false);
@@ -449,20 +370,22 @@ public class Board extends JFrame {
 		for(int j = 0; j < curr.height(); j++) {
 			int rows = y+j == 0 ? 1 : y+j+1;
 			int offset = rows * (WIDTH+3) + x + 1;
-			StyleConstants.setForeground(stylesetCur, curr.getColor());
-			boardDoc.setCharacterAttributes(offset, curr.width(), stylesetCur, true);
+			for (int i = 0; i < curr.width(); i++) {
+				if (curr.getShape(i, j) == 1) {
+					StyleConstants.setForeground(stylesetCur, curr.getColor());
+					boardDoc.setCharacterAttributes(offset + i, 1, stylesetCur, true);
+				}
+			}
 		}
 	}
 	
 	public void drawNext() {
 		StringBuffer sb = new StringBuffer();
-        sb.append("\n");
-        blockNumber++;
-        timer.setDelay(getInterval(blockNumber));
+		sb.append("\n");
 		for(int i=0; i < nextBoard.length; i++) {
 			for(int j=0; j < nextBoard[i].length; j++) {
 				if(nextBoard[i][j] == 1) {
-					sb.append("¡á");
+					sb.append("Â¡Ã¡");
 				} else {
 					sb.append(" ");
 				}
@@ -474,27 +397,7 @@ public class Board extends JFrame {
 		nextDoc.setParagraphAttributes(0, nextDoc.getLength(), stylesetNx, false);
 	}
 	
-	int getInterval(int blockNumber) {
-        switch (blockNumber) {
-            case 10:
-                initInterval *= 0.8;
-                break;
-            case 20:
-                initInterval *= 0.7;
-                break;
-            case 25:
-                initInterval *= 0.6;
-                break;
-            case 30:
-                initInterval *= 0.5;
-                break;
-            case 35:
-                initInterval *= 0.5;
-                break;
-        }
-        return initInterval;
-	}
-	 
+	
 	public void reset() {
 		board = new int[HEIGHT][WIDTH];
 		nextBoard = new int[4][5];
@@ -509,15 +412,32 @@ public class Board extends JFrame {
 		this.board = new int[20][10];
 	}
 	
-	public boolean collisionCheck() {
+	public boolean isGameOver() {
+		if (collisionBottom() == true)
+			return true;
+		for (int i = 0; i < WIDTH; i++) {
+			if (board[0][i] == 1)
+				return true;
+		}
+		return false;	
+	}
+	
+	public void itemSet() {
+		Random rnd = new Random(System.currentTimeMillis());
+		int item = 0; // change to rnd.nextInt(5);
+		switch(item) {
+			case 0://LRemoveBlock
+				LRemoveBlock LR = new LRemoveBlock(curr);
+				curr = LR.getLRBlock();
+				break;
+		}
+	}
+	
+	public boolean collisionBottom() {
 		for (int i = 0; i < curr.height(); i++) {
 			for (int j = 0; j < curr.width(); j++) {
-				// && j + x < 9 && j + x > 0
 				if (curr.getShape(j, i) == 1 && i + y < 19) {
-					//int checkLeft = board[i + y + 1][j + x - 1];
-					//int checkRight = board[i + y + 1][j + x + 1];
 					int checkBottom = board[i + y + 1][j + x];
-					//|| checkLeft == 1 || checkRight == 1
 					if (checkBottom == 1) {
 						return true;
 					}
@@ -528,11 +448,38 @@ public class Board extends JFrame {
 		return false;
 	}
 	
-	/*
-	public boolean isGameOver() {
-		
+	public boolean collisionRight() {
+		for (int i = 0; i < curr.height(); i++) {
+			for (int j = 0; j < curr.width(); j++) {
+				if (curr.getShape(j, i) == 1 && j + x < 9) {
+					int checkRight = board[i + y][j + x + 1];
+					if(checkRight == 1) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
-	*/
+	
+	public boolean collisionLeft() {
+		for (int i = 0; i < curr.height(); i++) {
+			for (int j = 0; j < curr.width(); j++) {
+				if (curr.getShape(j, i) == 1 && j + x > 0) {
+					int checkLeft = board[i + y][j + x - 1];
+					if(checkLeft == 1) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+	
+	
+
+	
+	
 	
 	public void saveBoard() {
 		for (int i = 0; i < curr.height(); i++) {
@@ -545,11 +492,57 @@ public class Board extends JFrame {
 	}
 	
 	
+	public boolean rtRotateColl() {
+		for(int j=0; j<curr.height(); j++) {
+			for(int i=0; i<curr.width(); i++) {
+				if (curr.getShape(i, j) == 1) {
+					if (x + i > 9) 
+						return true;	
+				}
+			}
+		}
+		return false;	
+	}
+	
+	public boolean ltRotateColl() {
+		for(int j=0; j<curr.height(); j++) {
+			for(int i=0; i<curr.width(); i++) {
+				if (curr.getShape(i, j) == 1)
+					if (x + i > 9) {
+						return true;
+					}
+			}
+		}
+		return false;	
+	}
+	
+	public boolean btRotateColl() {
+		for(int j=0; j<curr.height(); j++) {
+			for(int i=0; i<curr.width(); i++) {
+				if (curr.getShape(i, j) == 1)
+					if (y + j > 19) {
+						return true;
+					}
+			}
+		}
+		return false;	
+	}
+	
 	protected void blockRotate() {
-	      eraseCurr();
-	      curr.rotate();
-	      placeBlock();
-	   }
+		eraseCurr();
+		if (collisionRight() == false && collisionLeft() == false && collisionBottom() == false) {			
+			curr.rotate();
+		      if (rtRotateColl())
+		    	  x = 10 - curr.width();
+		      if (btRotateColl())
+		    	  y = 20 - curr.height();
+		      placeBlock();
+		}
+		placeBlock();
+		drawBoard();
+	}
+	
+	
 
 	public class PlayerKeyListener implements KeyListener {
 		@Override
@@ -574,7 +567,14 @@ public class Board extends JFrame {
 				break;
 			case KeyEvent.VK_UP:
 	            blockRotate();
-	            drawBoard();
+	            //drawBoard();
+				break;
+			case KeyEvent.VK_SPACE:
+				while(true){
+					moveDown();
+					if (collisionBottom() == true)
+						break;
+				}
 				break;
 			case KeyEvent.VK_ESCAPE:
 				timer.stop();
@@ -613,13 +613,10 @@ public class Board extends JFrame {
 		@Override
 		public void keyReleased(KeyEvent e) {
 			
-		}	
+		}
+		
 	}
 	
-	 public static Board getBoard(){
-	        return boardMain;
-	 }
-	 
 	//max - 30, default - 20,  
 	public void setSize(int size) {
 		StyleConstants.setFontSize(stylesetBr, size);
@@ -643,26 +640,6 @@ public class Board extends JFrame {
 		scoreLb2.setFont(new Font(null, Font.BOLD, size));
 		levelLb1.setFont(new Font(null, Font.BOLD, size));
 		levelLb2.setFont(new Font(null, Font.BOLD, size));
-	}
-	
-	//score
-	public void setScore() {
-		String scoretxt = Integer.toString(score);
-//				String.valueOf(score);
-		String prescoretxt = scoreLb2.getText();
-		System.out.println("Á¡¼ö º¯°æ" + prescoretxt+"...>"+ scoretxt);
-		scoreLb2.setText(scoretxt);
-	}
-	
-	public void getScore(int lines) {
-		int scorePre = lines * 10;
-		updateSroce(scorePre);
-	}
-	
-	public int updateSroce(int sc) {
-		this.score += sc;
-		setScore();
-		return score;
 	}
 	
 }
