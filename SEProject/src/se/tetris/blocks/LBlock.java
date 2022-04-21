@@ -9,7 +9,7 @@ public class LBlock extends Block {
 			{1, 1, 1},
 			{1, 0, 0}
 		};
-		color = Color.PINK;
-		colorBlind = new Color(165, 148, 159);
+		color = Color.ORANGE;
 	}
+
 }

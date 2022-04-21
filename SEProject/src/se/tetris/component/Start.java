@@ -86,7 +86,7 @@ public class Start extends JFrame {
 
 
         startView.setLayout(grid);
-        startView.setBackground(Color.BLACK);
+        startView.setBackground(Color.white);
 
         JLabel Title = new JLabel("SeoulTech SE Tettris");
         Title.setFont(new Font("Serif",Font.BOLD,17));
