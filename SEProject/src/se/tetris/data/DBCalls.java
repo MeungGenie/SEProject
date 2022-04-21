@@ -10,6 +10,8 @@ import se.tetris.component.*;
 public class DBCalls extends DBConnectionManager {
 	DBConnectionManager mananger = new DBConnectionManager();
 	
+	
+	public static ArrayList<ScoreItem> StdScoreList = new ArrayList<ScoreItem>();
 	public static ArrayList<ScoreItem> ItemScoreList = new ArrayList<ScoreItem>();
 
 	public void InsertScoreData(String name, int score, int type, int mode) {
@@ -139,21 +141,24 @@ public class DBCalls extends DBConnectionManager {
 		String path = System.getProperty("user.dir");
 		String url = "jdbc:sqlite:" + path + "/src/se/tetris/data/lib/tetris.db";
 
-		String sql = "select * from Score WHERE mode=0 ORDER BY score limit 10;";
+		String sql = "select * from Score WHERE mode=0 ORDER BY score DESC limit 10;";
 
 		try {
+			
 			Connection conn = DriverManager.getConnection(url);
 
 			Statement stmt = conn.createStatement();
 			stmt.execute(sql);
 
-			ArrayList<ScoreItem> scoreList = new ArrayList<ScoreItem>();
 
 			ResultSet rs = stmt.executeQuery(sql);
 
 			int count = 0;
+			
+			System.out.println("Query Info : "+rs);
 
 			while (rs.next()) {
+				
 				ScoreItem score = new ScoreItem();
 				// score
 				int smode = Integer.valueOf(rs.getString("mode"));
@@ -166,13 +171,17 @@ public class DBCalls extends DBConnectionManager {
 				score.setNickName(sname);
 				score.setScore(sscore);
 				score.setRank(++count);
+				
+				StdScoreList.add(score);
+				
+//				System.out.println("Item Score List : "+StdScoreList);
 			}
 
-			for (int i = 0; i < scoreList.size(); i++) {
-				System.out.println("랭킹 : " + scoreList.get(i).getRank());
-				System.out.println("이름 : " + scoreList.get(i).getNickName());
-				System.out.println("점수 : " + scoreList.get(i).getScore());
-				System.out.println("레벨 : " + scoreList.get(i).getLevel());
+			for (int i = 0; i < ItemScoreList.size(); i++) {
+//				System.out.println("랭킹 : " + StdScoreList.get(i).getRank());
+//				System.out.println("이름 : " + StdScoreList.get(i).getNickName());
+//				System.out.println("점수 : " + StdScoreList.get(i).getScore());
+//				System.out.println("레벨 : " + StdScoreList.get(i).getLevel());
 			}
 
 			conn.close();
@@ -199,7 +208,7 @@ public class DBCalls extends DBConnectionManager {
 
 			int count = 0;
 			
-			System.out.println("Query Info : "+rs);
+			//System.out.println("Query Info : "+rs);
 
 			while (rs.next()) {
 				

@@ -13,8 +13,4 @@ public class LRemoveBlock extends ItemBlock {
 		setItemCoor();
 	}
 	
-	public void lineRemove(int x) {
-		
-	}
-	
 }

@@ -94,13 +94,20 @@ public class ScoreItem {
 
 	public void getScoreInfo(int sc, int mode, int level) {
 		String name = JOptionPane.showInputDialog(null, "점수에 기록될 이름을 입력해주세요.","스코어 기록",JOptionPane.OK_CANCEL_OPTION);
-		System.out.println("이름 : " +name);
-		System.out.println("점수 : " +sc);
-		System.out.println("모드 : " +mode);
-		System.out.println("레벨 : " +level);
+//		System.out.println("이름 : " +name);
+//		System.out.println("점수 : " +sc);
+//		System.out.println("모드 : " +mode);
+//		System.out.println("레벨 : " +level);
 		
 		//String name, int score, int type, int mode
-		dataCalls.InsertScoreData(name, sc, level, mode);
+		
+		if(name == null) {
+			System.exit(0);
+		}else {
+			dataCalls.InsertScoreData(name, sc, level, mode);
+			System.exit(0);
+		}
+		
 	}
 
 }

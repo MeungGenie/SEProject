@@ -63,19 +63,25 @@ class tabViewBox extends JFrame {
 class stdTable extends JPanel {
 	DBCalls dataCalls = new DBCalls();
 	stdTable() {
-		dataCalls.get10StdScoreData();
-		
+
 		String[] title = { "랭킹", "모드", "닉네임", "점수" };
 		
-		ArrayList<ScoreItem> list = new ArrayList<ScoreItem>();
-		String[][] data = {};
+		ArrayList<ScoreItem> list= dataCalls.StdScoreList;
+		
+		dataCalls.get10StdScoreData();
+		
+		String[][] data = new String[list.size()][4] ;
+		
+//		System.out.println("아이템모드 : " + list);
 		
 
 		for (int i = 0; i < list.size(); i++) {
 			data[i][0] = String.valueOf(list.get(i).getRank());
 
+//			System.out.println("아이템모드 데이터 랭크: " + data[i][0]);
 			if (list.get(i).getLevel() == 0) {
 				data[i][1] = "Normal";
+				
 			} else if (list.get(i).getLevel() == 1) {
 				data[i][1] = "Easy";
 			} else if (list.get(i).getLevel() == 2) {
@@ -85,7 +91,9 @@ class stdTable extends JPanel {
 			data[i][2] = list.get(i).getNickName();
 			data[i][3] = String.valueOf(list.get(i).getScore());
 		}
-
+		
+//		System.out.println("아이템모드 데이터: " + data);
+		
 		JTable table = new JTable(data, title);
 		JScrollPane scrollview = new JScrollPane(table);
 		scrollview.setPreferredSize(new Dimension(350, 500));
