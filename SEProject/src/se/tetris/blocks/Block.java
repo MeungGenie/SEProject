@@ -57,4 +57,18 @@ public abstract class Block {
 		}
 		return rotate;
 	}
+	
+	public void setShape(int [][] inputShape) {
+		shape = inputShape;
+	}
+	
+	public void getInitBlock(Block input) {
+		for (int i = 0; i < input.height(); i++) {
+			for (int j = 0; j < input.width(); j++) {
+				if(input.getShape(j, i) != 0)
+					input.shape[i][j] = 1;
+			}
+		}
+	}
+	
 }
