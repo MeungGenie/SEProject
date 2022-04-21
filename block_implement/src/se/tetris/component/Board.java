@@ -66,6 +66,7 @@ public class Board extends JFrame {
 	private static SimpleAttributeSet stylesetBr;
 	private static SimpleAttributeSet stylesetNx;
 	private static SimpleAttributeSet stylesetCur;
+	private static SimpleAttributeSet stylesetBlock;
 	private static StyledDocument boardDoc;
 	private static StyledDocument nextDoc;
 	public static Timer timer;
@@ -215,7 +216,7 @@ public class Board extends JFrame {
 				min = 1;
 				max = 100;
 				percentage = Math.random() * (max - min) + min;
-				if (percentage <= (12000 / 720))
+				if (percentage <= (double)100 / 720 * 100 * 1.2)
 					return new IBlock();
 				else
 				{
@@ -259,7 +260,7 @@ public class Board extends JFrame {
 				min = 1;
 				max = 100;
 				percentage = Math.random() * (max - min) + min;
-				if (percentage <= (8000 / 680))
+				if (percentage <= (double)100 / 680 * 100 * 0.8)
 					return new IBlock();
 				else
 				{
@@ -363,6 +364,7 @@ public class Board extends JFrame {
 			index = iter.next();
 			for(int i = index; i > 1; i--) {
 				for(int j = 0; j < WIDTH; j++) {
+					lineRemoveEffect();
 					board[i][j] = board[i-1][j];
 				}
 			}
@@ -374,7 +376,14 @@ public class Board extends JFrame {
 				System.out.println("1"+ eraseCnt);
 		}
 	}
-
+	
+	protected void lineRemoveEffect() {
+		stylesetBlock = new SimpleAttributeSet();
+		tetrisArea.setText(board.toString());
+		StyleConstants.setForeground(stylesetBr, Color.ORANGE);
+		boardDoc.setCharacterAttributes(0, WIDTH, stylesetBr, false);
+	}
+	
 	protected void moveDown() {
 		eraseCurr();	
 		if (collisionBottom()) {
@@ -465,117 +474,117 @@ public class Board extends JFrame {
 	}
 	
 	//interval 함수
-		int getInterval(int blockNumber, int blockRemovedNumber) {
-			switch (intervalByMode) {
-				case 1000:
-					switch (blockNumber) {
-						case 30:
-							setting.intervalNumber *= 0.9;
-							break;
-						case 60:
-							setting.intervalNumber *= 0.9;
-							break;
-						case 80:
-							setting.intervalNumber *= 0.9;
-							break;
-						case 100:
-							setting.intervalNumber *= 0.9;
-							break;
-						case 120:
-							setting.intervalNumber *= 0.9;
-							break;
-					}
-					switch (blockRemovedNumber) {
-						case 1:
-							setting.intervalNumber *= 0.9;
-							break;
-						case 2:
-							setting.intervalNumber *= 0.9;
-							break;
-						case 15:
-							setting.intervalNumber *= 0.9;
-							break;
-						case 20:
-							setting.intervalNumber *= 0.9;
-							break;
-						case 25:
-							setting.intervalNumber *= 0.9;
-							break;
-					}
-				case 2000:
-					switch (blockNumber) {
-						case 30:
-							setting.intervalNumber *= 0.92;
-							break;
-						case 60:
-							setting.intervalNumber *= 0.92;
-							break;
-						case 80:
-							setting.intervalNumber *= 0.92;
-							break;
-						case 100:
-							setting.intervalNumber *= 0.92;
-							break;
-						case 120:
-							setting.intervalNumber *= 0.92;
-							break;
-					}
-					switch (blockRemovedNumber) {
-						case 5:
-							setting.intervalNumber *= 0.92;
-							break;
-						case 10:
-							setting.intervalNumber *= 0.92;
-							break;
-						case 15:
-							setting.intervalNumber *= 0.92;
-							break;
-						case 20:
-							setting.intervalNumber *= 0.92;
-							break;
-						case 25:
-							setting.intervalNumber *= 0.92;
-							break;
-					}
-				case 500:
-					switch (blockNumber) {
-						case 30:
-							setting.intervalNumber *= 0.88;
-							break;
-						case 60:
-							setting.intervalNumber *= 0.88;
-							break;
-						case 80:
-							setting.intervalNumber *= 0.88;
-							break;
-						case 100:
-							setting.intervalNumber *= 0.88;
-							break;
-						case 120:
-							setting.intervalNumber *= 0.88;
-							break;
-					}
-					switch (blockRemovedNumber) {
-						case 5:
-							setting.intervalNumber *= 0.88;
-							break;
-						case 10:
-							setting.intervalNumber *= 0.88;
-							break;
-						case 15:
-							setting.intervalNumber *= 0.88;
-							break;
-						case 20:
-							setting.intervalNumber *= 0.88;
-							break;
-						case 25:
-							setting.intervalNumber *= 0.88;
-							break;
-					}
-			}
-			System.out.println("Created : " + blockNumber + "   Removed : " + eraseCnt +"   intervalByMode" +intervalByMode + "   interval Number : " + setting.intervalNumber);
-			return setting.intervalNumber;
+	int getInterval(int blockNumber, int blockRemovedNumber) {
+		switch (intervalByMode) {
+			case 1000:
+				switch (blockNumber) {
+					case 30:
+						setting.intervalNumber *= 0.9;
+						break;
+					case 60:
+						setting.intervalNumber *= 0.9;
+						break;
+					case 80:
+						setting.intervalNumber *= 0.9;
+						break;
+					case 100:
+						setting.intervalNumber *= 0.9;
+						break;
+					case 120:
+						setting.intervalNumber *= 0.9;
+						break;
+				}
+				switch (blockRemovedNumber) {
+					case 1:
+						setting.intervalNumber *= 0.9;
+						break;
+					case 2:
+						setting.intervalNumber *= 0.9;
+						break;
+					case 15:
+						setting.intervalNumber *= 0.9;
+						break;
+					case 20:
+						setting.intervalNumber *= 0.9;
+						break;
+					case 25:
+						setting.intervalNumber *= 0.9;
+						break;
+				}
+			case 2000:
+				switch (blockNumber) {
+					case 30:
+						setting.intervalNumber *= 0.92;
+						break;
+					case 60:
+						setting.intervalNumber *= 0.92;
+						break;
+					case 80:
+						setting.intervalNumber *= 0.92;
+						break;
+					case 100:
+						setting.intervalNumber *= 0.92;
+						break;
+					case 120:
+						setting.intervalNumber *= 0.92;
+						break;
+				}
+				switch (blockRemovedNumber) {
+					case 5:
+						setting.intervalNumber *= 0.92;
+						break;
+					case 10:
+						setting.intervalNumber *= 0.92;
+						break;
+					case 15:
+						setting.intervalNumber *= 0.92;
+						break;
+					case 20:
+						setting.intervalNumber *= 0.92;
+						break;
+					case 25:
+						setting.intervalNumber *= 0.92;
+						break;
+				}
+			case 500:
+				switch (blockNumber) {
+					case 30:
+						setting.intervalNumber *= 0.88;
+						break;
+					case 60:
+						setting.intervalNumber *= 0.88;
+						break;
+					case 80:
+						setting.intervalNumber *= 0.88;
+						break;
+					case 100:
+						setting.intervalNumber *= 0.88;
+						break;
+					case 120:
+						setting.intervalNumber *= 0.88;
+						break;
+				}
+				switch (blockRemovedNumber) {
+					case 5:
+						setting.intervalNumber *= 0.88;
+						break;
+					case 10:
+						setting.intervalNumber *= 0.88;
+						break;
+					case 15:
+						setting.intervalNumber *= 0.88;
+						break;
+					case 20:
+						setting.intervalNumber *= 0.88;
+						break;
+					case 25:
+						setting.intervalNumber *= 0.88;
+						break;
+				}
 		}
+		System.out.println("Created : " + blockNumber + "   Removed : " + eraseCnt +"   intervalByMode" +intervalByMode + "   interval Number : " + setting.intervalNumber);
+		return setting.intervalNumber;
+	}
 	
 	public void reset() {
 		board = new int[HEIGHT][WIDTH];
@@ -738,6 +747,7 @@ public class Board extends JFrame {
 					eraseCurr();
 					if(collisionBottom()) {
 						collisionOccur();
+						lineRemove();
 						placeBlock();
 						drawBoard();
 						break;
