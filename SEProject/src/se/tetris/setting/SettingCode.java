@@ -15,356 +15,371 @@ import java.awt.event.KeyEvent;
 import se.tetris.data.*;
 
 public class SettingCode extends JFrame {
-	private JPanel tetrisArea;
-	private JPanel nextArea;
-	private JPanel panel;
-	private JPanel leftPanel;
-	private JPanel rightPanel;
-	private JPanel scorePanel;
+    private JPanel tetrisArea;
+    private JPanel nextArea;
+    private JPanel panel;
+    private JPanel leftPanel;
+    private JPanel rightPanel;
+    private JPanel scorePanel;
 
-	JRadioButton sizeOne = new JRadioButton("«•¡ÿ(400 * 600)");
-	JRadioButton sizeTwo = new JRadioButton("≈©∞‘(800 * 1200)");
-	JRadioButton sizeThree = new JRadioButton("¿¸√º »≠∏È ∏µÂ");
+    int score = 0;
+    public static int intervalNumber = 1000;
+    public static int sizeNumber;
+    public static int colorBlindModeCheck;
+    public static int modeChoose = 2;
 
-	int score = 0;
-	
-	DBCalls dataCalls = new DBCalls();
+    Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+    int screenWidth = (int)(dimension.getWidth());
+    int screenHeight = (int)(dimension.getHeight());
 
-	Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-	int screenWidth = (int) (dimension.getWidth());
-	int screenHeight = (int) (dimension.getHeight());
 
-	public SettingCode() {
+    public static SettingCode setting;
 
-		super("SeoulTech SE Tetris");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    public SettingCode() {
 
-		// Board display setting.
-		tetrisArea = new JPanel();
+        super("SeoulTech SE Tetris");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		tetrisArea.setBackground(Color.BLACK);
-		CompoundBorder border = BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.GRAY, 10),
-				BorderFactory.createLineBorder(Color.DARK_GRAY, 5));
-		tetrisArea.setBorder(border);
-		tetrisArea.setPreferredSize(new Dimension(350, 50));
-		JLabel settingTitle = new JLabel("≈◊∆Æ∏ÆΩ∫ ∞‘¿” º≥¡§");
-		settingTitle.setForeground(Color.WHITE);
-		tetrisArea.add(settingTitle);
+        //Board display setting.
+        tetrisArea = new JPanel();
 
-		nextArea = new JPanel();
-		nextArea.setPreferredSize(new Dimension(250, 400));
-		nextArea.setBackground(Color.BLACK);
-		nextArea.setBorder(border);
+        tetrisArea.setBackground(Color.BLACK);
+        CompoundBorder border = BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.GRAY, 10),
+                BorderFactory.createLineBorder(Color.DARK_GRAY, 5));
+        tetrisArea.setBorder(border);
+        tetrisArea.setPreferredSize(new Dimension(350, 50));
 
-		JPanel screenSizeArea = new JPanel();
-		JLabel screenSizeTitle = new JLabel("»≠∏È ≈©±‚ ¡∂¿˝");
-		screenSizeTitle.setForeground(Color.WHITE);
-		screenSizeArea.add(screenSizeTitle);
-		ButtonGroup sizeGroup = new ButtonGroup();
+        JLabel settingTitle = new JLabel("ÌÖåÌä∏Î¶¨Ïä§ Í≤åÏûÑ ÏÑ§Ï†ï");
 
-		sizeOne.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				SettingValues.getInstance().sizeNumber = 1;
-				changeSize(SettingValues.getInstance().sizeNumber);
-			}
-		});
+        settingTitle.setForeground(Color.WHITE);
+        tetrisArea.add(settingTitle);
 
-		sizeTwo.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				SettingValues.getInstance().sizeNumber = 2;
-				changeSize(SettingValues.getInstance().sizeNumber);
-			}
-		});
-		JRadioButton sizeThree = new JRadioButton("¿¸√º »≠∏È ∏µÂ");
-		sizeThree.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				SettingValues.getInstance().sizeNumber = 3;
-				changeSize(SettingValues.getInstance().sizeNumber);
-			}
-		});
-		sizeOne.setSelected(true);
-		sizeGroup.add(sizeOne);
-		sizeGroup.add(sizeTwo);
-		sizeGroup.add(sizeThree);
-		screenSizeArea.add(sizeOne);
-		screenSizeArea.add(sizeTwo);
-		screenSizeArea.add(sizeThree);
-		screenSizeArea.setPreferredSize(new Dimension(250, 70));
-		screenSizeArea.setAlignmentX(RIGHT_ALIGNMENT);
-		nextArea.add(screenSizeArea);
 
-		JPanel keyArea = new JPanel();
-		JLabel keyTitle = new JLabel("πÊ«‚≈∞ º±≈√");
-		keyTitle.setForeground(Color.WHITE);
-		keyArea.add(keyTitle);
-		ButtonGroup keyGroup = new ButtonGroup();
-		JRadioButton keyOne = new JRadioButton("WASD");
-		JRadioButton keyTwo = new JRadioButton("»≠ªÏ«•");
-		keyOne.setSelected(true);
-		keyGroup.add(keyOne);
-		keyGroup.add(keyTwo);
-		keyArea.add(keyOne);
-		keyArea.add(keyTwo);
-		keyArea.setPreferredSize(new Dimension(250, 70));
-		keyArea.setAlignmentX(RIGHT_ALIGNMENT);
-		nextArea.add(keyArea);
+        nextArea = new JPanel();
+        nextArea.setPreferredSize(new Dimension(250, 400));
+        nextArea.setBackground(Color.BLACK);
+        nextArea.setBorder(border);
 
-		JPanel colorBlindArea = new JPanel();
-		JLabel colorBlindTitle = new JLabel("ªˆ∏Õ∏µÂ");
-		colorBlindTitle.setForeground(Color.WHITE);
-		colorBlindArea.add(colorBlindTitle);
-		ButtonGroup colorBlindGroup = new ButtonGroup();
-		JRadioButton colorBlindOne = new JRadioButton("Off");
-		JRadioButton colorBlindTwo = new JRadioButton("On");
-		colorBlindOne.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				SettingValues.getInstance().colorBlindModeCheck = 0;
-			}
-		});
-		colorBlindTwo.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				SettingValues.getInstance().colorBlindModeCheck = 1;
-			}
-		});
-		colorBlindOne.setSelected(true);
-		colorBlindGroup.add(colorBlindOne);
-		colorBlindGroup.add(colorBlindTwo);
-		colorBlindArea.add(colorBlindOne);
-		colorBlindArea.add(colorBlindTwo);
-		colorBlindArea.setPreferredSize(new Dimension(250, 70));
-		colorBlindArea.setAlignmentX(RIGHT_ALIGNMENT);
-		nextArea.add(colorBlindArea);
+        JPanel screenSizeArea = new JPanel();
 
-		JPanel modeArea = new JPanel();
-		JLabel modeTitle = new JLabel("∏µÂ º±≈√");
-		modeTitle.setForeground(Color.WHITE);
-		modeArea.add(modeTitle);
-		ButtonGroup modeGroup = new ButtonGroup();
-		JRadioButton modeOne = new JRadioButton("Easy");
-		modeOne.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				SettingValues.getInstance().intervalNumber = 2000;
-				SettingValues.getInstance().modeChoose = 1;
-			}
-		});
-		JRadioButton modeTwo = new JRadioButton("Normal");
-		modeTwo.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				SettingValues.getInstance().intervalNumber = 1000;
-				SettingValues.getInstance().modeChoose = 2;
-			}
-		});
-		JRadioButton modeThree = new JRadioButton("Hard");
-		modeThree.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				SettingValues.getInstance().intervalNumber = 500;
-				SettingValues.getInstance().modeChoose = 3;
-			}
-		});
-		modeTwo.setSelected(true);
-		modeGroup.add(modeOne);
-		modeGroup.add(modeTwo);
-		modeGroup.add(modeThree);
-		modeArea.add(modeOne);
-		modeArea.add(modeTwo);
-		modeArea.add(modeThree);
-		modeArea.setPreferredSize(new Dimension(250, 70));
-		modeArea.setAlignmentX(RIGHT_ALIGNMENT);
-		nextArea.add(modeArea);
+        JLabel screenSizeTitle = new JLabel("ÌôîÎ©¥ ÌÅ¨Í∏∞ Ï°∞Ï†à");
+        screenSizeTitle.setForeground(Color.WHITE);
+        screenSizeArea.add(screenSizeTitle);
+        ButtonGroup sizeGroup = new ButtonGroup();
+        JRadioButton sizeOne = new JRadioButton("ÌëúÏ§Ä(400 * 600)");
+        sizeOne.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setting.setSize(400, 600);
+                Start.start.setSize(400, 600);
+                Board.boardMain.setSize(400, 600);
+                sizeNumber = 1;
+            }
+        });
+        JRadioButton sizeTwo = new JRadioButton("ÌÅ¨Í≤å(800 * 1200)");
+        sizeTwo.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setting.setSize(800, 1200);
+                Start.start.setSize(800, 1200);
+                Board.boardMain.setSize(800, 1200);
+                sizeNumber = 2;
+            }
+        });
+        JRadioButton sizeThree = new JRadioButton("Ï†ÑÏ≤¥ ÌôîÎ©¥ Î™®Îìú");
+        sizeThree.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setting.setExtendedState(JFrame.MAXIMIZED_BOTH);
+                setting.setUndecorated(true);
+                Start.start.setExtendedState(JFrame.MAXIMIZED_BOTH);
+                Start.start.setUndecorated(true);
+                Board.boardMain.setExtendedState(JFrame.MAXIMIZED_BOTH);
+                Board.boardMain.setUndecorated(true);
+                sizeNumber = 3;
 
-		scorePanel = new JPanel();
-		EtchedBorder scoreBorder = new EtchedBorder();
-		scorePanel.setBorder(scoreBorder);
-		scorePanel.setPreferredSize(new Dimension(80, 100));
-		JLabel scoreLb1 = new JLabel("Scores");
-		scoreLb1.setForeground(Color.darkGray);
-		scoreLb1.setAlignmentX(CENTER_ALIGNMENT);
-		JLabel scoreLb2 = new JLabel(Integer.toString(score));
-		scoreLb2.setForeground(Color.RED);
-		scoreLb2.setAlignmentX(CENTER_ALIGNMENT);
-		JButton scoreReset = new JButton("Ω∫ƒ⁄æÓ∫∏µÂ √ ±‚»≠");
-		scoreReset.setAlignmentX(CENTER_ALIGNMENT);
-		scorePanel.setLayout(new BoxLayout(scorePanel, BoxLayout.Y_AXIS));
-		scorePanel.add(scoreLb1);
-		scorePanel.add(Box.createVerticalStrut(5));
-		scorePanel.add(scoreLb2);
-		scorePanel.add(Box.createVerticalStrut(5));
-		scorePanel.add(scoreReset);
+            }
+        });
+        sizeOne.setSelected(true);
+        sizeGroup.add(sizeOne);
+        sizeGroup.add(sizeTwo);
+        sizeGroup.add(sizeThree);
+        screenSizeArea.add(sizeOne);
+        screenSizeArea.add(sizeTwo);
+        screenSizeArea.add(sizeThree);
+        screenSizeArea.setPreferredSize(new Dimension(250, 70));
+        screenSizeArea.setAlignmentX(RIGHT_ALIGNMENT);
+        nextArea.add(screenSizeArea);
 
-		JPanel buttonPanel = new JPanel();
-		EtchedBorder buttonBorder = new EtchedBorder();
-		buttonPanel.setBorder(buttonBorder);
-		buttonPanel.setPreferredSize(new Dimension(80, 300));
-		JButton BackToGame = new JButton("¿œπ› ∞‘¿”¿∏∑Œ");
-		JButton BackToItemGame = new JButton("æ∆¿Ã≈€ ∏µÂ ∞‘¿”¿∏∑Œ");
-		JButton BackToStart = new JButton("Ω√¿€ ∏ﬁ¥∫");
-		JButton settingReset = new JButton("º≥¡§√ ±‚»≠");
+        JPanel keyArea = new JPanel();
 
-		BackToGame.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				Board.boardMain.setVisible(true);
-				Board.boardMain.reset();
-				Board.boardMain.timer.restart();
-				Board.boardMain.score = 0;
-				Board.boardMain.level = 0;
-				setVisible(false);
-			}
-		});
+        JLabel keyTitle = new JLabel("Î∞©Ìñ•ÌÇ§ ÏÑ†ÌÉù");
 
-		BackToItemGame.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				/*
-				 * Board.boardMain.setVisible(true); Board.boardMain.reset();
-				 * Board.boardMain.timer.restart(); Board.boardMain.score = 0;
-				 * Board.boardMain.level = 0; setVisible(false);
-				 */
-			}
-		});
+        keyTitle.setForeground(Color.WHITE);
+        keyArea.add(keyTitle);
+        ButtonGroup keyGroup = new ButtonGroup();
+        JRadioButton keyOne = new JRadioButton("WASD");
 
-		BackToStart.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				Start.start.setVisible(true);
-				setVisible(false);
-			}
-		});
+        JRadioButton keyTwo = new JRadioButton("ÌôîÏÇ¥Ìëú");
 
-		settingReset.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				sizeOne.doClick();
-				keyOne.doClick();
-				colorBlindOne.doClick();
-				modeTwo.doClick();
-			}
-		});
+        keyOne.setSelected(true);
+        keyGroup.add(keyOne);
+        keyGroup.add(keyTwo);
+        keyArea.add(keyOne);
+        keyArea.add(keyTwo);
+        keyArea.setPreferredSize(new Dimension(250, 70));
+        keyArea.setAlignmentX(RIGHT_ALIGNMENT);
+        nextArea.add(keyArea);
 
-		buttonPanel.add(BackToGame);
-		buttonPanel.add(BackToItemGame);
-		buttonPanel.add(BackToStart);
-		buttonPanel.add(settingReset);
+        JPanel colorBlindArea = new JPanel();
 
-		nextArea.setLayout(new BoxLayout(nextArea, BoxLayout.Y_AXIS));
-		nextArea.setAlignmentX(RIGHT_ALIGNMENT);
+        JLabel colorBlindTitle = new JLabel("ÏÉâÎßπÎ™®Îìú");
 
-		JPanel rightRight = new JPanel();
-		rightRight.add(scorePanel);
-		rightRight.add(Box.createVerticalStrut(2));
-		rightRight.add(buttonPanel);
-		rightRight.setAlignmentX(CENTER_ALIGNMENT);
-		rightRight.setLayout(new BoxLayout(rightRight, BoxLayout.Y_AXIS));
+        colorBlindTitle.setForeground(Color.WHITE);
+        colorBlindArea.add(colorBlindTitle);
+        ButtonGroup colorBlindGroup = new ButtonGroup();
+        JRadioButton colorBlindOne = new JRadioButton("Off");
+        JRadioButton colorBlindTwo = new JRadioButton("On");
+        colorBlindOne.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                colorBlindModeCheck = 0;
+            }
+        });
+        colorBlindTwo.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                colorBlindModeCheck = 1;
+            }
+        });
+        colorBlindOne.setSelected(true);
+        colorBlindGroup.add(colorBlindOne);
+        colorBlindGroup.add(colorBlindTwo);
+        colorBlindArea.add(colorBlindOne);
+        colorBlindArea.add(colorBlindTwo);
+        colorBlindArea.setPreferredSize(new Dimension(250, 70));
+        colorBlindArea.setAlignmentX(RIGHT_ALIGNMENT);
+        nextArea.add(colorBlindArea);
 
-		leftPanel = new JPanel();
-		leftPanel.add(tetrisArea);
-		rightPanel = new JPanel();
-		rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.X_AXIS));
-		rightPanel.add(nextArea);
-		rightPanel.add(Box.createVerticalStrut(2));
-		rightPanel.add(rightRight);
+        JPanel modeArea = new JPanel();
 
-		panel = new JPanel();
-		panel.add(leftPanel);
-		panel.add(rightPanel);
+        JLabel modeTitle = new JLabel("Î™®Îìú ÏÑ†ÌÉù");
 
-		add(panel);
+        modeTitle.setForeground(Color.WHITE);
+        modeArea.add(modeTitle);
+        ButtonGroup modeGroup = new ButtonGroup();
+        JRadioButton modeOne = new JRadioButton("Easy");
+        modeOne.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                intervalNumber = 2000;
+                modeChoose = 1;
+            }
+        });
+        JRadioButton modeTwo = new JRadioButton("Normal");
+        modeTwo.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                intervalNumber = 1000;
+                modeChoose = 2;
+            }
+        });
+        JRadioButton modeThree = new JRadioButton("Hard");
+        modeThree.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                intervalNumber = 500;
+                modeChoose = 3;
+            }
+        });
+        modeTwo.setSelected(true);
+        modeGroup.add(modeOne);
+        modeGroup.add(modeTwo);
+        modeGroup.add(modeThree);
+        modeArea.add(modeOne);
+        modeArea.add(modeTwo);
+        modeArea.add(modeThree);
+        modeArea.setPreferredSize(new Dimension(250, 70));
+        modeArea.setAlignmentX(RIGHT_ALIGNMENT);
+        nextArea.add(modeArea);
 
-		// Initialize board for the game.
+        scorePanel = new JPanel();
+        EtchedBorder scoreBorder = new EtchedBorder();
+        scorePanel.setBorder(scoreBorder);
+        scorePanel.setPreferredSize(new Dimension(80, 100));
+        JLabel scoreLb1 = new JLabel("Scores");
+        scoreLb1.setForeground(Color.darkGray);
+        scoreLb1.setAlignmentX(CENTER_ALIGNMENT);
+        JLabel scoreLb2 = new JLabel(Integer.toString(score));
+        scoreLb2.setForeground(Color.RED);
+        scoreLb2.setAlignmentX(CENTER_ALIGNMENT);
+              
+        JButton scoreReset = new JButton("Ïä§ÏΩîÏñ¥Î≥¥Îìú Ï¥àÍ∏∞Ìôî");
+        scoreReset.setAlignmentX(CENTER_ALIGNMENT);
+        scorePanel.setLayout(new BoxLayout(scorePanel, BoxLayout.Y_AXIS));
+        scorePanel.add(scoreLb1);
+        scorePanel.add(Box.createVerticalStrut(5));
+        scorePanel.add(scoreLb2);
+        scorePanel.add(Box.createVerticalStrut(5));
+        scorePanel.add(scoreReset);
 
-		setFocusable(true);
-		requestFocus();
+        JPanel buttonPanel = new JPanel();
+        EtchedBorder buttonBorder = new EtchedBorder();
+        buttonPanel.setBorder(buttonBorder);
+        buttonPanel.setPreferredSize(new Dimension(80, 300));
+        JButton BackToGame = new JButton("Í≤åÏûÑÏúºÎ°ú");
+        JButton BackToStart = new JButton("ÏãúÏûë Î©îÎâ¥");
+        JButton settingReset = new JButton("ÏÑ§Ï†ïÏ¥àÍ∏∞Ìôî");
 
-	}
 
-	public abstract class SettingPageKeyListener implements KeyListener {
-		@Override
-		public void keyTyped(KeyEvent e) {
+        BackToGame.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Board.boardMain.setVisible(true);
 
-		}
+                  Board.boardMain.reset();
+//                Board.boardMain.timer.restart();
+//                Board.boardMain.score = 0;
+//                Board.boardMain.level = 0;
+              
+                setVisible(false);
+            }
+        });
 
-		@Override
-		public void keyPressed(KeyEvent e) {
-			switch (e.getKeyCode()) {
+        BackToStart.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Start.start.setVisible(true);
+                setVisible(false);
+            }
+        });
 
-			}
-		}
-	}
+        settingReset.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                sizeOne.doClick();
+                keyOne.doClick();
+                colorBlindOne.doClick();
+                modeTwo.doClick();
+            }
+        });
 
-	public void changeSize(int SizeNumber) {
-		
-		dataCalls.UpdateWindowSetting(SizeNumber - 1);
-		
-		switch (SettingValues.getInstance().sizeNumber) {
-		case 1:
-			setSize(400, 600);
-			Start.start.setSize(400, 600);
-			Board.boardMain.setSize(400, 600);
-			Board.boardMain.setSize(30);
-			Board.setRtSize(150, 50);
-			Board.setLbSize(0);
-			sizeOne.setSelected(true);
-			break;
-		case 2:
-			setSize(800, 1200);
-			Start.start.setSize(800, 1200);
-			Board.boardMain.setSize(800, 1200);
-			Board.boardMain.setSize(30);
-			Board.setRtSize(175, 55);
-			Board.setLbSize(15);
-			sizeTwo.setSelected(true);
-			break;
-		case 3:
-			setSize(screenWidth, screenHeight);
-			Start.start.setSize(screenWidth, screenHeight);
-			Board.boardMain.setSize(screenWidth, screenHeight);
-			SettingValues.getInstance().sizeNumber = 3;
-			Board.boardMain.setSize(30);
-			Board.setRtSize(200, 60);
-			Board.setLbSize(17);
-			sizeThree.setSelected(true);
-			break;
-		default:
-			setSize(400, 600);
-			break;
-		}
-	}
-	/*
-	 * private void addKeyListener(new KeyListener() {
-	 * 
-	 * @Override public void keyTyped(KeyEvent e) {}
-	 * 
-	 * @Override public void keyReleased(KeyEvent e) {}
-	 * 
-	 * @Override public void keyPressed(KeyEvent e) {}) { }
-	 */
+        buttonPanel.add(BackToGame);
+        buttonPanel.add(BackToStart);
+        buttonPanel.add(settingReset);
 
-	public static void main(String[] args) {
-		SettingCode setting = new SettingCode();
-		int sizeNumber = SettingValues.getInstance().sizeNumber;
-		switch (sizeNumber) {
-		case 1:
-			setting.setSize(400, 600);
-			break;
-		case 2:
-			setting.setSize(800, 1200);
-			break;
-		case 3:
-			setting.setExtendedState(JFrame.MAXIMIZED_BOTH);
-			setting.setUndecorated(true);
-			break;
-		default:
-			setting.setSize(400, 600);
-			break;
-		}
-		setting.setVisible(true);
-	}
+        nextArea.setLayout(new BoxLayout(nextArea, BoxLayout.Y_AXIS));
+        nextArea.setAlignmentX(RIGHT_ALIGNMENT);
+
+        JPanel rightRight = new JPanel();
+        rightRight.add(scorePanel);
+        rightRight.add(Box.createVerticalStrut(2));
+        rightRight.add(buttonPanel);
+        rightRight.setAlignmentX(CENTER_ALIGNMENT);
+        rightRight.setLayout(new BoxLayout(rightRight, BoxLayout.Y_AXIS));
+
+        leftPanel = new JPanel();
+        leftPanel.add(tetrisArea);
+        rightPanel = new JPanel();
+        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.X_AXIS));
+        rightPanel.add(nextArea);
+        rightPanel.add(Box.createVerticalStrut(2));
+        rightPanel.add(rightRight);
+
+
+
+        panel = new JPanel();
+        panel.add(leftPanel);
+        panel.add(rightPanel);
+
+        add(panel);
+
+        //Initialize board for the game.
+
+        setFocusable(true);
+        requestFocus();
+
+    }
+
+    public static int getInitInterval(){
+        return intervalNumber;
+    }
+
+    public static int getSizeNumber(){
+        return sizeNumber;
+    }
+
+    public void changeSize(int SizeNumber){
+        switch (sizeNumber) {
+            case 1:
+                setting.setSize(400, 600);
+                Start.start.setSize(400, 600);
+                Board.boardMain.setSize(400, 600);
+                Board.boardMain.setSize(30);
+                Board.boardMain.setRtSize(150, 50);
+                Board.boardMain.setLbSize(0);
+                sizeOne.setSelected(true);
+                break;
+            case 2:
+                setting.setSize(800, 1200);
+                Start.start.setSize(800, 1200);
+                Board.boardMain.setSize(800, 1200);
+                Board.boardMain.setSize(30);
+                Board.boardMain.setRtSize(175, 55);
+                Board.boardMain.setLbSize(15);
+                sizeTwo.setSelected(true);
+                break;
+            case 3:
+                setting.setSize(screenWidth, screenHeight);
+                Start.start.setSize(screenWidth, screenHeight);
+                Board.boardMain.setSize(screenWidth, screenHeight);
+                sizeNumber = 3;
+                Board.boardMain.setSize(30);
+                Board.boardMain.setRtSize(200, 60);
+                Board.boardMain.setLbSize(17);
+                sizeThree.setSelected(true);
+                setSize(400, 600);
+                break;
+            case 2:
+                setSize(800, 1200);
+                break;
+            case 3:
+                setExtendedState(JFrame.MAXIMIZED_BOTH);
+                setUndecorated(true);
+                break;
+            default:
+                setSize(400, 600);
+                break;
+        }
+    }
+
+    public static SettingCode getSettingCode() {
+        return setting;
+    }
+
+    public static int getColorBlindModeCheck() {
+        return colorBlindModeCheck;
+    }
+
+    public static void main(String[] args) {
+        //SettingCode setting = new SettingCode();
+        int sizeNumber = setting.getSizeNumber();
+        switch (sizeNumber) {
+            case 1:
+                setting.setSize(400, 600);
+                break;
+            case 2:
+                setting.setSize(800, 1200);
+                break;
+            case 3:
+                setting.setExtendedState(JFrame.MAXIMIZED_BOTH);
+                setting.setUndecorated(true);
+                break;
+            default:
+                setting.setSize(400, 600);
+                break;
+        }
+        setting.setVisible(true);
+    }
 }
