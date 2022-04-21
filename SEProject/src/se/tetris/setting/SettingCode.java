@@ -28,6 +28,11 @@ public class SettingCode extends JFrame {
     public static int colorBlindModeCheck;
     public static int modeChoose = 2;
 
+    Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+    int screenWidth = (int)(dimension.getWidth());
+    int screenHeight = (int)(dimension.getHeight());
+
+
     public static SettingCode setting;
 
     public SettingCode() {
@@ -44,7 +49,9 @@ public class SettingCode extends JFrame {
                 BorderFactory.createLineBorder(Color.DARK_GRAY, 5));
         tetrisArea.setBorder(border);
         tetrisArea.setPreferredSize(new Dimension(350, 50));
+
         JLabel settingTitle = new JLabel("테트리스 게임 설정");
+
         settingTitle.setForeground(Color.WHITE);
         tetrisArea.add(settingTitle);
 
@@ -55,6 +62,7 @@ public class SettingCode extends JFrame {
         nextArea.setBorder(border);
 
         JPanel screenSizeArea = new JPanel();
+
         JLabel screenSizeTitle = new JLabel("화면 크기 조절");
         screenSizeTitle.setForeground(Color.WHITE);
         screenSizeArea.add(screenSizeTitle);
@@ -90,6 +98,7 @@ public class SettingCode extends JFrame {
                 Board.boardMain.setExtendedState(JFrame.MAXIMIZED_BOTH);
                 Board.boardMain.setUndecorated(true);
                 sizeNumber = 3;
+
             }
         });
         sizeOne.setSelected(true);
@@ -104,12 +113,16 @@ public class SettingCode extends JFrame {
         nextArea.add(screenSizeArea);
 
         JPanel keyArea = new JPanel();
+
         JLabel keyTitle = new JLabel("방향키 선택");
+
         keyTitle.setForeground(Color.WHITE);
         keyArea.add(keyTitle);
         ButtonGroup keyGroup = new ButtonGroup();
         JRadioButton keyOne = new JRadioButton("WASD");
+
         JRadioButton keyTwo = new JRadioButton("화살표");
+
         keyOne.setSelected(true);
         keyGroup.add(keyOne);
         keyGroup.add(keyTwo);
@@ -120,7 +133,9 @@ public class SettingCode extends JFrame {
         nextArea.add(keyArea);
 
         JPanel colorBlindArea = new JPanel();
+
         JLabel colorBlindTitle = new JLabel("색맹모드");
+
         colorBlindTitle.setForeground(Color.WHITE);
         colorBlindArea.add(colorBlindTitle);
         ButtonGroup colorBlindGroup = new ButtonGroup();
@@ -148,7 +163,9 @@ public class SettingCode extends JFrame {
         nextArea.add(colorBlindArea);
 
         JPanel modeArea = new JPanel();
+
         JLabel modeTitle = new JLabel("모드 선택");
+
         modeTitle.setForeground(Color.WHITE);
         modeArea.add(modeTitle);
         ButtonGroup modeGroup = new ButtonGroup();
@@ -197,6 +214,7 @@ public class SettingCode extends JFrame {
         JLabel scoreLb2 = new JLabel(Integer.toString(score));
         scoreLb2.setForeground(Color.RED);
         scoreLb2.setAlignmentX(CENTER_ALIGNMENT);
+              
         JButton scoreReset = new JButton("스코어보드 초기화");
         scoreReset.setAlignmentX(CENTER_ALIGNMENT);
         scorePanel.setLayout(new BoxLayout(scorePanel, BoxLayout.Y_AXIS));
@@ -214,10 +232,17 @@ public class SettingCode extends JFrame {
         JButton BackToStart = new JButton("시작 메뉴");
         JButton settingReset = new JButton("설정초기화");
 
+
         BackToGame.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Board.boardMain.setVisible(true);
+
+                  Board.boardMain.reset();
+//                Board.boardMain.timer.restart();
+//                Board.boardMain.score = 0;
+//                Board.boardMain.level = 0;
+              
                 setVisible(false);
             }
         });
@@ -288,6 +313,32 @@ public class SettingCode extends JFrame {
     public void changeSize(int SizeNumber){
         switch (sizeNumber) {
             case 1:
+                setting.setSize(400, 600);
+                Start.start.setSize(400, 600);
+                Board.boardMain.setSize(400, 600);
+                Board.boardMain.setSize(30);
+                Board.boardMain.setRtSize(150, 50);
+                Board.boardMain.setLbSize(0);
+                sizeOne.setSelected(true);
+                break;
+            case 2:
+                setting.setSize(800, 1200);
+                Start.start.setSize(800, 1200);
+                Board.boardMain.setSize(800, 1200);
+                Board.boardMain.setSize(30);
+                Board.boardMain.setRtSize(175, 55);
+                Board.boardMain.setLbSize(15);
+                sizeTwo.setSelected(true);
+                break;
+            case 3:
+                setting.setSize(screenWidth, screenHeight);
+                Start.start.setSize(screenWidth, screenHeight);
+                Board.boardMain.setSize(screenWidth, screenHeight);
+                sizeNumber = 3;
+                Board.boardMain.setSize(30);
+                Board.boardMain.setRtSize(200, 60);
+                Board.boardMain.setLbSize(17);
+                sizeThree.setSelected(true);
                 setSize(400, 600);
                 break;
             case 2:
