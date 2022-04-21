@@ -16,6 +16,7 @@ public abstract class Block {
 		color = Color.YELLOW;
 	}
 	
+	
 	public int getShape(int x, int y) {
 		return shape[y][x];
 	}
@@ -28,14 +29,9 @@ public abstract class Block {
 		return colorBlind;
 	}
 	
+	
 	public void rotate() {
-		int[][] rotate = new int [shape[0].length][shape.length];
-		for (int i = 0; i < rotate.length; i++) {
-			for (int j = 0; j < rotate[i].length; j++) {
-				rotate[i][j] = shape[shape.length-1-j][i];
-			}
-		}
-		shape = rotate;
+		shape = getRotateShape();
 	}
 	
 	public int height() {
@@ -48,7 +44,21 @@ public abstract class Block {
 		return 0;
 	}
 	
+	public void setItem(int x, int y, int itemType) {
+		shape[y][x] = itemType;
+	}
+	
+	public int[][] getRotateShape() {
+		int[][] rotate = new int [shape[0].length][shape.length];
+		for (int i = 0; i < rotate.length; i++) {
+			for (int j = 0; j < rotate[i].length; j++) {
+				rotate[i][j] = shape[shape.length-1-j][i];
+			}
+		}
+		return rotate;
+	}
+	
 	public void setShape(int [][] inputShape) {
-		shape = inputShape;
+		
 	}
 }
