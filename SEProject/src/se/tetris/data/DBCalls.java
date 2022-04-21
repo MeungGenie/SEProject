@@ -4,20 +4,21 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Vector;
 
 import se.tetris.component.*;
 
 public class DBCalls extends DBConnectionManager {
 	DBConnectionManager mananger = new DBConnectionManager();
 	
+	String path = System.getProperty("user.dir");
+	String url = "jdbc:sqlite:" + path + "/src/se/tetris/data/lib/tetris.db";
 	
+	public static Vector StdScoreData;
 	public static ArrayList<ScoreItem> StdScoreList = new ArrayList<ScoreItem>();
 	public static ArrayList<ScoreItem> ItemScoreList = new ArrayList<ScoreItem>();
 
 	public void InsertScoreData(String name, int score, int type, int mode) {
-		String path = System.getProperty("user.dir");
-		String url = "jdbc:sqlite:" + path + "/src/se/tetris/data/lib/tetris.db";
-
 		String sql = "insert into Score(mode, type, name, score) values(?, ?, ?, ?)";
 
 		try {
@@ -44,9 +45,6 @@ public class DBCalls extends DBConnectionManager {
 	}
 
 	public void getAllStdScoreData() {
-		String path = System.getProperty("user.dir");
-		String url = "jdbc:sqlite:" + path + "/src/se/tetris/data/lib/tetris.db";
-
 		String sql = "select * from Score WHERE mode=0 ORDER BY score;";
 
 		try {
@@ -92,9 +90,6 @@ public class DBCalls extends DBConnectionManager {
 	}
 
 	public void getAllItemScoreData() {
-		String path = System.getProperty("user.dir");
-		String url = "jdbc:sqlite:" + path + "/src/se/tetris/data/lib/tetris.db";
-
 		String sql = "select * from Score WHERE mode=1 ORDER BY score;";
 
 		try {
@@ -136,12 +131,50 @@ public class DBCalls extends DBConnectionManager {
 			System.out.println(e.getMessage());
 		}
 	}
-
-	public void get10StdScoreData() {
-		String path = System.getProperty("user.dir");
-		String url = "jdbc:sqlite:" + path + "/src/se/tetris/data/lib/tetris.db";
-
+	
+	public Vector getStdScoreData() {
+		StdScoreData.clear();
+		
 		String sql = "select * from Score WHERE mode=0 ORDER BY score DESC limit 10;";
+
+		try {
+			
+			Connection conn = DriverManager.getConnection(url);
+
+			Statement stmt = conn.createStatement();
+			stmt.execute(sql);
+			ResultSet rs = stmt.executeQuery(sql);
+			int count = 0;
+			
+			while (rs.next()) {
+				
+				Vector in = new Vector<String>();
+				
+				String smode = rs.getString("mode");
+				String slevel = rs.getString("type");
+				String sscore = rs.getString("score");
+				String sname = rs.getString("name");
+				
+				in.add(smode);
+				in.add(slevel);
+				in.add(sscore);
+				in.add(sname);
+				
+				StdScoreData.add(in);
+			}
+
+			conn.close();
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		return StdScoreData;
+	}
+
+	public void get10StdScoreData(int type) {
+		StdScoreList.clear();
+		
+		String sql = "select * from Score WHERE mode=0 AND type="+ type +" ORDER BY score DESC limit 10;";
 
 		try {
 			
@@ -154,8 +187,6 @@ public class DBCalls extends DBConnectionManager {
 			ResultSet rs = stmt.executeQuery(sql);
 
 			int count = 0;
-			
-			System.out.println("Query Info : "+rs);
 
 			while (rs.next()) {
 				
@@ -170,8 +201,9 @@ public class DBCalls extends DBConnectionManager {
 				score.setLevel(slevel);
 				score.setNickName(sname);
 				score.setScore(sscore);
-				score.setRank(++count);
 				
+				
+				score.setRank(++count);
 				StdScoreList.add(score);
 				
 //				System.out.println("Item Score List : "+StdScoreList);
@@ -190,11 +222,10 @@ public class DBCalls extends DBConnectionManager {
 		}
 	}
 
-	public void get10ItemScoreData() {
-		String path = System.getProperty("user.dir");
-		String url = "jdbc:sqlite:" + path + "/src/se/tetris/data/lib/tetris.db";
-
-		String sql = "select * from Score WHERE mode=1 ORDER BY score DESC limit 10;";
+	public void get10ItemScoreData(int type) {
+		ItemScoreList.clear();
+		
+		String sql = "select * from Score WHERE mode=1 AND type="+ type +" ORDER BY score DESC limit 10;";
 
 		try {
 			
@@ -203,12 +234,9 @@ public class DBCalls extends DBConnectionManager {
 			Statement stmt = conn.createStatement();
 			stmt.execute(sql);
 
-
 			ResultSet rs = stmt.executeQuery(sql);
 
 			int count = 0;
-			
-			//System.out.println("Query Info : "+rs);
 
 			while (rs.next()) {
 				
@@ -227,7 +255,6 @@ public class DBCalls extends DBConnectionManager {
 				
 				ItemScoreList.add(score);
 				
-//				System.out.println("Item Score List : "+ItemScoreList);
 			}
 
 			for (int i = 0; i < ItemScoreList.size(); i++) {
@@ -244,9 +271,6 @@ public class DBCalls extends DBConnectionManager {
 	}
 
 	public void refreshScoreData() {
-		String path = System.getProperty("user.dir");
-		String url = "jdbc:sqlite:" + path + "/src/se/tetris/data/lib/tetris.db";
-
 		String sql = "DELETE FROM Score;";
 
 		try {
@@ -262,9 +286,6 @@ public class DBCalls extends DBConnectionManager {
 	}
 
 	public void UpdateWindowSetting(int Code) {
-		String path = System.getProperty("user.dir");
-		String url = "jdbc:sqlite:" + path + "/src/se/tetris/data/lib/tetris.db";
-
 		String sql = "";
 
 		if (Code >= 0 && Code < 3) {
@@ -287,9 +308,6 @@ public class DBCalls extends DBConnectionManager {
 	}
 
 	public int getWindowSetting() {
-		String path = System.getProperty("user.dir");
-		String url = "jdbc:sqlite:" + path + "/src/se/tetris/data/lib/tetris.db";
-
 		int Result = 0;
 
 		String sql = "select type from StInit Where id = 1;";
@@ -321,9 +339,6 @@ public class DBCalls extends DBConnectionManager {
 	}
 
 	public void UpdateColorSetting(int Code) {
-		String path = System.getProperty("user.dir");
-		String url = "jdbc:sqlite:" + path + "/src/se/tetris/data/lib/tetris.db";
-
 		String sql = "";
 
 		if (Code >= 0 && Code < 2) {
@@ -346,9 +361,6 @@ public class DBCalls extends DBConnectionManager {
 	}
 
 	public int getColorSetting() {
-		String path = System.getProperty("user.dir");
-		String url = "jdbc:sqlite:" + path + "/src/se/tetris/data/lib/tetris.db";
-
 		int Result = 0;
 
 		String sql = "select type from StInit Where id = 2;";
@@ -380,9 +392,6 @@ public class DBCalls extends DBConnectionManager {
 	}
 
 	public void UpdateLevelSetting(int Code) {
-		String path = System.getProperty("user.dir");
-		String url = "jdbc:sqlite:" + path + "/src/se/tetris/data/lib/tetris.db";
-
 		String sql = "";
 
 		if (Code >= 0 && Code < 3) {
@@ -405,9 +414,6 @@ public class DBCalls extends DBConnectionManager {
 	}
 
 	public int getLevelSetting() {
-		String path = System.getProperty("user.dir");
-		String url = "jdbc:sqlite:" + path + "/src/se/tetris/data/lib/tetris.db";
-
 		int Result = 0;
 
 		String sql = "select type from StInit Where id = 3;";

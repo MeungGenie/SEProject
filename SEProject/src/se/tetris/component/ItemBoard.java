@@ -31,6 +31,8 @@ import se.tetris.blocks.*;
 import se.tetris.component.*;
 
 public class ItemBoard extends JFrame {
+	
+	public static ItemBoard itemBoard;
 
 	private static final long serialVersionUID = 2434035659171694595L;
 	
@@ -324,7 +326,8 @@ public class ItemBoard extends JFrame {
 		if (isGameOver() == true) {
 			timer.stop();
 			System.out.println("게임 종료!!");
-			scoreItem.showDialog(getNowScore(), 1 , level);
+			boolean result = scoreItem.showDialog(getNowScore(), 1 , level);
+			setVisible(result);
 			
 			//종료 화면과 잇기
 		}
@@ -737,14 +740,12 @@ public class ItemBoard extends JFrame {
 	//score
 	public void setScore() {
 		String scoretxt = Integer.toString(score);
-//				String.valueOf(score);
 		String prescoretxt = scoreLb2.getText();
-		//System.out.println("점수 변경" + prescoretxt+"...>"+ scoretxt);
 		scoreLb2.setText(scoretxt);
 	}
 	
 	public void getScore(int lines) {
-		int scorePre = lines * 10;
+		int scorePre = lines;
 		updateScoce(scorePre);
 	}
 	
@@ -754,7 +755,19 @@ public class ItemBoard extends JFrame {
 	}
 	
 	public int updateScoce(int sc) {
-		this.score += sc;
+		if(sc>0 && sc<=5) {
+			this.score += 10;
+		}else if(sc>5 && sc<=10) {
+			this.score += 15;
+		}else {
+			this.score += 20;
+		}
+		if(sc%3 ==0) {
+			this.score += 3*sc;
+		}
+		if(sc%11 ==0) {
+			this.score += 11;
+		}
 		setScore();
 		return score;
 	}

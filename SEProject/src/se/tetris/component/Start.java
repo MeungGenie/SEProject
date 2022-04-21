@@ -28,8 +28,9 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
-import se.tetris.component.Board;
 import se.tetris.setting.SettingCode;
+import se.tetris.component.*;
+import se.tetris.data.*;
 
 
 public class Start extends JFrame {
@@ -41,30 +42,63 @@ public class Start extends JFrame {
 
     public static Start start;
     
+    DBCalls dataCalls = new DBCalls();
+    
+    int Window = dataCalls.getWindowSetting();
+    
     public void startStdMode() {
-        Board main = new Board();
-        main.setSize(400, 600);
-        main.setVisible(true);
+    	Board main = new Board();
+    	
+		if(Window == 0) {
+			main.setSize(400,600);
+		}else if(Window == 1) {
+			main.setSize(800,1200);
+		}else {
+			main.setSize(SettingCode.screenWidth, SettingCode.screenHeight);
+		}
+
+		main.setVisible(true);
+
         setVisible(false);
     }
     
     public void startItemMode() {
-        ItemBoard itemView = new ItemBoard();
-        itemView.setSize(400, 600);
-        itemView.setVisible(true);
+    	ItemBoard itemBoard = new ItemBoard();
+    	
+		if(Window == 0) {
+			itemBoard.setSize(400,600);
+		}else if(Window == 1) {
+			itemBoard.setSize(800,1200);
+		}else {
+			itemBoard.setSize(SettingCode.screenWidth, SettingCode.screenHeight);
+		}
+
+		itemBoard.setVisible(true);
         setVisible(false);
     }
     
     public void startScoreMode() {
-        Score scoreView = new Score();
-        scoreView.setSize(400, 600);
+    	Score scoreView = new Score();
+		if(Window == 0) {
+			scoreView.setSize(400,600);
+		}else if(Window == 1) {
+			scoreView.setSize(800,1200);
+		}else {
+			scoreView.setSize(SettingCode.screenWidth, SettingCode.screenHeight);
+		}
         scoreView.setVisible(true);
         setVisible(false);
     }
     
     public void startSettingMode() {
         SettingCode setting = new SettingCode();
-        setting.setSize(400, 600);
+		if(Window == 0) {
+			setting.setSize(400,600);
+		}else if(Window == 1) {
+			setting.setSize(800,1200);
+		}else {
+			setting.setSize(SettingCode.screenWidth, SettingCode.screenHeight);
+		}
         setting.setVisible(true);
         setVisible(false);
     }
@@ -82,8 +116,6 @@ public class Start extends JFrame {
 
         GridLayout grid = new GridLayout(7,1,0,10);
         Container startView = getContentPane();
-
-
 
         startView.setLayout(grid);
         startView.setBackground(Color.white);
@@ -199,7 +231,7 @@ public class Start extends JFrame {
         				settingBtn.setBackground(null);
         				endBtn.setBackground(null);
         				KeyFoucus = 1;
-        			}else if(KeyFoucus ==1) {
+        			}else if(KeyFoucus == 1) {
         				scoreBtn.setBackground(new Color(106,215,255));
         				stdBtn.setBackground(null);
         				itemBtn.setBackground(null);
