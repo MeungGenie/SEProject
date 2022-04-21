@@ -10,5 +10,6 @@ public class SBlock extends Block {
 			{1, 1, 0}
 		};
 		color = Color.GREEN;
+		colorBlind = new Color(247, 193, 121);
 	}
 }

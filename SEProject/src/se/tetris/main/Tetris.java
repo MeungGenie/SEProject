@@ -2,7 +2,7 @@ package se.tetris.main;
 
 import se.tetris.component.Board;
 import se.tetris.component.Start;
-import se.tetris.data.DBConnectionManager;
+import se.tetris.data.*;
 import se.tetris.component.Score;
 
 public class Tetris {
@@ -17,8 +17,18 @@ public class Tetris {
 		
 		DBConnectionManager data = new DBConnectionManager();
 		
+		DBCalls dataCalls = new DBCalls();
+		
 		data.connect();
-		//data.createNewTable();
+		data.createNewTable();
+		
+//		
+//		dataCalls.getWindowSetting();
+//		dataCalls.getLevelSetting();
+//		dataCalls.getColorSetting();
+		
+//		
+//		dataCalls.get10ItemScoreData();
 		
 	}
 }

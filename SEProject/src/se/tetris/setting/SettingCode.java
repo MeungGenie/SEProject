@@ -1,18 +1,18 @@
 package se.tetris.setting;
 
+import se.tetris.component.Board;
+import se.tetris.component.Start;
+import se.tetris.data.DBCalls;
+
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EtchedBorder;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyledDocument;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import se.tetris.main.Tetris;
-import se.tetris.component.Board;
-import se.tetris.component.Start;
+import java.awt.event.KeyListener;
+import java.awt.event.KeyEvent;
+import se.tetris.data.*;
 
 public class SettingCode extends JFrame {
     private JPanel tetrisArea;

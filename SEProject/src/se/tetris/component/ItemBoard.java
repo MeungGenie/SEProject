@@ -28,6 +28,7 @@ import javax.swing.text.StyledDocument;
 
 import se.tetris.blocks.*;
 
+import se.tetris.component.*;
 
 public class ItemBoard extends JFrame {
 
@@ -75,6 +76,8 @@ public class ItemBoard extends JFrame {
 	
 	private static final int initInterval = 1000;
 	
+	ScoreItem scoreItem = new ScoreItem();
+	
 	public ItemBoard() {
 		super("SeoulTech SE Tetris");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -102,11 +105,6 @@ public class ItemBoard extends JFrame {
 		scoreLb1.setForeground(Color.darkGray);
 		scoreLb1.setAlignmentX(CENTER_ALIGNMENT);
 		scoreLb2 = new JLabel(Integer.toString(score));
-		JLabel scoreLb1 = new JLabel("Scores");
-		scoreLb1.setForeground(Color.darkGray);
-		scoreLb1.setAlignmentX(CENTER_ALIGNMENT);
-		JLabel scoreLb2 = new JLabel(Integer.toString(score));
-		scoreLb2.setForeground(Color.RED);
 		scorePanel.setLayout(new BoxLayout(scorePanel, BoxLayout.Y_AXIS));
 		scorePanel.add(scoreLb1);
 		scorePanel.add(Box.createVerticalStrut(5));
@@ -151,7 +149,6 @@ public class ItemBoard extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				moveDown();
-				drawBoard();
 			}
 		});
 		
@@ -233,7 +230,7 @@ public class ItemBoard extends JFrame {
 	private void placeBlock() {
 		for(int j=0; j<curr.height(); j++) {
 			for(int i=0; i<curr.width(); i++) {
-				if (curr.getShape(i, j) != 0)
+				if (curr.getShape(i, j) != 0 && board[y+j][x+i] == 0)
 					board[y+j][x+i] = curr.getShape(i, j);
 			}
 		}
@@ -294,8 +291,14 @@ public class ItemBoard extends JFrame {
 				}
 			}
 			eraseCnt++;
-			if ((eraseCnt != 0) && (eraseCnt % 1 == 0))
+			eraseCnt++;
+			getScore(eraseCnt);
+			setScore();
+			if ((eraseCnt != 0) && (eraseCnt % 1 == 0)) {
 				itemFlag = true;
+				setScore();
+			}
+
 		}
 	}
 	
@@ -316,15 +319,20 @@ public class ItemBoard extends JFrame {
 			itemDrop = false;
 		}
 		curr = next;
-		eraseNext();
-		next = getRandomBlockNormal();
-		placeNext();
-		drawNext();
 		x = 3;
 		y = 0;
 		if (isGameOver() == true) {
 			timer.stop();
+			System.out.println("게임 종료!!");
+			scoreItem.showDialog(getNowScore(), 1 , level);
+			
 			//종료 화면과 잇기
+		}
+		else {
+			eraseNext();
+			next = getRandomBlockNormal();
+			placeNext();
+			drawNext();
 		}
 	}
 	
@@ -340,7 +348,10 @@ public class ItemBoard extends JFrame {
 			itemSet();
 			itemDrop = true;
 		}
-		placeBlock();
+		if (!isGameOver()) {
+			placeBlock();
+			drawBoard();
+		}
 	}
 	
 	protected void moveRight() {
@@ -433,10 +444,18 @@ public class ItemBoard extends JFrame {
 		this.board = new int[20][10];
 	}
 	
-	public boolean isGameOver() {
-		if (collisionBottom() == true) {
-			return true;
+	public boolean startCheck() {
+		for (int i = 0; i < curr.height(); i++) {
+			for (int j = 0; j < curr.width(); j++)
+				if(curr.getShape(j,i) != 0 && board[y + i][x + j] == 1)
+					return true;
 		}
+		return false;
+	}
+	
+	public boolean isGameOver() {
+		if (startCheck())
+			return true;
 		for (int i = 0; i < WIDTH; i++) {
 			if (board[0][i] == 1) {
 				return true;
@@ -528,7 +547,7 @@ public class ItemBoard extends JFrame {
 					return true;
 				if (inputX + j > 9) // WIDTH 초과 
 					return true;
-				if (shape[i][j] == 1 && board[inputY + i][inputX + j] != 0) // 충돌
+				if (shape[i][j] != 0 && board[inputY + i][inputX + j] != 0) // 충돌
 					return true;
 			}
 		}
@@ -547,12 +566,12 @@ public class ItemBoard extends JFrame {
 			curr.rotate();
 		}
 		
-		else if(!rotateTest(testShape, x, testY)) {
+		else if(testY >= 0 && !rotateTest(testShape, x, testY)) {
 			y = testY;
 			curr.rotate();
 		}
 		
-		else if(!rotateTest(testShape, testX, y)) {
+		else if(testX >= 0 && !rotateTest(testShape, testX, y)) {
 			x = testX;
 			curr.rotate();
 		}
@@ -644,6 +663,7 @@ public class ItemBoard extends JFrame {
 					else {
 						y++;
 					}
+					lineRemove();
 					placeBlock();
 					drawBoard();
 				}
@@ -712,6 +732,31 @@ public class ItemBoard extends JFrame {
 		scoreLb2.setFont(new Font(null, Font.BOLD, size));
 		levelLb1.setFont(new Font(null, Font.BOLD, size));
 		levelLb2.setFont(new Font(null, Font.BOLD, size));
+	}
+	
+	//score
+	public void setScore() {
+		String scoretxt = Integer.toString(score);
+//				String.valueOf(score);
+		String prescoretxt = scoreLb2.getText();
+		//System.out.println("점수 변경" + prescoretxt+"...>"+ scoretxt);
+		scoreLb2.setText(scoretxt);
+	}
+	
+	public void getScore(int lines) {
+		int scorePre = lines * 10;
+		updateScoce(scorePre);
+	}
+	
+	public int getNowScore() {
+		int score = this.score;
+		return score;
+	}
+	
+	public int updateScoce(int sc) {
+		this.score += sc;
+		setScore();
+		return score;
 	}
 	
 }

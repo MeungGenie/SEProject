@@ -35,153 +35,139 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
-class ScoreItem {
-	
-	public int ranking;
-	public int level;
-	public String nickname;
-	public long Scroe;
-	
-	public ScoreItem(int r, int l, String n, long s) {
-		Scroe = s;
-		
-		setNickName(n);
-		setRank(r);
-		setLevel(l);
-	}
-	public void setScore(int score)
-	{
-		this.Scroe=score;
-	}
-	
-	public long getScore()
-	{
-		return Scroe;
-	}
-	public void setRank(int rank) 
-	{
-		this.ranking = rank;
-	}
-	
-	public int getRank() 
-	{
-		return ranking;
-	}
-	
-	public void setLevel(int level) 
-	{
-		this.level = level;
-	}
-	
-	public int getLevel() 
-	{
-		return level;
-	}
-	public void setNickName(String name) 
-	{
-		this.nickname = name;
-	}
-	
-	public String getNickName() 
-	{
-		return nickname;
-	}
-	
-	public void clearScore() 
-	{
-		//설정에서 초기화
-	}
-	
-}
+import se.tetris.data.DBCalls;
 
-class tabViewBox extends JFrame{
-	
+class tabViewBox extends JFrame {
+
 	public tabViewBox() {
 		setTitle("SeoulTech SE Tettris");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(400, 600);
-		
+
 		setBackground(Color.white);
 		display();
 	}
-	
+
 	public void display() {
 		JTabbedPane tabView = new JTabbedPane();
-		
+
 		stdTable stdScoreView = new stdTable();
 		itemTable itemScoreView = new itemTable();
 		tabView.addTab("기본 모드 랭킹", stdScoreView);
 		tabView.addTab("아이템 모드 랭킹", itemScoreView);
-		
+
 		add(tabView);
 	}
 }
 
-class stdTable extends JPanel{
-	stdTable(){
-		String[] title = {"랭킹", "닉네임", "점수"};
-		String[][] data = {
-				{"1", "임영뭉","10000"},
-				{"2", "임영뭉","10000"},
-				{"3", "임영뭉","10000"},
-		};
+class stdTable extends JPanel {
+	DBCalls dataCalls = new DBCalls();
+	stdTable() {
+
+		String[] title = { "랭킹", "모드", "닉네임", "점수" };
+		
+		ArrayList<ScoreItem> list= dataCalls.StdScoreList;
+		
+		dataCalls.get10StdScoreData();
+		
+		String[][] data = new String[list.size()][4] ;
+		
+//		System.out.println("아이템모드 : " + list);
+		
+
+		for (int i = 0; i < list.size(); i++) {
+			data[i][0] = String.valueOf(list.get(i).getRank());
+
+//			System.out.println("아이템모드 데이터 랭크: " + data[i][0]);
+			if (list.get(i).getLevel() == 0) {
+				data[i][1] = "Normal";
+				
+			} else if (list.get(i).getLevel() == 1) {
+				data[i][1] = "Easy";
+			} else if (list.get(i).getLevel() == 2) {
+				data[i][1] = "Hard";
+			}
+
+			data[i][2] = list.get(i).getNickName();
+			data[i][3] = String.valueOf(list.get(i).getScore());
+		}
+		
+//		System.out.println("아이템모드 데이터: " + data);
+		
 		JTable table = new JTable(data, title);
 		JScrollPane scrollview = new JScrollPane(table);
-		scrollview.setPreferredSize(new Dimension(350,500));
+		scrollview.setPreferredSize(new Dimension(350, 500));
 		scrollview.setBackground(Color.white);
 		add(scrollview, BorderLayout.CENTER);
 		setBackground(Color.white);
 	}
 }
 
-class itemTable extends JPanel{
-	itemTable(){
-		String[] title = {"랭킹", "닉네임", "점수"};
-		String[][] data = {
-				{"1", "임영뭉1","10000"},
-				{"2", "임영뭉2","10000"},
-				{"3", "임영뭉3","10000"},
-		};
+class itemTable extends JPanel {
+	DBCalls dataCalls = new DBCalls();
+	
+	itemTable() {
+
+		String[] title = { "랭킹", "모드", "닉네임", "점수" };
 		
+		ArrayList<ScoreItem> list= dataCalls.ItemScoreList;
+		
+		dataCalls.get10ItemScoreData();
+		
+		String[][] data = new String[list.size()][4] ;
+		
+//		System.out.println("아이템모드 : " + list);
+		
+
+		for (int i = 0; i < list.size(); i++) {
+			data[i][0] = String.valueOf(list.get(i).getRank());
+
+//			System.out.println("아이템모드 데이터 랭크: " + data[i][0]);
+			if (list.get(i).getLevel() == 0) {
+				data[i][1] = "Normal";
+				
+			} else if (list.get(i).getLevel() == 1) {
+				data[i][1] = "Easy";
+			} else if (list.get(i).getLevel() == 2) {
+				data[i][1] = "Hard";
+			}
+
+			data[i][2] = list.get(i).getNickName();
+			data[i][3] = String.valueOf(list.get(i).getScore());
+		}
+		
+//		System.out.println("아이템모드 데이터: " + data);
 		
 		JTable table = new JTable(data, title);
 		JScrollPane scrollview = new JScrollPane(table);
-		scrollview.setPreferredSize(new Dimension(350,500));
+		scrollview.setPreferredSize(new Dimension(350, 500));
 		scrollview.setBackground(Color.white);
 		add(scrollview, BorderLayout.CENTER);
 		setBackground(Color.white);
 	}
 }
-
 
 public class Score extends tabViewBox {
+
 	
-	
+
 	public Score() {
 
-	
-
-		
 		JLabel Title = new JLabel("SeoulTech SE Tettris Score");
-		Title.setFont(new Font("Serif",Font.BOLD,17));
+		Title.setFont(new Font("Serif", Font.BOLD, 17));
 		Title.setHorizontalAlignment(JLabel.CENTER);
 		Title.setVerticalAlignment(JLabel.CENTER);
-		
+
 		JLabel Team = new JLabel("Team one");
 		Team.setHorizontalAlignment(JLabel.CENTER);
 		Team.setVerticalAlignment(JLabel.CENTER);
-		
-		//JPanel btnGroup = new JPanel();
-		//btnGroup.setBackground(Color.white);
-		//btnGroup.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
-		
+
+		// JPanel btnGroup = new JPanel();
+		// btnGroup.setBackground(Color.white);
+		// btnGroup.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+
 		tabViewBox tabScoreView = new tabViewBox();
 
-		
-		
 	}
-	
-	
-	
 
 }
