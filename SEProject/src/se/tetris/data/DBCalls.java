@@ -268,7 +268,7 @@ public class DBCalls extends DBConnectionManager {
 		String sql = "";
 
 		if (Code >= 0 && Code < 3) {
-			sql = "UPDATE StInit set code = " + String.valueOf(Code) + " where id = 1;";
+			sql = "UPDATE StInit set type = " + String.valueOf(Code) + " where id = 1;";
 		} else {
 			System.out.println("Window Setting : Code Error");
 		}
@@ -327,7 +327,7 @@ public class DBCalls extends DBConnectionManager {
 		String sql = "";
 
 		if (Code >= 0 && Code < 2) {
-			sql = "UPDATE StInit set code = " + String.valueOf(Code) + " where id = 2";
+			sql = "UPDATE StInit set type = " + String.valueOf(Code) + " where id = 2";
 		} else {
 			System.out.println("Color Setting : Code Error");
 		}
@@ -386,7 +386,7 @@ public class DBCalls extends DBConnectionManager {
 		String sql = "";
 
 		if (Code >= 0 && Code < 3) {
-			sql = "UPDATE StInit set code = " + String.valueOf(Code) + " where id = 3";
+			sql = "UPDATE StInit set type = " + String.valueOf(Code) + " where id = 3";
 		} else {
 			System.out.println("Level Setting : Code Error");
 		}
