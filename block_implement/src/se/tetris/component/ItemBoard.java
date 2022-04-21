@@ -69,6 +69,7 @@ public class ItemBoard extends JFrame {
 	boolean itemFlag = false;
 	boolean itemDrop = false;
 	boolean blockFix = false;
+	boolean notMove = false;
 	int itemX = 0;
 	int itemY = 0;
 	int itemType;
@@ -220,10 +221,6 @@ public class ItemBoard extends JFrame {
 		return new LBlock();
 	}
 	
-	private Block getOneBlock() {
-		return new OneBlock();
-	}
-	
 	private void placeBlock() {
 		for(int j=0; j<curr.height(); j++) {
 			for(int i=0; i<curr.width(); i++) {
@@ -315,7 +312,8 @@ public class ItemBoard extends JFrame {
 	}
 	
 	public void collisionOccur() {
-		saveBoard();
+		if(itemType != 6)
+			saveBoard();
 		if (itemDrop == true) {
 			itemX = x + getItemX();
 			itemY = y + getItemY();
@@ -328,6 +326,10 @@ public class ItemBoard extends JFrame {
 					break;
 				case 5://CR
 					cRItem();
+					break;
+				case 6:
+					blockFix = false;
+					//notMove = false;
 					break;
 			}
 			itemDrop = false;
@@ -344,17 +346,26 @@ public class ItemBoard extends JFrame {
 		}
 	}
 	
-	
 	protected void moveDown() {
 		eraseCurr();
-		if (collisionBottom() == true) {
-			collisionOccur();
-		}	
-		else if(y < HEIGHT - curr.height()) y++;
-		else {
-			collisionOccur();
+		
+		if(itemType==6){
+			if(y < HEIGHT - curr.height()) y++;
 		}
+		else {
+			if (collisionBottom() == true) {
+				
+				collisionOccur();
+			}	
+			else if(y < HEIGHT - curr.height()) y++;
+			else {
+				
+					collisionOccur();
+			}
+		}
+		
 		lineRemove();
+		
 		if (itemFlag == true) {
 			itemSet();
 			itemDrop = true;
@@ -470,7 +481,7 @@ public class ItemBoard extends JFrame {
 	
 	public void itemSet() {
 		Random rnd = new Random(System.currentTimeMillis());
-		itemType = 4; // change to rnd.nextInt(4) + 2;
+		itemType = 6; // change to rnd.nextInt(5) + 2;
 		switch(itemType) {
 			/*case 2://LRemoveBlock
 				LRemoveBlock LR = new LRemoveBlock(curr);
@@ -490,6 +501,15 @@ public class ItemBoard extends JFrame {
 				CRemoveBlock CR = new CRemoveBlock(curr);
 				curr = CR.getItemBlock();
 				break;*/
+			case 6: 
+				blockFix = true;
+				curr.setShape(new int [][] {
+					{0, 1, 1, 0},
+					{1, 1, 1, 1}
+				});
+				WeightBlock WB = new WeightBlock(curr);
+				curr = WB.getItemBlock();
+				break;
 		}
 	}
 	
@@ -646,11 +666,13 @@ public class ItemBoard extends JFrame {
 				drawBoard();
 				break;
 			case KeyEvent.VK_RIGHT:
-				moveRight();
+				if(notMove == false)
+					moveRight();
 				drawBoard();
 				break;
 			case KeyEvent.VK_LEFT:
-				moveLeft();
+				if(notMove == false)
+					moveLeft();
 				drawBoard();
 				break;
 			case KeyEvent.VK_UP:
