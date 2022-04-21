@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 import se.tetris.main.Tetris;
 import se.tetris.component.Board;
 import se.tetris.component.Start;
+import se.tetris.data.DBCalls;
 
 public class SettingCode extends JFrame {
     private JPanel tetrisArea;
@@ -34,7 +35,8 @@ public class SettingCode extends JFrame {
     Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
     int screenWidth = (int)(dimension.getWidth());
     int screenHeight = (int)(dimension.getHeight());
-
+    
+    DBCalls dataCalls = new DBCalls();
 
     public static SettingCode setting;
 
@@ -72,7 +74,13 @@ public class SettingCode extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 sizeNumber = 1;
-                changeSize(sizeNumber);
+                try {
+                    changeSize(sizeNumber);
+                    dataCalls.UpdateWindowSetting(sizeNumber - 1);
+                }catch(Exception err) {
+                	System.out.println(err.getMessage());
+                }
+
             }
         });
 
@@ -81,6 +89,7 @@ public class SettingCode extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 sizeNumber = 2;
                 changeSize(sizeNumber);
+                dataCalls.UpdateWindowSetting(sizeNumber - 1);
             }
         });
         JRadioButton sizeThree = new JRadioButton("전체 화면 모드");
@@ -89,6 +98,7 @@ public class SettingCode extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 sizeNumber = 3;
                 changeSize(sizeNumber);
+                dataCalls.UpdateWindowSetting(sizeNumber - 1);
             }
         });
         sizeOne.setSelected(true);
@@ -333,7 +343,8 @@ public class SettingCode extends JFrame {
     }
 
     public static void main(String[] args) {
-        //SettingCode setting = new SettingCode();
+        SettingCode setting = new SettingCode();
+        
         int sizeNumber = setting.getSizeNumber();
         switch (sizeNumber) {
             case 1:

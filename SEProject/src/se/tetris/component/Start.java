@@ -63,9 +63,9 @@ public class Start extends JFrame {
     }
     
     public void startSettingMode() {
-        SettingCode settingMain = new SettingCode();
-        settingMain.setSize(400, 600);
-        settingMain.setVisible(true);
+        SettingCode setting = new SettingCode();
+        setting.setSize(400, 600);
+        setting.setVisible(true);
         setVisible(false);
     }
     
@@ -182,8 +182,8 @@ public class Start extends JFrame {
 			
 			@Override
 			public void keyPressed(KeyEvent e) {
-        		System.out.println(e);
-        		System.out.println(KeyCount);
+//        		System.out.println(e);
+//        		System.out.println(KeyCount);
         		
     			if(KeyCount == 0) {
         			stdBtn.setBackground(new Color(106,215,255));

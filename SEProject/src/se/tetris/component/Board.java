@@ -351,7 +351,7 @@ public class Board extends JFrame {
 			getScore(eraseCnt);
 			setScore();
 			if ((eraseCnt != 0) && (eraseCnt % 3 == 0))
-				System.out.println("1"+ eraseCnt);
+				setScore();
 		}
 	}
 	
@@ -650,16 +650,21 @@ public class Board extends JFrame {
 		String scoretxt = Integer.toString(score);
 //				String.valueOf(score);
 		String prescoretxt = scoreLb2.getText();
-		System.out.println("점수 변경" + prescoretxt+"...>"+ scoretxt);
+		//System.out.println("점수 변경" + prescoretxt+"...>"+ scoretxt);
 		scoreLb2.setText(scoretxt);
 	}
 	
 	public void getScore(int lines) {
 		int scorePre = lines * 10;
-		updateSroce(scorePre);
+		updateScoce(scorePre);
 	}
 	
-	public int updateSroce(int sc) {
+	public int getNowScore() {
+		int score = this.score;
+		return score;
+	}
+	
+	public int updateScoce(int sc) {
 		this.score += sc;
 		setScore();
 		return score;
