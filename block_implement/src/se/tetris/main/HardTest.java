@@ -61,6 +61,9 @@ class HardTest {
 		}
 		hardPercent = hardI / hardSum * 100;
 		hardExpected = (double)100 / 720 * 100 * 1.2;
+		System.out.println("HARD MODE");
+		System.out.println("I가 등장해야 하는 확률 : " + hardExpected + "   I의 실제 등장 확률 : " + hardPercent);
+		System.out.println("오차 범위 : " + (hardExpected - hardPercent));
 		Hard hard = new Hard();
 		assertEquals(0, hard.percent(hardPercent, hardExpected), 5);
 	}

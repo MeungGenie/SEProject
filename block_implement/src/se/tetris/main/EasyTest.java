@@ -61,6 +61,9 @@ class EasyTest {
 		}
 		easyPercent = easyI / easySum * 100;
 		easyExpected = (double)100 / 720 * 100 * 1.2;
+		System.out.println("EASY MODE");
+		System.out.println("I가 등장해야 하는 확률 : " + easyExpected + "   I의 실제 등장 확률 : " + easyPercent);
+		System.out.println("오차 범위 : " + (easyExpected - easyPercent));
 		Easy easy = new Easy();
 		assertEquals(0, easy.percent(easyPercent, easyExpected), 5);
 	}

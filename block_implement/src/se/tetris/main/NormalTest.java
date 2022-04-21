@@ -50,10 +50,13 @@ class NormalTest {
 					normalI++;
 					break;
 				}
-				normalSum = (normalJ+normalL+normalS+normalT+normalO+normalZ);
+			normalSum = (normalI+ normalJ+normalL+normalS+normalT+normalO+normalZ);
 		}
-		normalPercent = normalI + normalSum;
-		normalExpected = 1000;
+		normalPercent = (double)normalSum / 7 / 10;
+		normalExpected = (double)100/7;
+		System.out.println("NORMAL MODE");
+		System.out.println("모든 블럭의 등장 확률 합 : " + normalExpected + "   I의 실제 등장 확률 : " + normalPercent);
+		System.out.println("오차 범위 : " + (normalExpected - normalPercent));
 		Normal normal = new Normal();
 		assertEquals(0, normal.percent(normalPercent, normalExpected), 5);
 	}
