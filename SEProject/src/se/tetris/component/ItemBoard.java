@@ -174,14 +174,14 @@ public class ItemBoard extends JFrame {
 		StyleConstants.setForeground(stylesetBr, Color.WHITE);
 		StyleConstants.setAlignment(stylesetBr, StyleConstants.ALIGN_CENTER);
 		
-		/*
+		
 		stylesetWall = new SimpleAttributeSet();
 		StyleConstants.setFontSize(stylesetWall, 20);
 		StyleConstants.setFontFamily(stylesetWall, "Courier New");
 		StyleConstants.setBold(stylesetWall, true);
-		StyleConstants.setForeground(stylesetWall, Color.BLUE);
+		StyleConstants.setForeground(stylesetWall, Color.DARK_GRAY);
 		StyleConstants.setAlignment(stylesetWall, StyleConstants.ALIGN_CENTER);
-		*/
+	
 		
 		stylesetCur = new SimpleAttributeSet();
 		StyleConstants.setFontSize(stylesetCur, 20);
@@ -389,11 +389,10 @@ public class ItemBoard extends JFrame {
 		}
 		for(int t=0; t<WIDTH+2; t++) sb.append(BORDER_CHAR);
 		tetrisArea.setText(sb.toString());
-		boardDoc.setCharacterAttributes(0, boardDoc.getLength(), stylesetBr, true);
-
 		
 		for(int j = 0; j < curr.height(); j++) {
 			int rows = y+j == 0 ? 1 : y+j+1;
+			boardDoc.setCharacterAttributes(rows * (WIDTH+3) , 1, stylesetWall, true);
 			int offset = rows * (WIDTH+3) + x + 1;
 			for (int i = 0; i < curr.width(); i++) {
 				if (curr.getShape(i, j) == 1) {
