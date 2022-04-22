@@ -11,7 +11,7 @@ import se.tetris.setting.*;
 
 public class Tetris {
 	protected String path = System.getProperty("user.dir");
-    protected String url = "jdbc:sqlite:"+path+"/src/se/tetris/data/lib/tetris.db"; 
+    protected String url = "jdbc:sqlite:./lib/tetris.db"; 
     
 
 
@@ -27,7 +27,7 @@ public class Tetris {
 		if(Window == 0) {
 			startView.setSize(400, 600);
 		}else if(Window == 1) {
-			startView.setSize(800, 1200);
+			startView.setSize(800, 800);
 		}else {
 			startView.setSize(SettingCode.screenWidth, SettingCode.screenHeight);
 		}

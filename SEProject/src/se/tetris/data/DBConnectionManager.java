@@ -8,7 +8,7 @@ class DBCreate {
 	public static void createNewDatabase() {
 		String path = System.getProperty("user.dir");
 
-		String url = "jdbc:sqlite:" + path + "/src/se/tetris/data/lib/tetris.db";
+		String url = "jdbc:sqlite:./lib/tetris.db";
 
 		try {
 			Connection conn = DriverManager.getConnection(url);
@@ -29,7 +29,7 @@ class DBCreate {
 		String path = System.getProperty("user.dir");
 
 		// SQLite connection string
-		String url = "jdbc:sqlite:" + path + "/src/se/tetris/data/lib/tetris.db";
+		String url = "jdbc:sqlite:./lib/tetris.db";
 
 		String sql = "CREATE TABLE IF NOT EXISTS StInit (\n" 	
 				+ " id integer PRIMARY KEY AUTOINCREMENT,\n"
@@ -107,7 +107,7 @@ public class DBConnectionManager extends DBCreate {
 		Connection conn = null;
 		String DB_JDBC_DRIVER = "org.sqlite.JDBC";
 		String DB_PATH = System.getProperty("user.dir");
-		String DB_URL = "jdbc:sqlite:" + DB_PATH + "/src/se/tetris/data/lib/tetris.db";
+		String DB_URL = "jdbc:sqlite:./lib/tetris.db";
 
 		try {
 			// create a connection to the database

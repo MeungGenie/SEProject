@@ -12,14 +12,20 @@ public class DBCalls extends DBConnectionManager {
 	DBConnectionManager mananger = new DBConnectionManager();
 	
 	String path = System.getProperty("user.dir");
-	String url = "jdbc:sqlite:" + path + "/src/se/tetris/data/lib/tetris.db";
+	String url = "jdbc:sqlite:./lib/tetris.db";
 	
 	public static Vector StdScoreData;
-	public static ArrayList<ScoreItem> StdScoreList = new ArrayList<ScoreItem>();
-	public static ArrayList<ScoreItem> ItemScoreList = new ArrayList<ScoreItem>();
+	public static ArrayList<ScoreItem> StdNormalScoreList = new ArrayList<ScoreItem>();
+	public static ArrayList<ScoreItem> StdEasyScoreList = new ArrayList<ScoreItem>();
+	public static ArrayList<ScoreItem> StdHardScoreList = new ArrayList<ScoreItem>();
+	
+	public static ArrayList<ScoreItem> ItemNormalScoreList = new ArrayList<ScoreItem>();
+	public static ArrayList<ScoreItem> ItemEasyScoreList = new ArrayList<ScoreItem>();
+	public static ArrayList<ScoreItem> ItemHardScoreList = new ArrayList<ScoreItem>();
+	
 
 	public void InsertScoreData(String name, int score, int type, int mode) {
-		String sql = "insert into Score(mode, type, name, score) values(?, ?, ?, ?)";
+		String sql = "INSERT INTO Score(mode, type, name, score) VALUES(?, ?, ?, ?)";
 
 		try {
 			Connection conn = DriverManager.getConnection(url);
@@ -132,49 +138,10 @@ public class DBCalls extends DBConnectionManager {
 		}
 	}
 	
-	public Vector getStdScoreData() {
-		StdScoreData.clear();
+	public void get10StdNormalScoreData() {
+		StdNormalScoreList.clear();
 		
-		String sql = "select * from Score WHERE mode=0 ORDER BY score DESC limit 10;";
-
-		try {
-			
-			Connection conn = DriverManager.getConnection(url);
-
-			Statement stmt = conn.createStatement();
-			stmt.execute(sql);
-			ResultSet rs = stmt.executeQuery(sql);
-			int count = 0;
-			
-			while (rs.next()) {
-				
-				Vector in = new Vector<String>();
-				
-				String smode = rs.getString("mode");
-				String slevel = rs.getString("type");
-				String sscore = rs.getString("score");
-				String sname = rs.getString("name");
-				
-				in.add(smode);
-				in.add(slevel);
-				in.add(sscore);
-				in.add(sname);
-				
-				StdScoreData.add(in);
-			}
-
-			conn.close();
-		} catch (SQLException e) {
-			System.out.println(e.getMessage());
-		}
-		
-		return StdScoreData;
-	}
-
-	public void get10StdScoreData(int type) {
-		StdScoreList.clear();
-		
-		String sql = "select * from Score WHERE mode=0 AND type="+ type +" ORDER BY score DESC limit 10;";
+		String sql = "select * from Score WHERE mode=0 AND type=0 ORDER BY score DESC limit 10;";
 
 		try {
 			
@@ -204,12 +171,144 @@ public class DBCalls extends DBConnectionManager {
 				
 				
 				score.setRank(++count);
-				StdScoreList.add(score);
 				
-//				System.out.println("Item Score List : "+StdScoreList);
+				StdNormalScoreList.add(score);
+
 			}
 
-			for (int i = 0; i < ItemScoreList.size(); i++) {
+			conn.close();
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+	
+	public void get10StdEasyScoreData() {
+		StdEasyScoreList.clear();
+		
+		String sql = "select * from Score WHERE mode=0 AND type=1 ORDER BY score DESC limit 10;";
+
+		try {
+			
+			Connection conn = DriverManager.getConnection(url);
+
+			Statement stmt = conn.createStatement();
+			stmt.execute(sql);
+
+
+			ResultSet rs = stmt.executeQuery(sql);
+
+			int count = 0;
+
+			while (rs.next()) {
+				
+				ScoreItem score = new ScoreItem();
+				// score
+				int smode = Integer.valueOf(rs.getString("mode"));
+				int slevel = Integer.valueOf(rs.getString("type"));
+				int sscore = Integer.valueOf(rs.getString("score"));
+				String sname = rs.getString("name");
+
+				score.setMode(smode);
+				score.setLevel(slevel);
+				score.setNickName(sname);
+				score.setScore(sscore);
+				
+				
+				score.setRank(++count);
+				
+				StdEasyScoreList.add(score);
+
+			}
+
+			conn.close();
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+	
+	public void get10StdHardScoreData() {
+		StdHardScoreList.clear();
+		
+		String sql = "select * from Score WHERE mode=0 AND type=2 ORDER BY score DESC limit 10;";
+
+		try {
+			
+			Connection conn = DriverManager.getConnection(url);
+
+			Statement stmt = conn.createStatement();
+			stmt.execute(sql);
+
+
+			ResultSet rs = stmt.executeQuery(sql);
+
+			int count = 0;
+
+			while (rs.next()) {
+				
+				ScoreItem score = new ScoreItem();
+				// score
+				int smode = Integer.valueOf(rs.getString("mode"));
+				int slevel = Integer.valueOf(rs.getString("type"));
+				int sscore = Integer.valueOf(rs.getString("score"));
+				String sname = rs.getString("name");
+
+				score.setMode(smode);
+				score.setLevel(slevel);
+				score.setNickName(sname);
+				score.setScore(sscore);
+				
+				
+				score.setRank(++count);
+				
+				StdHardScoreList.add(score);
+			}
+
+
+			conn.close();
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+	
+	public void get10ItemNormalScoreData() {
+		ItemNormalScoreList.clear();
+		
+		String sql = "select * from Score WHERE mode=1 AND type=0 ORDER BY score DESC limit 10;";
+
+		try {
+			
+			Connection conn = DriverManager.getConnection(url);
+
+			Statement stmt = conn.createStatement();
+			stmt.execute(sql);
+
+
+			ResultSet rs = stmt.executeQuery(sql);
+
+			int count = 0;
+
+			while (rs.next()) {
+				
+				ScoreItem score = new ScoreItem();
+				// score
+				int smode = Integer.valueOf(rs.getString("mode"));
+				int slevel = Integer.valueOf(rs.getString("type"));
+				int sscore = Integer.valueOf(rs.getString("score"));
+				String sname = rs.getString("name");
+
+				score.setMode(smode);
+				score.setLevel(slevel);
+				score.setNickName(sname);
+				score.setScore(sscore);
+				
+				
+				score.setRank(++count);
+				
+				ItemNormalScoreList.add(score);
+
+			}
+
+			for (int i = 0; i < ItemNormalScoreList.size(); i++) {
 //				System.out.println("랭킹 : " + StdScoreList.get(i).getRank());
 //				System.out.println("이름 : " + StdScoreList.get(i).getNickName());
 //				System.out.println("점수 : " + StdScoreList.get(i).getScore());
@@ -221,11 +320,11 @@ public class DBCalls extends DBConnectionManager {
 			System.out.println(e.getMessage());
 		}
 	}
-
-	public void get10ItemScoreData(int type) {
-		ItemScoreList.clear();
+	
+	public void get10ItemEasyScoreData() {
+		ItemEasyScoreList.clear();
 		
-		String sql = "select * from Score WHERE mode=1 AND type="+ type +" ORDER BY score DESC limit 10;";
+		String sql = "select * from Score WHERE mode=1 AND type=1 ORDER BY score DESC limit 10;";
 
 		try {
 			
@@ -233,6 +332,7 @@ public class DBCalls extends DBConnectionManager {
 
 			Statement stmt = conn.createStatement();
 			stmt.execute(sql);
+
 
 			ResultSet rs = stmt.executeQuery(sql);
 
@@ -251,17 +351,19 @@ public class DBCalls extends DBConnectionManager {
 				score.setLevel(slevel);
 				score.setNickName(sname);
 				score.setScore(sscore);
+				
+				
 				score.setRank(++count);
 				
-				ItemScoreList.add(score);
-				
+				ItemEasyScoreList.add(score);
+
 			}
 
-			for (int i = 0; i < ItemScoreList.size(); i++) {
-//				System.out.println("랭킹 : " + ItemScoreList.get(i).getRank());
-//				System.out.println("이름 : " + ItemScoreList.get(i).getNickName());
-//				System.out.println("점수 : " + ItemScoreList.get(i).getScore());
-//				System.out.println("레벨 : " + ItemScoreList.get(i).getLevel());
+			for (int i = 0; i < ItemEasyScoreList.size(); i++) {
+//				System.out.println("랭킹 : " + StdScoreList.get(i).getRank());
+//				System.out.println("이름 : " + StdScoreList.get(i).getNickName());
+//				System.out.println("점수 : " + StdScoreList.get(i).getScore());
+//				System.out.println("레벨 : " + StdScoreList.get(i).getLevel());
 			}
 
 			conn.close();
@@ -269,7 +371,56 @@ public class DBCalls extends DBConnectionManager {
 			System.out.println(e.getMessage());
 		}
 	}
+	
+	public void get10ItemHardScoreData() {
+		ItemHardScoreList.clear();
+		
+		String sql = "select * from Score WHERE mode=1 AND type=2 ORDER BY score DESC limit 10;";
 
+		try {
+			
+			Connection conn = DriverManager.getConnection(url);
+
+			Statement stmt = conn.createStatement();
+			stmt.execute(sql);
+
+
+			ResultSet rs = stmt.executeQuery(sql);
+
+			int count = 0;
+
+			while (rs.next()) {
+				
+				ScoreItem score = new ScoreItem();
+				// score
+				int smode = Integer.valueOf(rs.getString("mode"));
+				int slevel = Integer.valueOf(rs.getString("type"));
+				int sscore = Integer.valueOf(rs.getString("score"));
+				String sname = rs.getString("name");
+
+				score.setMode(smode);
+				score.setLevel(slevel);
+				score.setNickName(sname);
+				score.setScore(sscore);
+				
+				
+				score.setRank(++count);
+				
+				ItemHardScoreList.add(score);
+			}
+
+			for (int i = 0; i < ItemHardScoreList.size(); i++) {
+//				System.out.println("랭킹 : " + StdScoreList.get(i).getRank());
+//				System.out.println("이름 : " + StdScoreList.get(i).getNickName());
+//				System.out.println("점수 : " + StdScoreList.get(i).getScore());
+//				System.out.println("레벨 : " + StdScoreList.get(i).getLevel());
+			}
+
+			conn.close();
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
 	public void refreshScoreData() {
 		String sql = "DELETE FROM Score;";
 

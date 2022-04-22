@@ -52,7 +52,7 @@ public class Start extends JFrame {
 		if(Window == 0) {
 			main.setSize(400,600);
 		}else if(Window == 1) {
-			main.setSize(800,1200);
+			main.setSize(800,800);
 		}else {
 			main.setSize(SettingCode.screenWidth, SettingCode.screenHeight);
 		}
@@ -68,7 +68,7 @@ public class Start extends JFrame {
 		if(Window == 0) {
 			itemBoard.setSize(400,600);
 		}else if(Window == 1) {
-			itemBoard.setSize(800,1200);
+			itemBoard.setSize(800,800);
 		}else {
 			itemBoard.setSize(SettingCode.screenWidth, SettingCode.screenHeight);
 		}
@@ -82,7 +82,7 @@ public class Start extends JFrame {
 		if(Window == 0) {
 			scoreView.setSize(400,600);
 		}else if(Window == 1) {
-			scoreView.setSize(800,1200);
+			scoreView.setSize(800,800);
 		}else {
 			scoreView.setSize(SettingCode.screenWidth, SettingCode.screenHeight);
 		}
@@ -95,7 +95,7 @@ public class Start extends JFrame {
 		if(Window == 0) {
 			setting.setSize(400,600);
 		}else if(Window == 1) {
-			setting.setSize(800,1200);
+			setting.setSize(800,800);
 		}else {
 			setting.setSize(SettingCode.screenWidth, SettingCode.screenHeight);
 		}
