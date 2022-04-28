@@ -66,6 +66,8 @@ public class Board extends JFrame {
 	private static SimpleAttributeSet stylesetBr;
 	private static SimpleAttributeSet stylesetNx;
 	private static SimpleAttributeSet stylesetCur;
+	private static SimpleAttributeSet stylesetRl;
+	
 	private static StyledDocument boardDoc;
 	private static StyledDocument nextDoc;
 	public static Timer timer;
@@ -185,6 +187,13 @@ public class Board extends JFrame {
 		StyleConstants.setBold(stylesetBr, true);
 		StyleConstants.setForeground(stylesetBr, Color.WHITE);
 		StyleConstants.setAlignment(stylesetBr, StyleConstants.ALIGN_CENTER);
+		
+		stylesetRl = new SimpleAttributeSet();
+		StyleConstants.setFontSize(stylesetRl, 20);
+		StyleConstants.setFontFamily(stylesetRl, "Courier New");
+		StyleConstants.setBold(stylesetRl, true);
+		StyleConstants.setForeground(stylesetRl, Color.DARK_GRAY);
+		StyleConstants.setAlignment(stylesetRl, StyleConstants.ALIGN_CENTER);
 		
 		stylesetCur = new SimpleAttributeSet();
 		StyleConstants.setFontSize(stylesetCur, 20);
@@ -357,6 +366,44 @@ public class Board extends JFrame {
 		line = lineCheck();
 		Iterator<Integer> iter = line.iterator();
 		int index = 0;
+		if (!line.isEmpty()) {
+			boolean n = true;
+			int sum = 0;
+			while(true) {
+				if(n) {
+					for (int i = 0; i < line.size(); i++) {
+						int offset = (line.get(i) + 1) * (WIDTH+3) + 1;
+						StyleConstants.setForeground(stylesetRl, Color.DARK_GRAY);
+				        boardDoc.setCharacterAttributes(offset, 10, stylesetRl, true);
+					}
+				}
+				else {
+					for (int i = 0; i < line.size(); i++) {
+						int offset = (line.get(i) + 1) * (WIDTH+3) + 1;
+						StyleConstants.setForeground(stylesetRl, Color.WHITE);
+				        boardDoc.setCharacterAttributes(offset, 10, stylesetRl, true);
+					}
+				}
+				if(n) {
+					n = false;
+				}
+				else {
+					n = true;
+				}
+				
+				try {
+					Thread.sleep(500);
+				}
+				catch(Exception e) {
+					return;
+				}
+				sum++;
+				if (sum >= 20) {
+					break;
+				}
+			}
+		}
+		
 		while(iter.hasNext()) {
 			index = iter.next();
 			for(int i = index; i > 1; i--) {
@@ -368,18 +415,20 @@ public class Board extends JFrame {
 			eraseCnt++;
 			getScore(eraseCnt);
 			setScore();
-			if ((eraseCnt != 0) && (eraseCnt % 3 == 0))
-				System.out.println("1"+ eraseCnt);
 		}
+		
 	}
 
 	protected void moveDown() {
-		eraseCurr();	
+		boardDoc.setCharacterAttributes(0, boardDoc.getLength(), stylesetBr, false);
+		eraseCurr();
+        
 		if (collisionBottom()) {
 			collisionOccur();
 		}
 		else y++;
 		lineRemove();
+
 		if (!isGameOver()) {
 			placeBlock();
 			drawBoard();
@@ -418,7 +467,7 @@ public class Board extends JFrame {
 		tetrisArea.setText(sb.toString());
 		boardDoc.setCharacterAttributes(0, boardDoc.getLength(), stylesetBr, false);
 		
-		for(int j = 0; j < curr.height(); j++) {
+		for (int j = 0; j < curr.height(); j++) {
 			int rows = y+j == 0 ? 1 : y+j+1;
 			int offset = rows * (WIDTH+3) + x + 1;
 			for (int i = 0; i < curr.width(); i++) {
@@ -427,6 +476,9 @@ public class Board extends JFrame {
 		            }	
 			}
 		}
+		
+		
+			
 	}
 	
 	public void drawNext() {
@@ -571,7 +623,7 @@ public class Board extends JFrame {
 							break;
 					}
 			}
-			System.out.println("Created : " + blockNumber + "   Removed : " + eraseCnt +"   intervalByMode" +intervalByMode + "   interval Number : " + setting.intervalNumber);
+			//System.out.println("Created : " + blockNumber + "   Removed : " + eraseCnt +"   intervalByMode" +intervalByMode + "   interval Number : " + setting.intervalNumber);
 			return setting.intervalNumber;
 		}
 
@@ -745,6 +797,7 @@ public class Board extends JFrame {
 					eraseCurr();
 					if(collisionBottom()) {
 						collisionOccur();
+						lineRemove();
 						placeBlock();
 						drawBoard();
 						break;
@@ -832,7 +885,7 @@ public class Board extends JFrame {
 		String scoretxt = Integer.toString(score);
 //				String.valueOf(score);
 		String prescoretxt = scoreLb2.getText();
-		System.out.println("점수 변경" + prescoretxt+"...>"+ scoretxt);
+		//System.out.println("점수 변경" + prescoretxt+"...>"+ scoretxt);
 		scoreLb2.setText(scoretxt);
 	}
 
