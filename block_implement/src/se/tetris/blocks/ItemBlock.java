@@ -19,6 +19,7 @@ public class ItemBlock extends Block {
 		coorColl();
 	}
 
+	
 	public void coorColl() {
 		for (int i = 0; i < blockShape.height(); i++) {
 			for (int j = 0; j < blockShape.width(); j++) {
@@ -29,6 +30,7 @@ public class ItemBlock extends Block {
 		}
 	}
 	
+
 	public void setItemCoor() {
 		Random rnd = new Random(System.currentTimeMillis());
 		int item = rnd.nextInt(coordinates.size());
@@ -40,4 +42,5 @@ public class ItemBlock extends Block {
 	public Block getItemBlock() {
 		return blockShape;
 	}
+	
 }

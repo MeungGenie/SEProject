@@ -1,3 +1,4 @@
+
 package se.tetris.blocks;
 public class WeightBlock extends ItemBlock {
 	
