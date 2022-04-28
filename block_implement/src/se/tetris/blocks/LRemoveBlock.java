@@ -12,5 +12,4 @@ public class LRemoveBlock extends ItemBlock {
 		itemType = 2;
 		setItemCoor();
 	}
-	
 }

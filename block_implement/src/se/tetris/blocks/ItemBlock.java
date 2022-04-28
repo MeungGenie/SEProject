@@ -1,10 +1,10 @@
 package se.tetris.blocks;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 
 public class ItemBlock extends Block {
+	
 	Block blockShape;
 	int itemType;
 	int [] itemCoor = new int [2];
@@ -18,18 +18,13 @@ public class ItemBlock extends Block {
 		blockShape = input;
 		coorColl();
 	}
-
 	
 	public void coorColl() {
-		for (int i = 0; i < blockShape.height(); i++) {
-			for (int j = 0; j < blockShape.width(); j++) {
-				if (blockShape.getShape(j, i) == 1) {
+		for (int i = 0; i < blockShape.height(); i++)
+			for (int j = 0; j < blockShape.width(); j++)
+				if (blockShape.getShape(j, i) == 1)
 					coordinates.add(new int [] {i,j});
-				}
-			}
-		}
 	}
-	
 
 	public void setItemCoor() {
 		Random rnd = new Random(System.currentTimeMillis());
@@ -42,5 +37,4 @@ public class ItemBlock extends Block {
 	public Block getItemBlock() {
 		return blockShape;
 	}
-	
 }
