@@ -40,5 +40,4 @@ public class ItemBlock extends Block {
 	public Block getItemBlock() {
 		return blockShape;
 	}
-	
 }
