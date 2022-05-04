@@ -85,14 +85,14 @@ public class Board extends JFrame {
 	public static int mode = 0;
 	int eraseCnt = 0;
 
-	//initInterval ³­ÀÌµµ¿¡ µû¶ó Á¶Àı
+	//initInterval ë‚œì´ë„ì— ë”°ë¼ ì¡°ì ˆ
 	//public static int initEasyInterval = 2000;
 	//public static int initNormalInterval = 1000;
 	//public static int initHardInterval = 500;
 	final SettingValues setting = SettingValues.getInstance();
 	int intervalByMode = setting.intervalNumber;
 
-	//¸¸µé¾îÁø ºí·° °³¼ö ¼¼±â
+	//ë§Œë“¤ì–´ì§„ ë¸”ëŸ­ ê°œìˆ˜ ì„¸ê¸°
 	private static int blockNumber = 0;
 	
 	ScoreItem scoreItem = new ScoreItem();
@@ -363,7 +363,7 @@ public class Board extends JFrame {
 			timer.stop();
 			boolean result = scoreItem.showDialog(getNowScore(), 0 , mode);
 			setVisible(result);
-			//Á¾·á È­¸é°ú ÀÕ±â
+			//ì¢…ë£Œ í™”ë©´ê³¼ ì‡ê¸°
 		}
 		else {
 			eraseNext();
@@ -468,7 +468,7 @@ public class Board extends JFrame {
 			sb.append(BORDER_CHAR);
 			for(int j=0; j < board[i].length; j++) {
 				if(board[i][j] == 1) {
-					sb.append("¡á");
+					sb.append("â– ");
 				} else {
 					sb.append(" ");
 				}
@@ -491,7 +491,7 @@ public class Board extends JFrame {
 		}
 	}
 	
-	//blockNumber Áõ°¡ + timer º¯°æ
+	//blockNumber ì¦ê°€ + timer ë³€ê²½
 		public void drawNext() {
 			StringBuffer sb = new StringBuffer();
 			sb.append("\n");
@@ -500,7 +500,7 @@ public class Board extends JFrame {
 			for(int i=0; i < nextBoard.length; i++) {
 				for(int j=0; j < nextBoard[i].length; j++) {
 					if(nextBoard[i][j] == 1) {
-						sb.append("¡á");
+						sb.append("â– ");
 					} else {
 						sb.append(" ");
 					}
@@ -524,11 +524,11 @@ public class Board extends JFrame {
 		}
 		private void colorBlindModeCurrent(int offset){
 			colorBlindMode(stylesetCur, curr);
-			boardDoc.setCharacterAttributes(offset, curr.width(), stylesetCur, true);
+			boardDoc.setCharacterAttributes(offset, 1, stylesetCur, true);
 		}
 
 
-		//interval ÇÔ¼ö
+		//interval í•¨ìˆ˜
 		int getInterval(int blockNumber, int eraseCnt) {
 			if (blockNumber == 30 || blockNumber == 60 || blockNumber == 80 || blockNumber == 100 || blockNumber == 120) {
 				if (intervalByMode == 1000) {
@@ -626,11 +626,11 @@ public class Board extends JFrame {
 		public boolean rotateTest(int [][] shape, int inputX, int inputY) {
 			for (int i = 0; i < shape.length; i++) {
 				for (int j = 0; j < shape[0].length; j++) {
-					if (inputY + i > 19) // HEIGHT ÃÊ°ú
+					if (inputY + i > 19) // HEIGHT ì´ˆê³¼
 						return true;
-					if (inputX + j > 9) // WIDTH ÃÊ°ú
+					if (inputX + j > 9) // WIDTH ì´ˆê³¼
 						return true;
-					if (shape[i][j] != 0 && board[inputY + i][inputX + j] != 0) // Ãæµ¹
+					if (shape[i][j] != 0 && board[inputY + i][inputX + j] != 0) // ì¶©ëŒ
 						return true;
 				}
 			}
@@ -844,7 +844,7 @@ public class Board extends JFrame {
 		String scoretxt = Integer.toString(score);
 //				String.valueOf(score);
 		String prescoretxt = scoreLb2.getText();
-		System.out.println("Á¡¼ö º¯°æ" + prescoretxt+"...>"+ scoretxt);
+		System.out.println("ì ìˆ˜ ë³€ê²½" + prescoretxt+"...>"+ scoretxt);
 		scoreLb2.setText(scoretxt);
 	}
 
