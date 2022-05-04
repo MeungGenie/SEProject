@@ -1090,7 +1090,7 @@ public class SettingCode extends JFrame {
 	}
 
 	private void modeThreefun() {
-		SettingValues.getInstance().intervalNumber = 500;
+		SettingValues.getInstance().intervalNumber = 800;
 		SettingValues.getInstance().modeChoose = 3;
 
 		dataCalls.UpdateLevelSetting(2);
@@ -1161,140 +1161,149 @@ public class SettingCode extends JFrame {
 		colorBlindTwo.setSelected(true);
 	}
 
-	public void changeSize(int SizeNumber) {
-		switch (SettingValues.getInstance().sizeNumber) {
-		case 1:
-			setSize(400, 600);
-			rightRight.setPreferredSize(new Dimension(100, 450));
-			nextArea.setPreferredSize(new Dimension(250, 450));
-			scoreReset.setPreferredSize(new Dimension(80, 75));
-			scorePanel.setPreferredSize(new Dimension(80, 75));
-			buttonPanel.setPreferredSize(new Dimension(80, 300));
-			BackToItemGame.setPreferredSize(new Dimension(80, 75));
-			BackToGame.setPreferredSize(new Dimension(80, 75));
-			BackToStart.setPreferredSize(new Dimension(80, 75));
-			settingReset.setPreferredSize(new Dimension(80, 75));
+	public void changeSize(int SizeNumber){
+        switch (SettingValues.getInstance().sizeNumber) {
+            case 1:
+                setSize(400, 600);
+                rightRight.setPreferredSize(new Dimension(100, 450));
+                nextArea.setPreferredSize(new Dimension(250, 450));
+                scoreReset.setPreferredSize(new Dimension(80, 75));
+                scorePanel.setPreferredSize(new Dimension(80, 75));
+                buttonPanel.setPreferredSize(new Dimension(80, 300));
+                BackToItemGame.setPreferredSize(new Dimension(80, 75));
+                BackToGame.setPreferredSize(new Dimension(80, 75));
+                BackToStart.setPreferredSize(new Dimension(80, 75));
+                settingReset.setPreferredSize(new Dimension(80, 75));
 
-			screenSizeTitle.setFont(fontSmall);
-			keyTitle.setFont(fontSmall);
-			colorBlindTitle.setFont(fontSmall);
-			modeTitle.setFont(fontSmall);
+                screenSizeTitle.setFont(fontSmall);
+                keyTitle.setFont(fontSmall);
+                colorBlindTitle.setFont(fontSmall);
+                modeTitle.setFont(fontSmall);
 
-			scoreReset.setFont(fontSmall);
-			BackToItemGame.setFont(fontSmall);
-			BackToGame.setFont(fontSmall);
-			BackToStart.setFont(fontSmall);
-			settingReset.setFont(fontSmall);
+                scoreReset.setFont(fontSmall);
+                BackToItemGame.setFont(fontSmall);
+                BackToGame.setFont(fontSmall);
+                BackToStart.setFont(fontSmall);
+                settingReset.setFont(fontSmall);
 
-			sizeOne.setFont(fontSmall);
-			sizeTwo.setFont(fontSmall);
-			sizeThree.setFont(fontSmall);
-			keyOne.setFont(fontSmall);
-			keyTwo.setFont(fontSmall);
-			colorBlindOne.setFont(fontSmall);
-			colorBlindTwo.setFont(fontSmall);
-			modeOne.setFont(fontSmall);
-			modeTwo.setFont(fontSmall);
-			modeThree.setFont(fontSmall);
-			
-			Start startview = new Start();
-			startview.setSize(400,400);
+                sizeOne.setFont(fontSmall);
+                sizeTwo.setFont(fontSmall);
+                sizeThree.setFont(fontSmall);
+                keyOne.setFont(fontSmall);
+                keyTwo.setFont(fontSmall);
+                colorBlindOne.setFont(fontSmall);
+                colorBlindTwo.setFont(fontSmall);
+                modeOne.setFont(fontSmall);
+                modeTwo.setFont(fontSmall);
+                modeThree.setFont(fontSmall);
 
-			Start.start.setSize(400, 600);
-			Board.boardMain.setSize(400, 600);
-			Board.boardMain.setSize(30);
-			Board.setRtSize(150, 50);
-			Board.setLbSize(0);
-			sizeOne.setSelected(true);
-			break;
-		case 2:
-			setSize(800, 800);
-			rightRight.setPreferredSize(new Dimension(200, 600));
-			nextArea.setPreferredSize(new Dimension(600, 600));
-			scorePanel.setPreferredSize(new Dimension(160, 100));
-			buttonPanel.setPreferredSize(new Dimension(160, 400));
-			scoreReset.setPreferredSize(new Dimension(160, 100));
-			BackToItemGame.setPreferredSize(new Dimension(160, 100));
-			BackToGame.setPreferredSize(new Dimension(160, 100));
-			BackToStart.setPreferredSize(new Dimension(160, 100));
-			settingReset.setPreferredSize(new Dimension(160, 100));
+                Start.start.setSize(400, 600);
+                Board.boardMain.setSize(400, 600);
+                Board.boardMain.setSize(20);
+                Board.setRtSize(150, 50);
+                Board.setLbSize(10);
+                ItemBoard.itemBoardMain.setSize(400, 600);
+                ItemBoard.itemBoardMain.setSize(20);
+                ItemBoard.setRtSize(150, 50);
+                ItemBoard.setLbSize(10);
+                sizeOne.setSelected(true);
+                break;
+            case 2:
+                setSize(800, 800);
+                rightRight.setPreferredSize(new Dimension(200, 600));
+                nextArea.setPreferredSize(new Dimension(600, 600));
+                scorePanel.setPreferredSize(new Dimension(160, 100));
+                buttonPanel.setPreferredSize(new Dimension(160, 400));
+                scoreReset.setPreferredSize(new Dimension(160, 100));
+                BackToItemGame.setPreferredSize(new Dimension(160, 100));
+                BackToGame.setPreferredSize(new Dimension(160, 100));
+                BackToStart.setPreferredSize(new Dimension(160, 100));
+                settingReset.setPreferredSize(new Dimension(160, 100));
 
-			screenSizeTitle.setFont(fontBig);
-			keyTitle.setFont(fontBig);
-			colorBlindTitle.setFont(fontBig);
-			modeTitle.setFont(fontBig);
+                screenSizeTitle.setFont(fontBig);
+                keyTitle.setFont(fontBig);
+                colorBlindTitle.setFont(fontBig);
+                modeTitle.setFont(fontBig);
 
-			scoreReset.setFont(fontBig);
-			BackToItemGame.setFont(fontBig);
-			BackToGame.setFont(fontBig);
-			BackToStart.setFont(fontBig);
-			settingReset.setFont(fontBig);
+                scoreReset.setFont(fontBig);
+                BackToItemGame.setFont(fontBig);
+                BackToGame.setFont(fontBig);
+                BackToStart.setFont(fontBig);
+                settingReset.setFont(fontBig);
 
-			sizeOne.setFont(fontBig);
-			sizeTwo.setFont(fontBig);
-			sizeThree.setFont(fontBig);
-			keyOne.setFont(fontBig);
-			keyTwo.setFont(fontBig);
-			colorBlindOne.setFont(fontBig);
-			colorBlindTwo.setFont(fontBig);
-			modeOne.setFont(fontBig);
-			modeTwo.setFont(fontBig);
-			modeThree.setFont(fontBig);
+                sizeOne.setFont(fontBig);
+                sizeTwo.setFont(fontBig);
+                sizeThree.setFont(fontBig);
+                keyOne.setFont(fontBig);
+                keyTwo.setFont(fontBig);
+                colorBlindOne.setFont(fontBig);
+                colorBlindTwo.setFont(fontBig);
+                modeOne.setFont(fontBig);
+                modeTwo.setFont(fontBig);
+                modeThree.setFont(fontBig);
 
-			Start.start.setSize(800, 800);
-			Board.boardMain.setSize(800, 800);
-			Board.boardMain.setSize(30);
-			Board.setRtSize(175, 55);
-			Board.setLbSize(15);
-			sizeTwo.setSelected(true);
-			break;
-		case 3:
-			setSize(screenWidth, screenHeight);
-			rightRight.setPreferredSize(new Dimension(screenWidth / 4, 3 * screenHeight / 4));
-			nextArea.setPreferredSize(new Dimension(3 * screenWidth / 4, 3 * screenHeight / 4));
-			scorePanel.setPreferredSize(new Dimension(screenWidth / 4, 1 * screenHeight / 4));
-			buttonPanel.setPreferredSize(new Dimension(screenWidth / 4, 1 * screenHeight / 2));
-			scoreReset.setPreferredSize(new Dimension(screenWidth / 4, 1 * screenHeight / 4));
-			BackToItemGame.setPreferredSize(new Dimension(screenWidth / 4, 1 * screenHeight / 8));
-			BackToGame.setPreferredSize(new Dimension(screenWidth / 4, 1 * screenHeight / 8));
-			BackToStart.setPreferredSize(new Dimension(screenWidth / 4, 1 * screenHeight / 8));
-			settingReset.setPreferredSize(new Dimension(screenWidth / 4, 1 * screenHeight / 8));
+                Start.start.setSize(800, 800);
+                Board.boardMain.setSize(800, 800);
+                Board.boardMain.setSize(30);
+                Board.setRtSize(300, 55);
+                Board.setLbSize(15);
+                ItemBoard.itemBoardMain.setSize(800, 800);
+                ItemBoard.itemBoardMain.setSize(30);
+                ItemBoard.setRtSize(300, 55);
+                ItemBoard.setLbSize(15);
+                sizeTwo.setSelected(true);
+                break;
+            case 3:
+                setSize(screenWidth, screenHeight);
+                rightRight.setPreferredSize(new Dimension(screenWidth / 4, 3 * screenHeight / 4));
+                nextArea.setPreferredSize(new Dimension(3 * screenWidth / 4, 3 * screenHeight / 4));
+                scorePanel.setPreferredSize(new Dimension(screenWidth / 4, 1 * screenHeight / 4));
+                buttonPanel.setPreferredSize(new Dimension(screenWidth / 4, 1 * screenHeight / 2));
+                scoreReset.setPreferredSize(new Dimension(screenWidth / 4, 1 * screenHeight / 4));
+                BackToItemGame.setPreferredSize(new Dimension(screenWidth / 4, 1 * screenHeight / 8));
+                BackToGame.setPreferredSize(new Dimension(screenWidth / 4, 1 * screenHeight / 8));
+                BackToStart.setPreferredSize(new Dimension(screenWidth / 4, 1 * screenHeight / 8));
+                settingReset.setPreferredSize(new Dimension(screenWidth / 4, 1 * screenHeight / 8));
 
-			screenSizeTitle.setFont(fontFull);
-			keyTitle.setFont(fontFull);
-			colorBlindTitle.setFont(fontFull);
-			modeTitle.setFont(fontFull);
+                screenSizeTitle.setFont(fontFull);
+                keyTitle.setFont(fontFull);
+                colorBlindTitle.setFont(fontFull);
+                modeTitle.setFont(fontFull);
 
-			sizeOne.setFont(fontFull);
-			sizeTwo.setFont(fontFull);
-			sizeThree.setFont(fontFull);
-			keyOne.setFont(fontFull);
-			keyTwo.setFont(fontFull);
-			colorBlindOne.setFont(fontFull);
-			colorBlindTwo.setFont(fontFull);
-			modeOne.setFont(fontFull);
-			modeTwo.setFont(fontFull);
-			modeThree.setFont(fontFull);
+                sizeOne.setFont(fontFull);
+                sizeTwo.setFont(fontFull);
+                sizeThree.setFont(fontFull);
+                keyOne.setFont(fontFull);
+                keyTwo.setFont(fontFull);
+                colorBlindOne.setFont(fontFull);
+                colorBlindTwo.setFont(fontFull);
+                modeOne.setFont(fontFull);
+                modeTwo.setFont(fontFull);
+                modeThree.setFont(fontFull);
 
-			scoreReset.setFont(fontFull);
-			BackToItemGame.setFont(fontFull);
-			BackToGame.setFont(fontFull);
-			BackToStart.setFont(fontFull);
-			settingReset.setFont(fontFull);
+                scoreReset.setFont(fontFull);
+                BackToItemGame.setFont(fontFull);
+                BackToGame.setFont(fontFull);
+                BackToStart.setFont(fontFull);
+                settingReset.setFont(fontFull);
 
-			Start.start.setSize(screenWidth, screenHeight);
-			Board.boardMain.setSize(screenWidth, screenHeight);
-			SettingValues.getInstance().sizeNumber = 3;
-			Board.boardMain.setSize(30);
-			Board.setRtSize(200, 60);
-			Board.setLbSize(17);
-			sizeThree.setSelected(true);
-			break;
-		default:
-			setSize(400, 600);
-			break;
-		}
-	}
+                Start.start.setSize(screenWidth, screenHeight);
+                Board.boardMain.setSize(screenWidth, screenHeight);
+                SettingValues.getInstance().sizeNumber = 3;
+                Board.boardMain.setSize(30);
+                Board.setRtSize(200, 60);
+                Board.setLbSize(17);
+                ItemBoard.itemBoardMain.setSize(screenWidth, screenHeight);
+                ItemBoard.itemBoardMain.setSize(30);
+                ItemBoard.setRtSize(200, 60);
+                ItemBoard.setLbSize(17);
+                sizeThree.setSelected(true);
+                break;
+            default:
+                setSize(400, 600);
+                break;
+        }
+    }
 	/*
 	 * private void addKeyListener(new KeyListener() {
 	 * 
