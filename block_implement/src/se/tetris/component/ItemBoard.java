@@ -842,11 +842,15 @@ public class ItemBoard extends JFrame {
 						drawBoard();
 						break;
 					case KeyEvent.VK_RIGHT:
-						moveRight();
+						if(notMove == false) {
+							moveRight();
+						}
 						drawBoard();
 						break;
 					case KeyEvent.VK_LEFT:
-						moveLeft();
+						if(notMove == false) {
+							moveLeft();
+						}
 						drawBoard();
 						break;
 					case KeyEvent.VK_UP:
@@ -940,11 +944,15 @@ public class ItemBoard extends JFrame {
 						drawBoard();
 						break;
 					case KeyEvent.VK_D:
-						moveRight();
+						if(notMove == false) {
+							moveRight();
+						}
 						drawBoard();
 						break;
 					case KeyEvent.VK_A:
-						moveLeft();
+						if(notMove == false) {
+							moveLeft();
+						}
 						drawBoard();
 						break;
 					case KeyEvent.VK_W:
