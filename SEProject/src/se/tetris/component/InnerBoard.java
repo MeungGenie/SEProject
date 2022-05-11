@@ -74,11 +74,11 @@ public class InnerBoard extends JPanel {
 	private SimpleAttributeSet stylesetAk;
 	private StyledDocument boardDoc;
 	private StyledDocument nextDoc;
-	public static Timer timer;
+	public Timer timer;
 	private Block curr;
 	private Block next;
 	private int x = 3; //Default Position.
-	private int y = 0;
+	public int y = 0;
 	int nextX = 1;
 	int nextY = 0;
 	public int score = 0;
@@ -95,18 +95,17 @@ public class InnerBoard extends JPanel {
 	int intervalByMode = setting.intervalNumber;
 
 	//만들어진 블럭 개수 세기
-	private static int blockNumber = 0;
+	private int blockNumber = 0;
 	
 	ScoreItem scoreItem = new ScoreItem();
 	
-	JLabel scoreLb1 = new JLabel("Scores");
-	JLabel scoreLb2 = new JLabel(Integer.toString(score));
-	JLabel levelLb1 = new JLabel("Level");
-	JLabel levelLb2 = new JLabel(Integer.toString(level));
+	private JLabel scoreLb1 = new JLabel("Scores");
+	private JLabel scoreLb2 = new JLabel(Integer.toString(score));
+	private JLabel levelLb1 = new JLabel("Level");
+	private JLabel levelLb2 = new JLabel(Integer.toString(level));
 
 
 	public InnerBoard() {
-
 		//Board display setting.
 		tetrisArea = new JTextPane();
 		tetrisArea.setEditable(false);
@@ -191,10 +190,7 @@ public class InnerBoard extends JPanel {
 		//Initialize board for the game.
 		board = new int[HEIGHT][WIDTH];
 		nextBoard = new int[3][5];
-		playerKeyListener = new PlayerKeyListener();
-		addKeyListener(playerKeyListener);
-		setFocusable(true);
-		requestFocus();
+	
 		
 		//Create the first block and draw
 		curr = getRandomBlock(setting.modeChoose);
@@ -316,7 +312,7 @@ public class InnerBoard extends JPanel {
 	}
 
 	
-	private void placeBlock() {
+	public void placeBlock() {
 		for(int j=0; j<curr.height(); j++) {
 			for(int i=0; i<curr.width(); i++) {
 				if (curr.getShape(i, j) == 1)
@@ -333,7 +329,7 @@ public class InnerBoard extends JPanel {
 		}
 	}
 	
-	private void eraseCurr() {
+	public void eraseCurr() {
 		for(int i=x; i<x+curr.width(); i++) {
 			for(int j=y; j<y+curr.height(); j++) {
 				if(curr.getShape(i-x,j-y) == 1)
@@ -374,9 +370,6 @@ public class InnerBoard extends JPanel {
 		y = 0;
 		if (isGameOver() == true) {
 			timer.stop();
-			boolean result = scoreItem.showDialog(getNowScore(), 0 , mode);
-			setVisible(result);
-			//종료 화면과 잇기
 		}
 		else {
 			eraseNext();
@@ -705,58 +698,6 @@ public class InnerBoard extends JPanel {
 			placeBlock();
 			drawBoard();
 		}
-
-		public class PlayerKeyListener implements KeyListener {
-			@Override
-			public void keyTyped(KeyEvent e) {
-
-			}
-
-			@Override
-			public void keyPressed(KeyEvent e) {
-				switch(e.getKeyCode()) {
-				case KeyEvent.VK_DOWN:
-					moveDown();
-					drawBoard();
-					break;
-				case KeyEvent.VK_RIGHT:
-					moveRight();
-					drawBoard();
-					break;
-				case KeyEvent.VK_LEFT:
-					moveLeft();
-					drawBoard();
-					break;
-				case KeyEvent.VK_UP:
-					blockRotate();
-					drawBoard();
-					break;	
-				case KeyEvent.VK_ENTER:
-					while(true){
-						eraseCurr();
-						if(collisionBottom()) {
-							collisionOccur();
-							lineRemove();
-							placeBlock();
-							drawBoard();
-							break;
-						}
-						else {
-							y++;
-						}
-						placeBlock();
-						drawBoard();
-					}
-					break;
-				}
-				
-			}
-
-			@Override
-			public void keyReleased(KeyEvent e) {
-
-			}
-		}
 	/*
 	//max - 30, default - 20,  
 	public void setSize(int size) {
@@ -826,6 +767,10 @@ public class InnerBoard extends JPanel {
 
 		setScore();
 		return score;
+	}
+	
+	public void gameStop() {
+		timer.stop();
 	}
 	
 }
