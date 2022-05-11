@@ -373,7 +373,13 @@ public class InnerBoard extends JPanel {
 		if (isGameOver() == true) {
 			BattleBoard.gameStop();
 			String[] overOption = {"종료하기", "다시하기"};
-			int over = JOptionPane.showOptionDialog(null, name + " 이 게임에서 승리했습니다!", "종료", 0, 0, null, overOption, overOption[0]);
+			String winner;
+			if (name == "Player1") {
+				winner = "Player2";
+			}
+			else
+				winner = "Player1";
+			int over = JOptionPane.showOptionDialog(null, winner + "이(가) 게임에서 승리했습니다!", "종료", 0, 0, null, overOption, overOption[0]);
 			if (over == 0) {
 				
 			}

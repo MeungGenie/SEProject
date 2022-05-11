@@ -22,6 +22,9 @@ public class BattleBoard extends JFrame {
 	private KeyListener playerKeyListener;
 	
 	public BattleBoard() {
+		super("SeoulTech SE Tetris");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
 		player1 = new InnerBoard();
 		player2 = new InnerBoard();
 		
