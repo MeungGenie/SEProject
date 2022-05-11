@@ -366,7 +366,7 @@ public class ItemBoard extends JFrame {
 			eraseCnt++;
 			getScore(eraseCnt, "line");
 			setScore();
-			if ((eraseCnt != 0) && (eraseCnt % 10 == 0))
+			if ((eraseCnt != 0) && (eraseCnt % 1 == 0))
 				itemFlag = true;
 		}
 	}
@@ -835,11 +835,6 @@ public class ItemBoard extends JFrame {
 
 		@Override
 		public void keyPressed(KeyEvent e) {
-			
-		}
-
-		@Override
-		public void keyReleased(KeyEvent e) {
 			if(SettingValues.getInstance().keyChoose == 1) {
 				switch(e.getKeyCode()) {
 					case KeyEvent.VK_DOWN:
@@ -847,15 +842,20 @@ public class ItemBoard extends JFrame {
 						drawBoard();
 						break;
 					case KeyEvent.VK_RIGHT:
-						moveRight();
+						if(notMove == false) {
+							moveRight();
+						}
 						drawBoard();
 						break;
 					case KeyEvent.VK_LEFT:
-						moveLeft();
+						if(notMove == false) {
+							moveLeft();
+						}
 						drawBoard();
 						break;
 					case KeyEvent.VK_UP:
-						blockRotate();
+						if(blockFix == false)
+							blockRotate();
 						drawBoard();
 						break;
 					case KeyEvent.VK_SPACE:
@@ -944,15 +944,20 @@ public class ItemBoard extends JFrame {
 						drawBoard();
 						break;
 					case KeyEvent.VK_D:
-						moveRight();
+						if(notMove == false) {
+							moveRight();
+						}
 						drawBoard();
 						break;
 					case KeyEvent.VK_A:
-						moveLeft();
+						if(notMove == false) {
+							moveLeft();
+						}
 						drawBoard();
 						break;
 					case KeyEvent.VK_W:
-						blockRotate();
+						if(blockFix == false)
+							blockRotate();
 						drawBoard();
 						break;
 					case KeyEvent.VK_SPACE:
@@ -1032,7 +1037,11 @@ public class ItemBoard extends JFrame {
 				}
 			}
 		}
+
+		@Override
+		public void keyReleased(KeyEvent e) {
 		
+		}
 	}
 	
 	//max - 30, default - 20,  
@@ -1046,14 +1055,14 @@ public class ItemBoard extends JFrame {
 	
 	
 	//max - (200, 60), default - (150, 50) 
-	public void setRtSize(int xSize, int ySize) {
+	public static void setRtSize(int xSize, int ySize) {
 		scorePanel.setPreferredSize(new Dimension(xSize, ySize));
 		levelPanel.setPreferredSize(new Dimension(xSize, ySize));
 		nextArea.setPreferredSize(new Dimension(xSize, ySize * 4));
 	}
 	
 	//max - 17, default - nothing, 
-	public void setLbSize(int size) {
+	public static void setLbSize(int size) {
 		scoreLb1.setFont(new Font(null, Font.BOLD, size));
 		scoreLb2.setFont(new Font(null, Font.BOLD, size));
 		levelLb1.setFont(new Font(null, Font.BOLD, size));

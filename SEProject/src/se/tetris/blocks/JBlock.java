@@ -11,5 +11,6 @@ public class JBlock extends Block {
 		};
 		color = Color.BLUE;
 		colorBlind = new Color(126, 98, 61);
+		blockNum = 2;
 	}
 }

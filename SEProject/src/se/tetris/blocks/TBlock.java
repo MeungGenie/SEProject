@@ -12,5 +12,6 @@ public class TBlock extends Block {
 		};
 		color = Color.MAGENTA;
 		colorBlind = new Color(154, 127, 112);
+		blockNum = 6;
 	}
 }

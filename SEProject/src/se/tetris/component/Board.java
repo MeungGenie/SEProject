@@ -85,14 +85,14 @@ public class Board extends JFrame {
 	public static int mode = 0;
 	int eraseCnt = 0;
 
-	//initInterval ë‚œì´ë„ì— ë”°ë¼ ì¡°ì ˆ
+	//initInterval ³­ÀÌµµ¿¡ µû¶ó Á¶Àı
 	//public static int initEasyInterval = 2000;
 	//public static int initNormalInterval = 1000;
 	//public static int initHardInterval = 500;
 	final SettingValues setting = SettingValues.getInstance();
 	int intervalByMode = setting.intervalNumber;
 
-	//ë§Œë“¤ì–´ì§„ ë¸”ëŸ­ ê°œìˆ˜ ì„¸ê¸°
+	//¸¸µé¾îÁø ºí·° °³¼ö ¼¼±â
 	private static int blockNumber = 0;
 	
 	ScoreItem scoreItem = new ScoreItem();
@@ -102,9 +102,7 @@ public class Board extends JFrame {
 	static JLabel levelLb1 = new JLabel("Level");
 	static JLabel levelLb2 = new JLabel(Integer.toString(level));
 
-	
-	
-	
+
 	public Board() {
 		
 		super("SeoulTech SE Tetris");
@@ -307,7 +305,7 @@ public class Board extends JFrame {
 		for(int j=0; j<curr.height(); j++) {
 			for(int i=0; i<curr.width(); i++) {
 				if (curr.getShape(i, j) == 1)
-					board[y+j][x+i] = curr.getShape(i, j);
+					board[y+j][x+i] = curr.getBlockNum();
 			}
 		}
 	}
@@ -344,7 +342,7 @@ public class Board extends JFrame {
 		for(int i = 0; i < HEIGHT; i++) {
 			count = 0;
 			for(int j = 0; j < WIDTH; j++)
-				if(board[i][j] == 1) 
+				if(board[i][j] > 0) 
 				{
 					count++;
 				}
@@ -363,7 +361,7 @@ public class Board extends JFrame {
 			timer.stop();
 			boolean result = scoreItem.showDialog(getNowScore(), 0 , mode);
 			setVisible(result);
-			//ì¢…ë£Œ í™”ë©´ê³¼ ì‡ê¸°
+			//Á¾·á È­¸é°ú ÀÕ±â
 		}
 		else {
 			eraseNext();
@@ -397,7 +395,7 @@ public class Board extends JFrame {
 				if (y >= HEIGHT - curr.height()) return true;
 				if (curr.getShape(j, i) == 1 && i + y < 19) {
 					int checkBottom = board[i + y + 1][j + x];
-					if (checkBottom == 1) {
+					if (checkBottom > 0) {
 						return true;
 					}
 				}
@@ -412,7 +410,7 @@ public class Board extends JFrame {
 			for (int j = 0; j < curr.width(); j++) {
 				if (curr.getShape(j, i) == 1 && j + x < 9) {
 					int checkRight = board[i + y][j + x + 1];
-					if(checkRight == 1) {
+					if(checkRight > 0) {
 						return true;
 					}
 				}
@@ -426,7 +424,7 @@ public class Board extends JFrame {
 			for (int j = 0; j < curr.width(); j++) {
 				if (curr.getShape(j, i) == 1 && j + x > 0) {
 					int checkLeft = board[i + y][j + x - 1];
-					if(checkLeft == 1) {
+					if(checkLeft > 0) {
 						return true;
 					}
 				}
@@ -467,8 +465,8 @@ public class Board extends JFrame {
 		for(int i=0; i < board.length; i++) {
 			sb.append(BORDER_CHAR);
 			for(int j=0; j < board[i].length; j++) {
-				if(board[i][j] == 1) {
-					sb.append("â– ");
+				if(board[i][j] > 0) {
+					sb.append("¡á");
 				} else {
 					sb.append(" ");
 				}
@@ -489,9 +487,47 @@ public class Board extends JFrame {
 		            }	
 			}
 		}
+		
+		for (int i = 0; i < board.length; i++) {
+			int offset = (i + 1) * (WIDTH + 3) + 1;
+			for (int j = 0; j < board[0].length ; j++) {
+				int block = board[i][j];
+				switch(block) {
+				case 1:
+					StyleConstants.setForeground(stylesetCur, Color.CYAN);
+					boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+					break;
+				case 2:
+					StyleConstants.setForeground(stylesetCur, Color.BLUE);
+					boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+					break;
+				case 3:
+					StyleConstants.setForeground(stylesetCur, Color.ORANGE);
+					boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+					break;
+				case 4:
+					StyleConstants.setForeground(stylesetCur, Color.YELLOW);
+					boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+					break;
+				case 5:
+					StyleConstants.setForeground(stylesetCur, Color.GREEN);
+					boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+					break;
+				case 6:
+					StyleConstants.setForeground(stylesetCur, Color.MAGENTA);
+					boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+					break;
+				case 7:
+					StyleConstants.setForeground(stylesetCur, Color.RED);
+					boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+					break;
+				}
+				
+			}
+		}
 	}
 	
-	//blockNumber ì¦ê°€ + timer ë³€ê²½
+	//blockNumber Áõ°¡ + timer º¯°æ
 		public void drawNext() {
 			StringBuffer sb = new StringBuffer();
 			sb.append("\n");
@@ -500,7 +536,7 @@ public class Board extends JFrame {
 			for(int i=0; i < nextBoard.length; i++) {
 				for(int j=0; j < nextBoard[i].length; j++) {
 					if(nextBoard[i][j] == 1) {
-						sb.append("â– ");
+						sb.append("¡á");
 					} else {
 						sb.append(" ");
 					}
@@ -527,9 +563,8 @@ public class Board extends JFrame {
 			boardDoc.setCharacterAttributes(offset, 1, stylesetCur, true);
 		}
 
-
-		//interval í•¨ìˆ˜
-		int getInterval(int blockNumber, int eraseCnt) {
+		//interval ÇÔ¼ö
+		public int getInterval(int blockNumber, int eraseCnt) {
 			if (blockNumber == 30 || blockNumber == 60 || blockNumber == 80 || blockNumber == 100 || blockNumber == 120) {
 				if (intervalByMode == 1000) {
 					SettingValues.getInstance().intervalNumber *= 0.9;
@@ -594,43 +629,37 @@ public class Board extends JFrame {
 		public boolean startCheck() {
 			for (int i = 0; i < curr.height(); i++) {
 				for (int j = 0; j < curr.width(); j++)
-					if(curr.getShape(j,i) != 0 && board[y + i][x + j] == 1)
+					if(curr.getShape(j,i) != 0 && board[y + i][x + j] > 0)
 						return true;
 			}
 			return false;
 		}
-
 		
 		public boolean isGameOver() {
 			if (startCheck())
 				return true;
-			for (int i = 0; i < WIDTH; i++) {
-				if (board[0][i] == 1) {
+			for (int i = 0; i < WIDTH; i++)
+				if (board[0][i] > 0)
 					return true;
-				}
-			}
 			return false;	
 		}
 		
 		public void saveBoard() {
-			for (int i = 0; i < curr.height(); i++) {
-				for (int j = 0; j < curr.width(); j++) {
-					if (curr.getShape(j, i) == 1) {
-						board[y + i][j + x] = 1;
-					}
-				}
-			}
+			for (int i = 0; i < curr.height(); i++) 
+				for (int j = 0; j < curr.width(); j++)
+					if (curr.getShape(j, i) == 1)
+						board[y + i][j + x] = curr.getBlockNum();
 		}
 
 
 		public boolean rotateTest(int [][] shape, int inputX, int inputY) {
 			for (int i = 0; i < shape.length; i++) {
 				for (int j = 0; j < shape[0].length; j++) {
-					if (inputY + i > 19) // HEIGHT ì´ˆê³¼
+					if (inputY + i > 19) // HEIGHT ÃÊ°ú
 						return true;
-					if (inputX + j > 9) // WIDTH ì´ˆê³¼
+					if (inputX + j > 9) // WIDTH ÃÊ°ú
 						return true;
-					if (shape[i][j] != 0 && board[inputY + i][inputX + j] != 0) // ì¶©ëŒ
+					if (shape[i][j] != 0 && board[inputY + i][inputX + j] != 0) // Ãæµ¹
 						return true;
 				}
 			}
@@ -734,8 +763,9 @@ public class Board extends JFrame {
 								break;
 						}
 						break;
+					}
 				}
-				}else if(SettingValues.getInstance().keyChoose == 2) {
+				else if(SettingValues.getInstance().keyChoose == 2) {
 					switch(e.getKeyCode()) {
 						case KeyEvent.VK_S:
 							moveDown();
@@ -807,7 +837,6 @@ public class Board extends JFrame {
 			public void keyReleased(KeyEvent e) {
 
 			}
-
 		}
 	
 	//max - 30, default - 20,  
@@ -818,7 +847,6 @@ public class Board extends JFrame {
 		drawBoard();
 		drawNext();
 	}
-	
 	
 	//max - (200, 60), default - (150, 50) 
 	public static void setRtSize(int xSize, int ySize) {
@@ -844,7 +872,7 @@ public class Board extends JFrame {
 		String scoretxt = Integer.toString(score);
 //				String.valueOf(score);
 		String prescoretxt = scoreLb2.getText();
-		System.out.println("ì ìˆ˜ ë³€ê²½" + prescoretxt+"...>"+ scoretxt);
+		System.out.println("Á¡¼ö º¯°æ" + prescoretxt+"...>"+ scoretxt);
 		scoreLb2.setText(scoretxt);
 	}
 

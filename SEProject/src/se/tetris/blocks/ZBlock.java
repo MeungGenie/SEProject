@@ -11,5 +11,6 @@ public class ZBlock extends Block {
 		};
 		color = Color.RED;
 		colorBlind = new Color(99, 106, 141);
+		blockNum = 7;
 	}
 }

@@ -11,5 +11,6 @@ public class LBlock extends Block {
 		};
 		color = Color.ORANGE;
 		colorBlind = new Color(165, 148, 159);
+		blockNum = 3;
 	}
 }
