@@ -38,6 +38,7 @@ import se.tetris.blocks.ZBlock;
 
 import se.tetris.setting.SettingValues;
 import se.tetris.data.*;
+import se.tetris.component.*;
 
 public class InnerBoard extends JPanel {
 	
@@ -81,8 +82,9 @@ public class InnerBoard extends JPanel {
 	public int y = 0;
 	int nextX = 1;
 	int nextY = 0;
-	public int score = 0;
-	public int level = 0;
+	private int score = 0;
+	private int level = 0;
+	private String name = "player";
 	
 	public static int mode = 0;
 	int eraseCnt = 0;
@@ -369,7 +371,15 @@ public class InnerBoard extends JPanel {
 		x = 3;
 		y = 0;
 		if (isGameOver() == true) {
-			timer.stop();
+			BattleBoard.gameStop();
+			String[] overOption = {"종료하기", "다시하기"};
+			int over = JOptionPane.showOptionDialog(null, name + " 이 게임에서 승리했습니다!", "종료", 0, 0, null, overOption, overOption[0]);
+			if (over == 0) {
+				
+			}
+			if (over == 1) {
+				reset();
+			}
 		}
 		else {
 			eraseNext();
@@ -520,7 +530,6 @@ public class InnerBoard extends JPanel {
 				case 5:
 					StyleConstants.setForeground(stylesetCur, Color.GREEN);
 					boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
-					break;
 				case 6:
 					StyleConstants.setForeground(stylesetCur, Color.MAGENTA);
 					boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
@@ -771,6 +780,14 @@ public class InnerBoard extends JPanel {
 	
 	public void gameStop() {
 		timer.stop();
+	}
+	
+	public void setName(String name) {
+		this.name = name; 
+	}
+	
+	public Timer getTimer() {
+		return timer;
 	}
 	
 }

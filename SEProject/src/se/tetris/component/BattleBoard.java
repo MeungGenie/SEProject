@@ -6,6 +6,8 @@ import java.awt.event.KeyListener;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.Timer;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -14,14 +16,17 @@ import se.tetris.setting.SettingValues;
 
 public class BattleBoard extends JFrame {
 	
-	private InnerBoard player1;
-	private InnerBoard player2;
+	private static InnerBoard player1;
+	private static InnerBoard player2;
 	private JPanel panel;
 	private KeyListener playerKeyListener;
 	
 	public BattleBoard() {
 		player1 = new InnerBoard();
 		player2 = new InnerBoard();
+		
+		player1.setName("Player1");
+		player2.setName("Player2");
 		
 		panel = new JPanel();
 		
@@ -34,8 +39,13 @@ public class BattleBoard extends JFrame {
 		addKeyListener(playerKeyListener);
 		setFocusable(true);
 		requestFocus();
-	
-	
+		
+		/*
+		while (player1.isGameOver() || player2.isGameOver()) {
+			player1.timer.stop();
+			player2.timer.stop();
+		}
+		*/
 	}
 
 	
@@ -144,6 +154,13 @@ public class BattleBoard extends JFrame {
 		public void keyReleased(KeyEvent e) {
 		
 		}
+	}
+
+	public static void gameStop() {
+		Timer player1Timer = player1.getTimer();
+		Timer player2Timer = player2.getTimer();
+		player1Timer.stop();
+		player2Timer.stop();
 	}
 
 	
