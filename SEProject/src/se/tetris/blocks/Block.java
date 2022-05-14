@@ -1,12 +1,16 @@
 package se.tetris.blocks;
 
 import java.awt.Color;
+import se.tetris.setting.SettingValues;
 
 public abstract class Block {
 		
 	protected int[][] shape;
 	protected Color color;
 	protected Color colorBlind;
+	protected int blockNum;
+	
+	final SettingValues setting = SettingValues.getInstance();
 
 	public Block() {
 		shape = new int[][]{ 
@@ -71,4 +75,7 @@ public abstract class Block {
 		}
 	}
 	
+	public int getBlockNum() {
+		return blockNum;
+	}
 }

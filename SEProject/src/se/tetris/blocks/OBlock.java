@@ -11,5 +11,6 @@ public class OBlock extends Block {
 		};
 		color = Color.YELLOW;
 		colorBlind = new Color(187, 190, 242);
+		blockNum = 4;
 	}
 }
