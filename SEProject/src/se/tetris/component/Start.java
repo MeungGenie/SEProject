@@ -132,16 +132,10 @@ public class Start extends JFrame {
 	public void startSettingMode() {
 		if (Window == 0) {
 			setting.setSize(400, 600);
-			// setting.sizeOne.setSelected(true);
-			setting.changeSize(1);
 		} else if (Window == 1) {
 			setting.setSize(800, 800);
-			// setting.sizeTwo.setSelected(true);
-			setting.changeSize(2);
 		} else {
 			setting.setSize(SettingCode.screenWidth, SettingCode.screenHeight);
-			// setting.sizeThree.setSelected(true);
-			setting.changeSize(3);
 		}
 		setting.setVisible(true);
 		setVisible(false);

@@ -71,10 +71,19 @@ public class SettingCode extends JFrame {
 	DBCalls dataCalls = new DBCalls();
 
 	int Window = dataCalls.getWindowSetting();
+//	
+//	if(Window == 0) {
+//		changeSize(0);
+//	}else if(Window == 1) {
+//		changeSize(1);
+//	}else {
+//		changeSize(2);
+//	}
+//	
 
 	public SettingCode() {
-
 		super("SeoulTech SE Tetris");
+
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		Container settingView = getContentPane();
@@ -102,6 +111,7 @@ public class SettingCode extends JFrame {
 		screenSizeArea.add(screenSizeTitle);
 		screenSizeArea.add(Box.createVerticalStrut(20));
 		ButtonGroup sizeGroup = new ButtonGroup();
+		
 
 		sizeOne.addActionListener(new ActionListener() {
 			@Override
