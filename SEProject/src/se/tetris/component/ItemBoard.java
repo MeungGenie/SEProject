@@ -425,6 +425,8 @@ public class ItemBoard extends JFrame {
 
 	protected void moveDown() {
 		eraseCurr();
+		getScore(eraseCnt, "block");
+		setScore();
 		if (itemType == 6) {
 			if (collisionLeft() || collisionRight() || collisionBottom()) {
 				notMove = true;
@@ -1080,8 +1082,12 @@ public class ItemBoard extends JFrame {
 	}
 
 	public void getScore(int lines, String mode) {
-		int scorePre = lines;
-		updateSroce(scorePre, mode);
+		if(mode == "line") {
+			int scorePre = lines;
+			updateSroce(scorePre, mode);
+		}else if(mode=="block") {
+			updateSroce(1, mode);
+		}
 	}
 
 	public int getNowScore() {
