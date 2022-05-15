@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Random;
 
@@ -68,16 +69,21 @@ public class InnerBoard extends JPanel {
 	private JPanel levelPanel;
 	private int[][] board;
 	private int[][] nextBoard;
-	private KeyListener playerKeyListener;
+	private int[][] attackBoard;
 	private SimpleAttributeSet stylesetBr;
 	private SimpleAttributeSet stylesetNx;
 	private SimpleAttributeSet stylesetCur;
 	private SimpleAttributeSet stylesetAk;
 	private StyledDocument boardDoc;
 	private StyledDocument nextDoc;
+	private StyledDocument attackDoc;
 	public Timer timer;
 	private Block curr;
 	private Block next;
+	private Block lastBlock;
+	private int lastX;
+	private int lastY;
+	private int attackY = 9;
 	private int x = 3; //Default Position.
 	public int y = 0;
 	int nextX = 1;
@@ -85,6 +91,7 @@ public class InnerBoard extends JPanel {
 	private int score = 0;
 	private int level = 0;
 	private String name = "player";
+	private ArrayList<Integer> attackLine;
 	
 	public static int mode = 0;
 	int eraseCnt = 0;
@@ -93,8 +100,8 @@ public class InnerBoard extends JPanel {
 	//public static int initEasyInterval = 2000;
 	//public static int initNormalInterval = 1000;
 	//public static int initHardInterval = 500;
-	final SettingValues setting = SettingValues.getInstance();
-	int intervalByMode = setting.intervalNumber;
+	public final SettingValues setting = SettingValues.getInstance();
+	public int intervalByMode = setting.intervalNumber;
 
 	//만들어진 블럭 개수 세기
 	private int blockNumber = 0;
@@ -192,6 +199,7 @@ public class InnerBoard extends JPanel {
 		//Initialize board for the game.
 		board = new int[HEIGHT][WIDTH];
 		nextBoard = new int[3][5];
+		attackBoard = new int [10][10];
 	
 		
 		//Create the first block and draw
@@ -219,13 +227,17 @@ public class InnerBoard extends JPanel {
 		StyleConstants.setAlignment(stylesetNx, StyleConstants.ALIGN_CENTER);
 
 		stylesetAk = new SimpleAttributeSet();
-		StyleConstants.setFontSize(stylesetAk, 15);
+		StyleConstants.setFontSize(stylesetAk, 10);
 		StyleConstants.setFontFamily(stylesetAk, "Courier New");
 		StyleConstants.setBold(stylesetAk, true);
+		StyleConstants.setForeground(stylesetAk, Color.GRAY);
 		StyleConstants.setAlignment(stylesetAk, StyleConstants.ALIGN_CENTER);	
 		
 		boardDoc = tetrisArea.getStyledDocument();
 		nextDoc = nextArea.getStyledDocument();
+		attackDoc = attackArea.getStyledDocument();
+		
+		attackLine = new ArrayList<Integer>();
 
 		placeBlock();
 		drawBoard();
@@ -331,6 +343,18 @@ public class InnerBoard extends JPanel {
 		}
 	}
 	
+	public void placeAttack(ArrayList<Integer> attack) {
+		for (int i = 0; i < attack.size(); i++) {
+			attackLine.add(attack.get(i) - lastY);
+		}
+		int firstY = attackY;
+		for (int i = firstY; i > firstY - attack.size(); i--, attackY--) {
+			for (int j = 0; j < attackBoard[0].length; j++) {
+				attackBoard[i][j] = 1;
+			}
+		}
+	}
+	
 	public void eraseCurr() {
 		for(int i=x; i<x+curr.width(); i++) {
 			for(int j=y; j<y+curr.height(); j++) {
@@ -348,6 +372,23 @@ public class InnerBoard extends JPanel {
 		}
 	}
 	
+	private void eraseLast() {
+		int y = attackY + 1;
+		int notRemove = 0;
+		for (int i = y; i < y + lastBlock.height(); i++) {
+			if (attackLine.contains(i - y)) {
+				for (int j = lastX; j < lastX + lastBlock.width(); j++) {
+					if (lastBlock.getShape(j - lastX, i - y) == 1) {
+						attackBoard[i - notRemove][j] = 0;
+					}
+				}
+			}
+			else {
+				notRemove++;
+			}
+		}
+	}
+	
 	ArrayList<Integer> line = new ArrayList<Integer>();
 	ArrayList<Integer> lineCheck() {
 		ArrayList<Integer> Item = new ArrayList<Integer>();
@@ -359,7 +400,7 @@ public class InnerBoard extends JPanel {
 				{
 					count++;
 				}
-					
+				
 			if(count == WIDTH) Item.add(i);
 		}
 		return Item;
@@ -367,6 +408,9 @@ public class InnerBoard extends JPanel {
 	
 	public void collisionOccur() {
 		saveBoard();
+		lastBlock = curr;
+		lastX = x;
+		lastY = y;
 		curr = next;
 		x = 3;
 		y = 0;
@@ -397,6 +441,12 @@ public class InnerBoard extends JPanel {
  
 	void lineRemove() {
 		line = lineCheck();
+		if (line.size() > 1) {
+			placeAttack(line);
+			eraseLast();
+			drawAttack();
+			attackLine.clear();
+		}
 		Iterator<Integer> iter = line.iterator();
 		int index = 0;
 		while(iter.hasNext()) {
@@ -411,6 +461,8 @@ public class InnerBoard extends JPanel {
 			getScore(eraseCnt, "line");
 			setScore();
 		}
+		
+		
 	}
 	
 	public boolean collisionBottom() {
@@ -569,6 +621,24 @@ public class InnerBoard extends JPanel {
 			nextArea.setText(sb.toString());
 			colorBlindModeNext();
 		}
+		
+		public void drawAttack() {
+			StringBuffer sb = new StringBuffer();
+			for (int i = 0; i < attackBoard.length; i++) {
+				for (int j = 0; j < attackBoard[i].length; j++) {
+					if (attackBoard[i][j] == 1) {
+						sb.append("■");
+					}
+					else {
+						sb.append(" ");
+					}
+				}
+				sb.append("\n");
+			}
+			attackArea.setText(sb.toString());
+			attackDoc.setParagraphAttributes(0, attackDoc.getLength(), stylesetAk, false);
+		}
+		
 
 		private void colorBlindMode(SimpleAttributeSet styleSet, Block block) {
 			if (setting.colorBlindModeCheck == 1) {
@@ -794,6 +864,14 @@ public class InnerBoard extends JPanel {
 	
 	public Timer getTimer() {
 		return timer;
+	}
+	
+	public int[][] getAttackBoard() {
+		return attackBoard;
+	}
+	
+	public void setAttackBoard(int[][] attackBoard) {
+		this.attackBoard = attackBoard;
 	}
 	
 }
