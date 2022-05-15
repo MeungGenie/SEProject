@@ -32,7 +32,7 @@ public class Tetris {
 			startView.setSize(SettingCode.screenWidth, SettingCode.screenHeight);
 		}
 		
-		
+		startView.setResizable(false);
 		startView.setVisible(true);
 		
 
