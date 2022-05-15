@@ -28,7 +28,6 @@ class DBCreate {
 	public static void createNewTable() {
 		String path = System.getProperty("user.dir");
 
-		// SQLite connection string
 		String url = "jdbc:sqlite:./lib/tetris.db";
 
 		String sql = "CREATE TABLE IF NOT EXISTS StInit (\n" 	
@@ -64,7 +63,6 @@ class DBCreate {
 			System.out.println("0"+e.getMessage());
 		}
 
-		// SQL statement for creating a new table
 		sql = "CREATE TABLE IF NOT EXISTS StGameKey (\n" 
 				+ " id integer PRIMARY KEY AUTOINCREMENT,\n"
 				+ " code text NOT NULL DEFAULT '',\n" 
@@ -110,7 +108,6 @@ public class DBConnectionManager extends DBCreate {
 		String DB_URL = "jdbc:sqlite:./lib/tetris.db";
 
 		try {
-			// create a connection to the database
 			conn = DriverManager.getConnection(DB_URL);
 
 		} catch (SQLException e) {

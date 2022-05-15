@@ -477,8 +477,6 @@ public class DBCalls extends DBConnectionManager {
 				count = rs.getInt(1);
 			}
 
-			System.out.println("Get Window Setting : " + count);
-
 			Result = count;
 
 			conn.close();
