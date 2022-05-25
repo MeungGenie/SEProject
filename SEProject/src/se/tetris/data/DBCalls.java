@@ -40,9 +40,6 @@ public class DBCalls extends DBConnectionManager {
 			int r = pstmt.executeUpdate(); 
 			// pstmt.excuteQuery() : select 
 			// pstmt.excuteUpdate() : insert, update, delete .. 
-			
-			
-			System.out.println("º¯°æµÈ row : " + r);
 
 			conn.close();
 		} catch (SQLException e) {

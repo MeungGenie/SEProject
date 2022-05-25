@@ -23,6 +23,8 @@ public class BattleBoard extends JFrame {
 
         player1 = new InnerBoard();
         player2 = new InnerBoard();
+        
+        InnerBoard.BattleMode = "Battle";
 
         player1.setName("Player1");
         player2.setName("Player2");

@@ -10,8 +10,6 @@ public class IBlock extends Block {
 		};
 		color = Color.CYAN;
 		colorBlind = new Color(0, 58, 97);
-		blockNum = 1;
-		
 	}
 	
 }

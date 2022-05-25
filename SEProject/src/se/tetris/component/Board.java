@@ -445,6 +445,8 @@ public class Board extends JFrame {
 			placeBlock();
 			drawBoard();
 		}
+		getScore(eraseCnt, "block");
+		setScore();
 	}
 
 	protected void moveRight() {
@@ -979,17 +981,20 @@ public class Board extends JFrame {
 
 	public void setScore() {
 		String scoretxt = Integer.toString(score);
-//				String.valueOf(score);
 		String prescoretxt = scoreLb2.getText();
-		System.out.println("점수 변경" + prescoretxt+"...>"+ scoretxt);
 		scoreLb2.setText(scoretxt);
 	}
 
 	public void getScore(int lines, String mode) {
 		int scorePre = lines;
-		updateSroce(scorePre, mode);
-	}
+		if(mode == "line") {
+			updateSroce(scorePre, mode);
+		}else if(mode=="block") {
+			updateSroce(1, mode);
+		}
 
+	}
+	
 	public int getNowScore() {
 		int score = this.score;
 		return score;
@@ -1010,13 +1015,14 @@ public class Board extends JFrame {
 			if(sc%11 ==0) {
 				this.score += 11;
 			}
-		}else {
+		}else if(mode=="block") {
 			this.score += sc;
 		}
 
 		setScore();
 		return score;
 	}
+	
 	public void changeSize(int sizeNumber){
 		switch (sizeNumber) {
 			case 1:

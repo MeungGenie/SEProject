@@ -1,11 +1,17 @@
 package se.tetris.component;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -18,16 +24,36 @@ public class TimeBattleBoard extends JFrame {
     private static InnerBoard player2;
     private JPanel panel;
     private KeyListener playerKeyListener;
+    public static JLabel timerCount;
+    public GameTimer GameT = new GameTimer();
+    
 
     public TimeBattleBoard() {
         super("SeoulTech SE Tetris - TimeBattle");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    	
+    	JPanel panelTotal = new JPanel();
+    	JPanel panelTop = new JPanel();
+        timerCount = new JLabel("3:00");
         
-    	GameTimer gt = new GameTimer();
+        timerCount.setFont(new Font("고딕", Font.CENTER_BASELINE, 20));
+    	
+    	panelTotal.setLayout(new BorderLayout());
+    	panelTotal.add(panelTop, BorderLayout.NORTH);
+    	
+    	
+		ImageIcon timerIcon = new ImageIcon("./img/timeicon.png");
+		JLabel LtimerIcon = new JLabel(timerIcon);
+
+		
+		panelTop.add(LtimerIcon);
+		panelTop.add(timerCount);
 
         player1 = new InnerBoard();
         player2 = new InnerBoard();
 
+        InnerBoard.BattleMode = "TimeBattle";
+        
         player1.setName("Player1");
         player2.setName("Player2");
 
@@ -36,7 +62,9 @@ public class TimeBattleBoard extends JFrame {
         panel.add(player1);
         panel.add(player2);
 
-        add(panel);
+        panelTotal.add(panel, BorderLayout.CENTER);
+        
+        add(panelTotal);
 
         playerKeyListener = new PlayerKeyListener();
         addKeyListener(playerKeyListener);
@@ -45,7 +73,7 @@ public class TimeBattleBoard extends JFrame {
         requestFocus();
         
 		// 카운트 다운 쓰레드 실행
-		gt.start();
+        GameT.start();
 	
 		
 		//inputCheck = true;
@@ -165,6 +193,7 @@ public class TimeBattleBoard extends JFrame {
         Timer player2Timer = player2.getTimer();
         player1Timer.stop();
         player2Timer.stop();
+       
     }
     
     public static void gameReset() {
@@ -384,17 +413,47 @@ public class TimeBattleBoard extends JFrame {
     class GameTimer extends Thread{
     	@Override
     	public void run() {
-    		
-    		for(int i=30; i>=1; i--){
-    			System.out.println(i);
+    		for(int i=20; i>=0; i--){
+    			
+    			int Min = i/60;
+    			int Sec = i%60;
+    			
+    			String timerTxt = Min >= 10 ? Integer.toString(Min) : "0" + Integer.toString(Min);
+        		timerTxt += " : "+ (Sec >= 10 ? Integer.toString(Sec): "0" + Integer.toString(Sec));
+        		
+        		if(Min == 0) {
+        			timerCount.setForeground(Color.RED);
+        		}
+    			
+    			timerCount.setText(timerTxt);
+    			
     			try {
     				Thread.sleep(1000);
     			} catch (InterruptedException e) {
     				e.printStackTrace();
     			}
     		}
-    		
     		//점수 비교
+    		gameStop();
+    		
+    		String[] overOption = {"종료하기", "다시하기"};
+    		int over = 0;
+    		if(player1.getNowScore() > player2.getNowScore()) {
+    			over = JOptionPane.showOptionDialog(null, "player1 이(가) 게임에서 승리했습니다!", "종료", 0, 0, null, overOption, overOption[0]);
+    		}else if(player1.getNowScore() == player2.getNowScore()) {
+    			over = JOptionPane.showOptionDialog(null, "무승부입니다!", "종료", 0, 0, null, overOption, overOption[0]);
+    		}else {
+    			over = JOptionPane.showOptionDialog(null, "player2 이(가) 게임에서 승리했습니다!", "종료", 0, 0, null, overOption, overOption[0]);
+    		}
+    		
+            if (over == 0) {
+            	gameClose();
+            }
+            if (over == 1) {
+            	gameReset();
+            }
+    		
+    		
     	}
     }
 }
