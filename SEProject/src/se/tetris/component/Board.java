@@ -43,7 +43,6 @@ import static se.tetris.setting.SettingCode.screenHeight;
 import static se.tetris.setting.SettingCode.screenWidth;
 
 public class Board extends JFrame {
-
 	public static Board boardMain;
 	private static final long serialVersionUID = 2434035659171694595L;
 
@@ -235,8 +234,7 @@ public class Board extends JFrame {
 					return new IBlock();
 				else
 				{
-					rnd = new Random(System.currentTimeMillis());
-					block = rnd.nextInt(6);
+					block = (int)(Math.random() * 6);
 					switch(block) {
 						case 0:
 							return new JBlock();
@@ -253,8 +251,7 @@ public class Board extends JFrame {
 					}
 				}
 			case 2:
-				rnd = new Random(System.currentTimeMillis());
-				block = rnd.nextInt(7);
+				block = (int)(Math.random() * 7);
 				switch(block) {
 					case 0:
 						return new IBlock();
@@ -279,8 +276,7 @@ public class Board extends JFrame {
 					return new IBlock();
 				else
 				{
-					rnd = new Random(System.currentTimeMillis());
-					block = rnd.nextInt(6);
+					block = (int)(Math.random() * 6);
 					switch(block) {
 						case 0:
 							return new JBlock();
@@ -307,8 +303,8 @@ public class Board extends JFrame {
 	private void placeBlock() {
 		for(int j=0; j<curr.height(); j++) {
 			for(int i=0; i<curr.width(); i++) {
-				if (curr.getShape(i, j) == 1)
-					board[y+j][x+i] = curr.getBlockNum();
+				if (curr.getShape(i, j) > 0)
+					board[y+j][x+i] = curr.getShape(i, j);
 			}
 		}
 	}
@@ -324,7 +320,7 @@ public class Board extends JFrame {
 	private void eraseCurr() {
 		for(int i=x; i<x+curr.width(); i++) {
 			for(int j=y; j<y+curr.height(); j++) {
-				if(curr.getShape(i-x,j-y) == 1)
+				if(curr.getShape(i-x,j-y) > 0)
 					board[j][i] = 0;
 			}
 		}
@@ -350,7 +346,9 @@ public class Board extends JFrame {
 					count++;
 				}
 
-			if(count == WIDTH) Item.add(i);
+			if(count == WIDTH) {
+				Item.add(i);
+			}
 		}
 		return Item;
 	}
@@ -396,7 +394,7 @@ public class Board extends JFrame {
 		for (int i = 0; i < curr.height(); i++) {
 			for (int j = 0; j < curr.width(); j++) {
 				if (y >= HEIGHT - curr.height()) return true;
-				if (curr.getShape(j, i) == 1 && i + y < 19) {
+				if (curr.getShape(j, i) > 0 && i + y < 19) {
 					int checkBottom = board[i + y + 1][j + x];
 					if (checkBottom > 0) {
 						return true;
@@ -411,7 +409,7 @@ public class Board extends JFrame {
 	public boolean collisionRight() {
 		for (int i = 0; i < curr.height(); i++) {
 			for (int j = 0; j < curr.width(); j++) {
-				if (curr.getShape(j, i) == 1 && j + x < 9) {
+				if (curr.getShape(j, i) > 0 && j + x < 9) {
 					int checkRight = board[i + y][j + x + 1];
 					if(checkRight > 0) {
 						return true;
@@ -425,7 +423,7 @@ public class Board extends JFrame {
 	public boolean collisionLeft() {
 		for (int i = 0; i < curr.height(); i++) {
 			for (int j = 0; j < curr.width(); j++) {
-				if (curr.getShape(j, i) == 1 && j + x > 0) {
+				if (curr.getShape(j, i) > 0 && j + x > 0) {
 					int checkLeft = board[i + y][j + x - 1];
 					if(checkLeft > 0) {
 						return true;
@@ -447,8 +445,6 @@ public class Board extends JFrame {
 			placeBlock();
 			drawBoard();
 		}
-		getScore(eraseCnt, "block");
-		setScore();
 	}
 
 	protected void moveRight() {
@@ -487,7 +483,7 @@ public class Board extends JFrame {
 			int rows = y+j == 0 ? 1 : y+j+1;
 			int offset = rows * (WIDTH+3) + x + 1;
 			for (int i = 0; i < curr.width(); i++) {
-				if (curr.getShape(i, j) == 1) {
+				if (curr.getShape(i, j) > 0) {
 					colorBlindModeCurrent(offset + i);
 				}
 			}
@@ -499,37 +495,79 @@ public class Board extends JFrame {
 				int block = board[i][j];
 				switch(block) {
 					case 1:
-						StyleConstants.setForeground(stylesetCur, Color.CYAN);
-						boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+						if (setting.colorBlindModeCheck == 1) {
+							StyleConstants.setForeground(stylesetCur, new Color(0, 58, 97));
+							boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+						}
+						else {
+							StyleConstants.setForeground(stylesetCur, Color.CYAN);
+							boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+						}
 						break;
 					case 2:
-						StyleConstants.setForeground(stylesetCur, Color.BLUE);
-						boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+						if (setting.colorBlindModeCheck == 1) {
+							StyleConstants.setForeground(stylesetCur, new Color(126, 98, 61));
+							boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+						}
+						else {
+							StyleConstants.setForeground(stylesetCur, Color.BLUE);
+							boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+						}
 						break;
 					case 3:
-						StyleConstants.setForeground(stylesetCur, Color.ORANGE);
-						boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+						if (setting.colorBlindModeCheck == 1) {
+							StyleConstants.setForeground(stylesetCur, new Color(165, 148, 159));
+							boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+						}
+						else {
+							StyleConstants.setForeground(stylesetCur, Color.PINK);
+							boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+						}
 						break;
 					case 4:
-						StyleConstants.setForeground(stylesetCur, Color.YELLOW);
-						boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+						if (setting.colorBlindModeCheck == 1) {
+							StyleConstants.setForeground(stylesetCur, new Color(187, 190, 242));
+							boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+						}
+						else {
+							StyleConstants.setForeground(stylesetCur, Color.YELLOW);
+							boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+						}
 						break;
 					case 5:
-						StyleConstants.setForeground(stylesetCur, Color.GREEN);
-						boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+						if (setting.colorBlindModeCheck == 1) {
+							StyleConstants.setForeground(stylesetCur, new Color(247, 193, 121));
+							boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+						}
+						else {
+							StyleConstants.setForeground(stylesetCur, Color.GREEN);
+							boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+						}
 						break;
 					case 6:
-						StyleConstants.setForeground(stylesetCur, Color.MAGENTA);
-						boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+						if (setting.colorBlindModeCheck == 1) {
+							StyleConstants.setForeground(stylesetCur, new Color(154, 127, 112));
+							boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+						}
+						else {
+							StyleConstants.setForeground(stylesetCur, Color.MAGENTA);
+							boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+						}
 						break;
 					case 7:
-						StyleConstants.setForeground(stylesetCur, Color.RED);
-						boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+						if (setting.colorBlindModeCheck == 1) {
+							StyleConstants.setForeground(stylesetCur, new Color(99, 106, 141));
+							boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+						}
+						else {
+							StyleConstants.setForeground(stylesetCur, Color.RED);
+							boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+						}
 						break;
 				}
-
 			}
 		}
+
 	}
 
 	//blockNumber 증가 + timer 변경
@@ -540,7 +578,7 @@ public class Board extends JFrame {
 		timer.setDelay(getInterval(blockNumber, eraseCnt));
 		for(int i=0; i < nextBoard.length; i++) {
 			for(int j=0; j < nextBoard[i].length; j++) {
-				if(nextBoard[i][j] == 1) {
+				if(nextBoard[i][j] > 0) {
 					sb.append("■");
 				} else {
 					sb.append(" ");
@@ -572,43 +610,109 @@ public class Board extends JFrame {
 	public int getInterval(int blockNumber, int eraseCnt) {
 		if (blockNumber == 30 || blockNumber == 60 || blockNumber == 80 || blockNumber == 100 || blockNumber == 120) {
 			if (intervalByMode == 1000) {
-				SettingValues.getInstance().intervalNumber *= 0.9;
 				getScore(5*eraseCnt, "std");
 				setScore();
 				level++;
 				levelLb2.setText(Integer.toString(level));
 			} else if (intervalByMode == 2000) {
-				SettingValues.getInstance().intervalNumber *= 0.92;
 				getScore(11*eraseCnt, "std");
 				setScore();
 				level++;
 				levelLb2.setText(Integer.toString(level));
-			} else if (intervalByMode == 500) {
-				SettingValues.getInstance().intervalNumber *= 0.88;
+			} else if (intervalByMode == 800) {
 				getScore(20*eraseCnt, "std");
 				setScore();
-
 				level++;
 				levelLb2.setText(Integer.toString(level));
 			}
 		}
-		if (eraseCnt == 5 || eraseCnt == 10 || eraseCnt == 15 || eraseCnt == 20 || eraseCnt == 25) {
-			if (intervalByMode == 1000) {
-				setting.intervalNumber *= 0.9;
-				getScore(3*eraseCnt, "std");
-				setScore();
+		if (intervalByMode == 1000) {
+			if (eraseCnt < 5 && eraseCnt >= 0) {
+				setting.intervalNumber = 1000;
 				level++;
 				levelLb2.setText(Integer.toString(level));
-			} else if (intervalByMode == 2000) {
-				getScore(9*eraseCnt, "std");
-				setScore();
-				setting.intervalNumber *= 0.92;
+			} else if (eraseCnt < 10 && eraseCnt >= 5) {
+				setting.intervalNumber = (int) (1000 * 0.9);
 				level++;
 				levelLb2.setText(Integer.toString(level));
-			} else if (intervalByMode == 500) {
-				setting.intervalNumber *= 0.88;
-				getScore(30*eraseCnt, "std");
-				setScore();
+			} else if (eraseCnt < 15 && eraseCnt >= 10) {
+				setting.intervalNumber = (int) (1000 * 0.9 * 0.9);
+				level++;
+				levelLb2.setText(Integer.toString(level));
+			} else if (eraseCnt < 20 && eraseCnt >= 15) {
+				setting.intervalNumber = (int) (1000 * 0.9 * 0.9 * 0.9);
+				level++;
+				levelLb2.setText(Integer.toString(level));
+			} else if (eraseCnt < 25 && eraseCnt >= 20) {
+				setting.intervalNumber = (int) (1000 * 0.9 * 0.9 * 0.9 * 0.9);
+				level++;
+				levelLb2.setText(Integer.toString(level));
+			} else if (eraseCnt < 30 && eraseCnt >= 25) {
+				setting.intervalNumber = (int) (1000 * 0.9 * 0.9 * 0.9 * 0.9 * 0.9);
+				level++;
+				levelLb2.setText(Integer.toString(level));
+			} else if (eraseCnt >= 30) {
+				setting.intervalNumber = (int) (1000 * 0.9 * 0.9 * 0.9 * 0.9 * 0.9 * 0.9);
+				level++;
+				levelLb2.setText(Integer.toString(level));
+			}
+		} else if (intervalByMode == 2000) {
+			if (eraseCnt < 5 && eraseCnt >= 0) {
+				setting.intervalNumber = 2000;
+				level++;
+				levelLb2.setText(Integer.toString(level));
+			} else if (eraseCnt < 10 && eraseCnt >= 5) {
+				setting.intervalNumber = (int) (2000 * 0.92);
+				level++;
+				levelLb2.setText(Integer.toString(level));
+			} else if (eraseCnt < 15 && eraseCnt >= 10) {
+				setting.intervalNumber = (int) (2000 * 0.92 * 0.92);
+				level++;
+				levelLb2.setText(Integer.toString(level));
+			} else if (eraseCnt < 20 && eraseCnt >= 15) {
+				setting.intervalNumber = (int) (2000 * 0.92 * 0.92 * 0.92);
+				level++;
+				levelLb2.setText(Integer.toString(level));
+			} else if (eraseCnt < 25 && eraseCnt >= 20) {
+				setting.intervalNumber = (int) (2000 * 0.92 * 0.92 * 0.92 * 0.92);
+				level++;
+				levelLb2.setText(Integer.toString(level));
+			} else if (eraseCnt < 30 && eraseCnt >= 25) {
+				setting.intervalNumber = (int) (2000 * 0.92 * 0.92 * 0.92 * 0.92 * 0.92);
+				level++;
+				levelLb2.setText(Integer.toString(level));
+			} else if (eraseCnt >= 30) {
+				setting.intervalNumber = (int) (2000 * 0.92 * 0.92 * 0.92 * 0.92 * 0.92 * 0.92);
+				level++;
+				levelLb2.setText(Integer.toString(level));
+			}
+		} else if (intervalByMode == 800) {
+			if (eraseCnt < 5 && eraseCnt >= 0) {
+				setting.intervalNumber = 800;
+				level++;
+				levelLb2.setText(Integer.toString(level));
+			} else if (eraseCnt < 10 && eraseCnt >= 5) {
+				setting.intervalNumber = (int) (800 * 0.88);
+				level++;
+				levelLb2.setText(Integer.toString(level));
+			} else if (eraseCnt < 15 && eraseCnt >= 10) {
+				setting.intervalNumber = (int) (800 * 0.88 * 0.88);
+				level++;
+				levelLb2.setText(Integer.toString(level));
+			} else if (eraseCnt < 20 && eraseCnt >= 15) {
+				setting.intervalNumber = (int) (800 * 0.88 * 0.88 * 0.88);
+				level++;
+				levelLb2.setText(Integer.toString(level));
+			} else if (eraseCnt < 25 && eraseCnt >= 20) {
+				setting.intervalNumber = (int) (800 * 0.88 * 0.88 * 0.88 * 0.88);
+				level++;
+				levelLb2.setText(Integer.toString(level));
+			} else if (eraseCnt < 30 && eraseCnt >= 25) {
+				setting.intervalNumber = (int) (800 * 0.88 * 0.88 * 0.88 * 0.88 * 0.88);
+				level++;
+				levelLb2.setText(Integer.toString(level));
+			} else if (eraseCnt >= 30) {
+				setting.intervalNumber = (int) (800 * 0.88 * 0.88 * 0.88 * 0.88 * 0.88 * 0.88);
 				level++;
 				levelLb2.setText(Integer.toString(level));
 			}
@@ -634,7 +738,7 @@ public class Board extends JFrame {
 	public boolean startCheck() {
 		for (int i = 0; i < curr.height(); i++) {
 			for (int j = 0; j < curr.width(); j++)
-				if(curr.getShape(j,i) != 0 && board[y + i][x + j] > 0)
+				if(curr.getShape(j,i) > 0 && board[y + i][x + j] > 0)
 					return true;
 		}
 		return false;
@@ -652,8 +756,8 @@ public class Board extends JFrame {
 	public void saveBoard() {
 		for (int i = 0; i < curr.height(); i++)
 			for (int j = 0; j < curr.width(); j++)
-				if (curr.getShape(j, i) == 1)
-					board[y + i][j + x] = curr.getBlockNum();
+				if (curr.getShape(j, i) > 0)
+					board[y + i][j + x] = curr.getShape(j, i);
 	}
 
 
@@ -875,18 +979,15 @@ public class Board extends JFrame {
 
 	public void setScore() {
 		String scoretxt = Integer.toString(score);
+//				String.valueOf(score);
 		String prescoretxt = scoreLb2.getText();
+		System.out.println("점수 변경" + prescoretxt+"...>"+ scoretxt);
 		scoreLb2.setText(scoretxt);
 	}
 
 	public void getScore(int lines, String mode) {
 		int scorePre = lines;
-		if(mode == "line") {
-			updateSroce(scorePre, mode);
-		}else if(mode=="block") {
-			updateSroce(1, mode);
-		}
-
+		updateSroce(scorePre, mode);
 	}
 
 	public int getNowScore() {

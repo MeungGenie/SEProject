@@ -10,16 +10,20 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-public class BattleBoard extends JFrame {
+import java.util.TimerTask;
 
+public class TimeBattleBoard extends JFrame {
+	
     private static InnerBoard player1;
     private static InnerBoard player2;
     private JPanel panel;
     private KeyListener playerKeyListener;
 
-    public BattleBoard() {
-        super("SeoulTech SE Tetris");
+    public TimeBattleBoard() {
+        super("SeoulTech SE Tetris - TimeBattle");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+    	GameTimer gt = new GameTimer();
 
         player1 = new InnerBoard();
         player2 = new InnerBoard();
@@ -39,6 +43,12 @@ public class BattleBoard extends JFrame {
         setFocusable(true);
         setFocusTraversalKeysEnabled(false);
         requestFocus();
+        
+		// 카운트 다운 쓰레드 실행
+		gt.start();
+	
+		
+		//inputCheck = true;
        
     }
 
@@ -366,5 +376,28 @@ public class BattleBoard extends JFrame {
             }
         }
         return 0;
+    }
+    
+    /**
+     * 게임 타이머
+     */
+    class GameTimer extends Thread{
+    	@Override
+    	public void run() {
+    		
+    		for(int i=30; i>=1; i--){
+    			if(true){
+    				return;
+    			}
+    			System.out.println(i);
+    			try {
+    				Thread.sleep(1000);
+    			} catch (InterruptedException e) {
+    				e.printStackTrace();
+    			}
+    		}
+    		System.out.println("시간이 초과되어 당신이 졌습니다.");
+    		System.exit(0);
+    	}
     }
 }

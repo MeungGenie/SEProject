@@ -188,6 +188,10 @@ public class StartBattle extends JFrame {
       timeLimit.addActionListener(new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
+              setVisible(false);
+              TimeBattleBoard timebattle = new TimeBattleBoard();
+              timebattle.setSize(800, 600);
+              timebattle.setVisible(true);
           }
       });
 
