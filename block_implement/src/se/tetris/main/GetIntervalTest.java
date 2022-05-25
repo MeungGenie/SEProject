@@ -99,11 +99,5 @@ class GetIntervalTest {
 				}
 			}
 		}
-		
-		
-		
-		
-		
 	}
-
 }
