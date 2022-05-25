@@ -103,6 +103,9 @@ public class ItemBattleBoard extends JFrame {
 						else {
 							if (player1.collisionBottom()) {
 								player1.collisionOccur();
+								if (player1.whoAttacked) {
+	                                player1.attackedFunction();
+	                            }
 								player1.lineRemove();
 								if (player1.itemFlag == true) {
 									player1.itemSet();
@@ -172,6 +175,9 @@ public class ItemBattleBoard extends JFrame {
 						else {
 							if (player2.collisionBottom()) {
 								player2.collisionOccur();
+								if (player2.whoAttacked) {
+	                                player2.attackedFunction();
+	                            }
 								player2.lineRemove();
 								if (player2.itemFlag == true) {
 									player2.itemSet();

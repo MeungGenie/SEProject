@@ -73,6 +73,9 @@ public class BattleBoard extends JFrame {
                         player1.eraseCurr();
                         if(player1.collisionBottom()) {
                             player1.collisionOccur();
+                            if (player1.whoAttacked) {
+                                player1.attackedFunction();
+                            }
                             player1.lineRemove();
                             player1.placeBlock();
                             player1.drawBoard();
@@ -106,6 +109,9 @@ public class BattleBoard extends JFrame {
                         player2.eraseCurr();
                         if(player2.collisionBottom()) {
                             player2.collisionOccur();
+                            if (player2.whoAttacked) {
+                                player2.attackedFunction();
+                            }
                             player2.lineRemove();
                             player2.placeBlock();
                             player2.drawBoard();
