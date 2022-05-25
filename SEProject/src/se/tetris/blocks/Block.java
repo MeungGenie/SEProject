@@ -70,12 +70,9 @@ public abstract class Block {
 		for (int i = 0; i < input.height(); i++) {
 			for (int j = 0; j < input.width(); j++) {
 				if(input.getShape(j, i) != 0)
-					input.shape[i][j] = 1;
+					input.shape[i][j] = input.getShape(j, i);
 			}
 		}
 	}
-	
-	public int getBlockNum() {
-		return blockNum;
-	}
+
 }

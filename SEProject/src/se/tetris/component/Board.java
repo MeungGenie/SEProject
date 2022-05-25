@@ -40,7 +40,6 @@ import se.tetris.setting.SettingValues;
 import se.tetris.data.*;
 
 public class Board extends JFrame {
-	
 	public static Board boardMain;
 	private static final long serialVersionUID = 2434035659171694595L;
 	
@@ -304,8 +303,8 @@ public class Board extends JFrame {
 	private void placeBlock() {
 		for(int j=0; j<curr.height(); j++) {
 			for(int i=0; i<curr.width(); i++) {
-				if (curr.getShape(i, j) == 1)
-					board[y+j][x+i] = curr.getBlockNum();
+				if (curr.getShape(i, j) > 0)
+					board[y+j][x+i] = curr.getShape(i, j);
 			}
 		}
 	}
@@ -321,7 +320,7 @@ public class Board extends JFrame {
 	private void eraseCurr() {
 		for(int i=x; i<x+curr.width(); i++) {
 			for(int j=y; j<y+curr.height(); j++) {
-				if(curr.getShape(i-x,j-y) == 1)
+				if(curr.getShape(i-x,j-y) > 0)
 					board[j][i] = 0;
 			}
 		}
@@ -393,7 +392,7 @@ public class Board extends JFrame {
 		for (int i = 0; i < curr.height(); i++) {
 			for (int j = 0; j < curr.width(); j++) {
 				if (y >= HEIGHT - curr.height()) return true;
-				if (curr.getShape(j, i) == 1 && i + y < 19) {
+				if (curr.getShape(j, i) > 0 && i + y < 19) {
 					int checkBottom = board[i + y + 1][j + x];
 					if (checkBottom > 0) {
 						return true;
@@ -408,7 +407,7 @@ public class Board extends JFrame {
 	public boolean collisionRight() {
 		for (int i = 0; i < curr.height(); i++) {
 			for (int j = 0; j < curr.width(); j++) {
-				if (curr.getShape(j, i) == 1 && j + x < 9) {
+				if (curr.getShape(j, i) > 0 && j + x < 9) {
 					int checkRight = board[i + y][j + x + 1];
 					if(checkRight > 0) {
 						return true;
@@ -422,7 +421,7 @@ public class Board extends JFrame {
 	public boolean collisionLeft() {
 		for (int i = 0; i < curr.height(); i++) {
 			for (int j = 0; j < curr.width(); j++) {
-				if (curr.getShape(j, i) == 1 && j + x > 0) {
+				if (curr.getShape(j, i) > 0 && j + x > 0) {
 					int checkLeft = board[i + y][j + x - 1];
 					if(checkLeft > 0) {
 						return true;
@@ -482,49 +481,91 @@ public class Board extends JFrame {
 			int rows = y+j == 0 ? 1 : y+j+1;
 			int offset = rows * (WIDTH+3) + x + 1;
 			for (int i = 0; i < curr.width(); i++) {
-				 if (curr.getShape(i, j) == 1) {
+				 if (curr.getShape(i, j) > 0) {
 					 colorBlindModeCurrent(offset + i);
 		            }	
 			}
 		}
 		
 		for (int i = 0; i < board.length; i++) {
-			int offset = (i + 1) * (WIDTH + 3) + 1;
-			for (int j = 0; j < board[0].length ; j++) {
-				int block = board[i][j];
-				switch(block) {
-				case 1:
-					StyleConstants.setForeground(stylesetCur, Color.CYAN);
-					boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
-					break;
-				case 2:
-					StyleConstants.setForeground(stylesetCur, Color.BLUE);
-					boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
-					break;
-				case 3:
-					StyleConstants.setForeground(stylesetCur, Color.ORANGE);
-					boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
-					break;
-				case 4:
-					StyleConstants.setForeground(stylesetCur, Color.YELLOW);
-					boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
-					break;
-				case 5:
-					StyleConstants.setForeground(stylesetCur, Color.GREEN);
-					boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
-					break;
-				case 6:
-					StyleConstants.setForeground(stylesetCur, Color.MAGENTA);
-					boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
-					break;
-				case 7:
-					StyleConstants.setForeground(stylesetCur, Color.RED);
-					boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
-					break;
-				}
-				
-			}
-		}
+            int offset = (i + 1) * (WIDTH + 3) + 1;
+            for (int j = 0; j < board[0].length ; j++) {
+                int block = board[i][j];
+                switch(block) {
+                    case 1:
+                    	if (setting.colorBlindModeCheck == 1) {
+                    		StyleConstants.setForeground(stylesetCur, new Color(0, 58, 97));
+                            boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+                    	}
+                    	else {
+                    		StyleConstants.setForeground(stylesetCur, Color.CYAN);
+                            boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+                    	}
+                        break;
+                    case 2:
+                        if (setting.colorBlindModeCheck == 1) {
+                        	StyleConstants.setForeground(stylesetCur, new Color(126, 98, 61));
+                            boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+                        }
+                        else {
+                        	StyleConstants.setForeground(stylesetCur, Color.BLUE);
+                            boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+                        }
+                        break;
+                    case 3:
+                    	if (setting.colorBlindModeCheck == 1) {
+                    		StyleConstants.setForeground(stylesetCur, new Color(165, 148, 159));
+                            boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+                    	}
+                    	else {
+                    		StyleConstants.setForeground(stylesetCur, Color.PINK);
+                            boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+                    	}
+                        break;
+                    case 4:
+                    	if (setting.colorBlindModeCheck == 1) {
+                    		StyleConstants.setForeground(stylesetCur, new Color(187, 190, 242));
+                            boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+                    	}
+                    	else {
+                    		StyleConstants.setForeground(stylesetCur, Color.YELLOW);
+                            boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+                    	}
+                        break;
+                    case 5:
+                    	if (setting.colorBlindModeCheck == 1) {
+                    		StyleConstants.setForeground(stylesetCur, new Color(247, 193, 121));
+                            boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+                    	}
+                    	else {
+                    		StyleConstants.setForeground(stylesetCur, Color.GREEN);
+                            boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+                    	}
+                    	break;
+                    case 6:
+                    	if (setting.colorBlindModeCheck == 1) {
+                    		StyleConstants.setForeground(stylesetCur, new Color(154, 127, 112));
+                            boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+                    	}
+                    	else {
+                    		StyleConstants.setForeground(stylesetCur, Color.MAGENTA);
+                            boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+                    	}
+                        break;
+                    case 7:
+                    	if (setting.colorBlindModeCheck == 1) {
+                    		StyleConstants.setForeground(stylesetCur, new Color(99, 106, 141));
+                            boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+                    	}
+                    	else {
+                    		StyleConstants.setForeground(stylesetCur, Color.RED);
+                            boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+                    	}
+                        break;
+                }
+            }
+        }
+		
 	}
 	
 	//blockNumber 증가 + timer 변경
@@ -535,7 +576,7 @@ public class Board extends JFrame {
 			timer.setDelay(getInterval(blockNumber, eraseCnt));
 			for(int i=0; i < nextBoard.length; i++) {
 				for(int j=0; j < nextBoard[i].length; j++) {
-					if(nextBoard[i][j] == 1) {
+					if(nextBoard[i][j] > 0) {
 						sb.append("■");
 					} else {
 						sb.append(" ");
@@ -629,7 +670,7 @@ public class Board extends JFrame {
 		public boolean startCheck() {
 			for (int i = 0; i < curr.height(); i++) {
 				for (int j = 0; j < curr.width(); j++)
-					if(curr.getShape(j,i) != 0 && board[y + i][x + j] > 0)
+					if(curr.getShape(j,i) > 0 && board[y + i][x + j] > 0)
 						return true;
 			}
 			return false;
@@ -647,8 +688,8 @@ public class Board extends JFrame {
 		public void saveBoard() {
 			for (int i = 0; i < curr.height(); i++) 
 				for (int j = 0; j < curr.width(); j++)
-					if (curr.getShape(j, i) == 1)
-						board[y + i][j + x] = curr.getBlockNum();
+					if (curr.getShape(j, i) > 0)
+						board[y + i][j + x] = curr.getShape(j, i);
 		}
 
 

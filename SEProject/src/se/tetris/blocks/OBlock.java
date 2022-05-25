@@ -6,11 +6,10 @@ public class OBlock extends Block {
 
 	public OBlock() {
 		shape = new int[][] { 
-			{1, 1}, 
-			{1, 1}
+			{4, 4}, 
+			{4, 4}
 		};
 		color = Color.YELLOW;
 		colorBlind = new Color(187, 190, 242);
-		blockNum = 4;
 	}
 }
