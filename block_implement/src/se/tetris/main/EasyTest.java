@@ -13,19 +13,17 @@ class EasyTest {
 		double min;
 		double max;
 		double percentage;
-		Random rnd;
 		int block;
 		
-		int easyI = 0, hardI = 0;
-		int easyJ = 0, hardJ = 0;
-		int easyT = 0, hardT = 0;
-		int easyO = 0, hardO = 0;
-		int easyL = 0, hardL = 0;
-		int easyZ = 0, hardZ = 0;
-		int easyS = 0, hardS = 0;
-		double easyPercent, hardPercent;
-		double easySum = 0, hardSum = 0;
-		double easyExpected, hardExpected;
+		int easyI = 0;
+		int easyJ = 0;
+		int easyT = 0;
+		int easyO = 0;
+		int easyL = 0;
+		int easyZ = 0;
+		int easyS = 0;
+		
+		double easySum = 0;
 		
 		for(int i =0; i < 1000; i++) {
 			min = 1;
@@ -34,34 +32,33 @@ class EasyTest {
 			if (percentage <= (double)100 / 720 * 100 * 1.2)
 				easyI++;	
 			else {
-				rnd = new Random(System.currentTimeMillis());
-				block = rnd.nextInt(6);
+				block = (int)(Math.random() * 6);
 				switch(block) {
-					case 0:
-						easyJ++;
-						break;
-					case 1:
-						easyL++;
-						break;
-					case 2:
-						easyZ++;
-						break;
-					case 3:
-						easyS++;
-						break;
-					case 4:
-						easyT++;
-						break;
-					case 5:
-						easyO++;
-						break;
+				case 0:
+					easyJ++;
+					break;
+				case 1:
+					easyL++;
+					break;
+				case 2:
+					easyZ++;
+					break;
+				case 3:
+					easyS++;
+					break;
+				case 4:
+					easyT++;
+					break;
+				case 5:
+					easyO++;
+					break;
 				}
 				easySum = (easyJ+easyL+easyS+easyT+easyO+easyZ);
 			}	
 		}
-		easyPercent = easyI / easySum * 100;
-		easyExpected = (double)100 / 720 * 100 * 1.2;
-		System.out.println("EASY MODE");
+		double easyPercent = easyI / easySum * 100;
+		double easyExpected = (double)100 / 720 * 100 * 1.2;
+		System.out.println("\nEASY MODE에서의 I블록 등장 확률 확인");
 		System.out.println("I가 등장해야 하는 확률 : " + easyExpected + "   I의 실제 등장 확률 : " + easyPercent);
 		System.out.println("오차 범위 : " + (easyExpected - easyPercent));
 		Easy easy = new Easy();

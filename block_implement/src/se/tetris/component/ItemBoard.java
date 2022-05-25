@@ -32,6 +32,9 @@ import se.tetris.data.*;
 import se.tetris.setting.SettingCode;
 import se.tetris.setting.SettingValues;
 
+import static se.tetris.setting.SettingCode.screenHeight;
+import static se.tetris.setting.SettingCode.screenWidth;
+
 public class ItemBoard extends JFrame {
 	
 	public static ItemBoard itemBoardMain;
@@ -231,8 +234,7 @@ public class ItemBoard extends JFrame {
 					return new IBlock();
 				else
 				{
-					rnd = new Random(System.currentTimeMillis());
-					block = rnd.nextInt(6);
+					block = (int)(Math.random() * 6);
 					switch(block) {
 						case 0:
 							return new JBlock();
@@ -275,8 +277,7 @@ public class ItemBoard extends JFrame {
 					return new IBlock();
 				else
 				{
-					rnd = new Random(System.currentTimeMillis());
-					block = rnd.nextInt(6);
+					block = (int)(Math.random() * 6);
 					switch(block) {
 						case 0:
 							return new JBlock();
@@ -1111,6 +1112,32 @@ public class ItemBoard extends JFrame {
 	
 	public static ItemBoard getItemBoard(){
 		return itemBoardMain;
+	}
+	
+	public void changeSize(int sizeNumber){
+		switch (sizeNumber) {
+			case 1:
+				setSize(400, 600);
+				setSize(20);
+				setRtSize(150, 50);
+				setLbSize(10);
+				break;
+			case 2:
+				setSize(800, 800);
+				setSize(30);
+				setRtSize(300, 55);
+				setLbSize(15);
+				break;
+			case 3:
+				setSize(screenWidth, screenHeight);
+				setSize(30);
+				setRtSize(200, 60);
+				setLbSize(17);
+				break;
+			default:
+				setSize(400, 600);
+				break;
+		}
 	}
 	
 }
