@@ -386,9 +386,6 @@ public class TimeBattleBoard extends JFrame {
     	public void run() {
     		
     		for(int i=30; i>=1; i--){
-    			if(true){
-    				return;
-    			}
     			System.out.println(i);
     			try {
     				Thread.sleep(1000);
@@ -396,8 +393,8 @@ public class TimeBattleBoard extends JFrame {
     				e.printStackTrace();
     			}
     		}
-    		System.out.println("시간이 초과되어 당신이 졌습니다.");
-    		System.exit(0);
+    		
+    		//점수 비교
     	}
     }
 }
