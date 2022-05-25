@@ -27,9 +27,7 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
 import se.tetris.blocks.*;
-import se.tetris.component.Board.PlayerKeyListener;
 import se.tetris.data.*;
-import se.tetris.setting.SettingCode;
 import se.tetris.setting.SettingValues;
 
 public class ItemBoard extends JFrame {
@@ -62,7 +60,6 @@ public class ItemBoard extends JFrame {
 	private static int[][] board;
 	private static int[][] nextBoard;
 	private KeyListener playerKeyListener;
-	private SimpleAttributeSet stylesetWall;
 	private static SimpleAttributeSet stylesetBr;
 	private static SimpleAttributeSet stylesetNx;
 	private static SimpleAttributeSet stylesetCur;
@@ -351,7 +348,7 @@ public class ItemBoard extends JFrame {
 		return Item;
 	}
  
-	void lineRemove() {
+	public void lineRemove() {
 		itemFlag = false;
 		line = lineCheck();
 		Iterator<Integer> iter = line.iterator();
@@ -566,7 +563,7 @@ public class ItemBoard extends JFrame {
 	}
 	
 	//interval ÇÔ¼ö
-	int getInterval(int blockNumber, int eraseCnt) {
+	public int getInterval(int blockNumber, int eraseCnt) {
 		if (blockNumber == 30 || blockNumber == 60 || blockNumber == 80 || blockNumber == 100 || blockNumber == 120) {
 			if (intervalByMode == 1000) {
 				SettingValues.getInstance().intervalNumber *= 0.9;
@@ -1111,6 +1108,10 @@ public class ItemBoard extends JFrame {
 	
 	public static ItemBoard getItemBoard(){
 		return itemBoardMain;
+	}
+	
+	public void gameStop() {
+		timer.stop();
 	}
 	
 }
