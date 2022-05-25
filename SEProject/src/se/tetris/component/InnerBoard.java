@@ -423,6 +423,8 @@ public class InnerBoard extends JPanel {
         		BattleBoard.gameStop();
         	}else if(BattleMode == "TimeBattle") {
         		TimeBattleBoard.gameStop();
+        		
+        		TimeBattleBoard.GameT.setStop(true);
         	}
         	
             String[] overOption = {"종료하기", "다시하기"};

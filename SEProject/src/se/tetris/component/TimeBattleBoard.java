@@ -25,7 +25,7 @@ public class TimeBattleBoard extends JFrame {
     private JPanel panel;
     private KeyListener playerKeyListener;
     public static JLabel timerCount;
-    public GameTimer GameT = new GameTimer();
+    public static GameTimer GameT;
     
 
     public TimeBattleBoard() {
@@ -73,6 +73,7 @@ public class TimeBattleBoard extends JFrame {
         requestFocus();
         
 		// 카운트 다운 쓰레드 실행
+        GameT = new GameTimer();
         GameT.start();
 	
 		
@@ -187,22 +188,27 @@ public class TimeBattleBoard extends JFrame {
 
         }
     }
-
+   
     public static void gameStop() {
         Timer player1Timer = player1.getTimer();
         Timer player2Timer = player2.getTimer();
         player1Timer.stop();
         player2Timer.stop();
        
+        GameT.setStop(true);
     }
     
     public static void gameReset() {
+    	GameT.setStop(true);
+    	
     	player1.reset();
     	player2.reset();
     	Timer player1Timer = player1.getTimer();
         Timer player2Timer = player2.getTimer();
         player1Timer.restart();
         player2Timer.restart();
+        
+        System.out.println(GameT.getState());
     }
     
     public static void gameClose() {
@@ -411,6 +417,13 @@ public class TimeBattleBoard extends JFrame {
      * 게임 타이머
      */
     class GameTimer extends Thread{
+    	
+        private boolean stop;
+        
+        public void setStop(boolean stop){
+            this.stop = stop;
+        }
+        
     	@Override
     	public void run() {
     		for(int i=20; i>=0; i--){
@@ -452,8 +465,6 @@ public class TimeBattleBoard extends JFrame {
             if (over == 1) {
             	gameReset();
             }
-    		
-    		
     	}
     }
 }
