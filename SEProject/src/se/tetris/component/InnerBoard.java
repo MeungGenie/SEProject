@@ -113,7 +113,9 @@ public class InnerBoard extends JPanel {
     boolean whoAttacked = false;
     public int attackLineCount = 3;
     StringBuffer sbByAttack;
+    
     boolean alreadyAttacked = false;   
+    boolean attackBoardFull = false;
 
     public InnerBoard() {
         //Board display setting.
@@ -564,6 +566,7 @@ public class InnerBoard extends JPanel {
         }
         System.out.println(attackLineCount);
         BattleBoard.forAttack();
+        attackBoardFull = false;
     }
 
 
