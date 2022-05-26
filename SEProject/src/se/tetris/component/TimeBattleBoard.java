@@ -243,7 +243,7 @@ public class TimeBattleBoard extends JFrame {
     	@Override
     	public void run() {
     		
-    		for(int i=20; i>=0; i--){
+    		for(int i=90; i>=0; i--){
 				if(stop) {
 					break;
 				}

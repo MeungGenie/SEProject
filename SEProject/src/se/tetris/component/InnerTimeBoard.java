@@ -390,16 +390,13 @@ public class InnerTimeBoard extends JPanel {
         }
         return Item;
     }
-
-    public void collisionOccur() {
-        saveBoard();
-        lastBlock = curr;
-        lastX = x;
-        lastY = y;
-        curr = next;
-        x = 3;
-        y = 0;
-        if (isGameOver()) {
+    
+	public void collisionOccur() {
+		saveBoard();
+		curr = next;
+		x = 3;
+		y = 0;
+		if (isGameOver() == true) {
             String winner;
             if (name == "Player1") {
                 winner = "Player2";
@@ -411,15 +408,14 @@ public class InnerTimeBoard extends JPanel {
     		TimeBattleBoard.collisionStop();
 
     		TimeBattleBoard.ColPlayer = winner;
-    		return;
-        }
-        else {
+			// 종료 화면과 잇기
+		} else {
             eraseNext();
             next = getRandomBlock(setting.modeChoose);
             placeNext();
             drawNext();
-        }
-    }
+		}
+	}
 
     public void lineRemove() {
         line = lineCheck();
