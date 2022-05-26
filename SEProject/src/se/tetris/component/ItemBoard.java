@@ -483,7 +483,6 @@ public class ItemBoard extends JFrame {
 				drawBoard();
 			}
 		}
-		System.out.println("ItemDrop >>  " + itemDrop);
 	}
 	
 	protected void moveRight() {
