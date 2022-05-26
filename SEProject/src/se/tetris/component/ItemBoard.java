@@ -27,8 +27,13 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
 import se.tetris.blocks.*;
+import se.tetris.component.Board.PlayerKeyListener;
 import se.tetris.data.*;
+import se.tetris.setting.SettingCode;
 import se.tetris.setting.SettingValues;
+
+import static se.tetris.setting.SettingCode.screenHeight;
+import static se.tetris.setting.SettingCode.screenWidth;
 
 public class ItemBoard extends JFrame {
 	
@@ -113,11 +118,15 @@ public class ItemBoard extends JFrame {
 				BorderFactory.createLineBorder(Color.GRAY, 10),
 				BorderFactory.createLineBorder(Color.DARK_GRAY, 5));
 		tetrisArea.setBorder(border);
-		
+		tetrisArea.setAlignmentX(CENTER_ALIGNMENT);
+		tetrisArea.setAlignmentY(CENTER_ALIGNMENT);
+
 		nextArea = new JTextPane();
 		nextArea.setEditable(false);
 		nextArea.setBackground(Color.BLACK);
 		nextArea.setBorder(border);
+		nextArea.setAlignmentX(CENTER_ALIGNMENT);
+		nextArea.setAlignmentY(CENTER_ALIGNMENT);
 		nextArea.setPreferredSize(new Dimension(150, 200));
 		
 		scorePanel = new JPanel();
@@ -127,7 +136,10 @@ public class ItemBoard extends JFrame {
 				
 		scoreLb1.setForeground(Color.darkGray);
 		scoreLb1.setAlignmentX(CENTER_ALIGNMENT);
-		
+		scoreLb2.setAlignmentX(CENTER_ALIGNMENT);
+		levelLb1.setAlignmentX(CENTER_ALIGNMENT);
+		levelLb2.setAlignmentX(CENTER_ALIGNMENT);
+
 		scoreLb2.setForeground(Color.RED);
 		
 		scorePanel.setLayout(new BoxLayout(scorePanel, BoxLayout.Y_AXIS));
@@ -196,19 +208,22 @@ public class ItemBoard extends JFrame {
 		StyleConstants.setBold(stylesetBr, true);
 		StyleConstants.setForeground(stylesetBr, Color.WHITE);
 		StyleConstants.setAlignment(stylesetBr, StyleConstants.ALIGN_CENTER);
-		
+		StyleConstants.setLineSpacing(stylesetBr, -0.45f);
+
 		stylesetCur = new SimpleAttributeSet();
 		StyleConstants.setFontSize(stylesetCur, 20);
 		StyleConstants.setFontFamily(stylesetCur, "Courier New");
 		StyleConstants.setBold(stylesetCur, true);
 		StyleConstants.setAlignment(stylesetCur, StyleConstants.ALIGN_CENTER);
-			
+		StyleConstants.setLineSpacing(stylesetCur, -0.45f);
+
 		stylesetNx = new SimpleAttributeSet();
 		StyleConstants.setFontSize(stylesetNx, 25);
 		StyleConstants.setFontFamily(stylesetNx, "Courier New");
 		StyleConstants.setBold(stylesetNx, true);
-		StyleConstants.setAlignment(stylesetNx, StyleConstants.ALIGN_CENTER);	
-		
+		StyleConstants.setAlignment(stylesetNx, StyleConstants.ALIGN_CENTER);
+		StyleConstants.setLineSpacing(stylesetNx, -0.45f);
+
 		boardDoc = tetrisArea.getStyledDocument();
 		nextDoc = nextArea.getStyledDocument();
 
@@ -230,8 +245,7 @@ public class ItemBoard extends JFrame {
 					return new IBlock();
 				else
 				{
-					rnd = new Random(System.currentTimeMillis());
-					block = rnd.nextInt(6);
+					block = (int)(Math.random() * 6);
 					switch(block) {
 						case 0:
 							return new JBlock();
@@ -248,8 +262,7 @@ public class ItemBoard extends JFrame {
 					}
 				}
 			case 2:
-				rnd = new Random(System.currentTimeMillis());
-				block = rnd.nextInt(7);
+				block = (int)(Math.random() * 7);
 				switch(block) {
 					case 0:
 						return new IBlock();
@@ -274,8 +287,7 @@ public class ItemBoard extends JFrame {
 					return new IBlock();
 				else
 				{
-					rnd = new Random(System.currentTimeMillis());
-					block = rnd.nextInt(6);
+					block = (int)(Math.random() * 6);
 					switch(block) {
 						case 0:
 							return new JBlock();
@@ -442,6 +454,10 @@ public class ItemBoard extends JFrame {
 	
 	protected void moveDown() {
 		eraseCurr();
+
+		getScore(eraseCnt, "block");
+		setScore();
+
 		if (itemDrop && itemType == 12) {
 			if (collisionLeft() || collisionRight() || collisionBottom()) {
 				notMove = true;
@@ -512,7 +528,8 @@ public class ItemBoard extends JFrame {
 				case 4:
 				case 5:
 				case 6:
-				case 7, 13:
+				case 7:
+				case 13:
 					sb.append("■");
 					break;
 				case 8:
@@ -540,7 +557,7 @@ public class ItemBoard extends JFrame {
 		}
 		for(int t=0; t<WIDTH+2; t++) sb.append(BORDER_CHAR);
 		tetrisArea.setText(sb.toString());
-		boardDoc.setCharacterAttributes(0, boardDoc.getLength(), stylesetBr, false);
+		boardDoc.setParagraphAttributes(0, boardDoc.getLength(), stylesetBr, false);
 		
 		for(int j = 0; j < curr.height(); j++) {
             int rows = y+j == 0 ? 1 : y+j+1;
@@ -647,7 +664,8 @@ public class ItemBoard extends JFrame {
 				case 4:
 				case 5:
 				case 6:
-				case 7, 13:
+				case 7:
+				case 13:
 					sb.append("■");
 					break;
 				case 8:
@@ -702,121 +720,115 @@ public class ItemBoard extends JFrame {
 		colorBlindMode(stylesetCur, curr);
 		boardDoc.setCharacterAttributes(offset, 1, stylesetCur, true);
 	}
-	
+
 	//interval 함수
 	public int getInterval(int blockNumber, int eraseCnt) {
-        if (blockNumber == 30 || blockNumber == 60 || blockNumber == 80 || blockNumber == 100 || blockNumber == 120) {
-            if (intervalByMode == 1000) {
-                getScore(5*eraseCnt, "std");
-                setScore();
-                level++;
-                levelLb2.setText(Integer.toString(level));
-            } else if (intervalByMode == 2000) {
-                getScore(11*eraseCnt, "std");
-                setScore();
-                level++;                levelLb2.setText(Integer.toString(level));
-            } else if (intervalByMode == 800) {
-                getScore(20*eraseCnt, "std");
-                setScore();
-                level++;
-                levelLb2.setText(Integer.toString(level));
-            }
-        }
-        if (intervalByMode == 1000) {
-            if (eraseCnt < 5 && eraseCnt >= 0) {
-                intervalByModeForChange = 1000;
-                level++;
-                levelLb2.setText(Integer.toString(level));
-            } else if (eraseCnt < 10 && eraseCnt >= 5) {
-                intervalByModeForChange = (int) (1000 * 0.9);
-                level++;
-                levelLb2.setText(Integer.toString(level));
-            } else if (eraseCnt < 15 && eraseCnt >= 10) {
-                intervalByModeForChange = (int) (1000 * 0.9 * 0.9);
-                level++;
-                levelLb2.setText(Integer.toString(level));
-            } else if (eraseCnt < 20 && eraseCnt >= 15) {
-                intervalByModeForChange = (int) (1000 * 0.9 * 0.9 * 0.9);
-                level++;
-                levelLb2.setText(Integer.toString(level));
-            } else if (eraseCnt < 25 && eraseCnt >= 20) {
-                intervalByModeForChange = (int) (1000 * 0.9 * 0.9 * 0.9 * 0.9);
-                level++;
-                levelLb2.setText(Integer.toString(level));
-            } else if (eraseCnt < 30 && eraseCnt >= 25) {
-                intervalByModeForChange = (int) (1000 * 0.9 * 0.9 * 0.9 * 0.9 * 0.9);
-                level++;
-                levelLb2.setText(Integer.toString(level));
-            } else if (eraseCnt >= 30) {
-                intervalByModeForChange = (int) (1000 * 0.9 * 0.9 * 0.9 * 0.9 * 0.9 * 0.9);
-                level++;
-                levelLb2.setText(Integer.toString(level));
-            }
-        } else if (intervalByMode == 2000) {
-            if (eraseCnt < 5 && eraseCnt >= 0) {
-                intervalByModeForChange = 2000;
-                level++;
-                levelLb2.setText(Integer.toString(level));
-            } else if (eraseCnt < 10 && eraseCnt >= 5) {
-                intervalByModeForChange = (int) (2000 * 0.92);
-                level++;
-                levelLb2.setText(Integer.toString(level));
-            } else if (eraseCnt < 15 && eraseCnt >= 10) {
-                intervalByModeForChange = (int) (2000 * 0.92 * 0.92);
-                level++;
-                levelLb2.setText(Integer.toString(level));
-            } else if (eraseCnt < 20 && eraseCnt >= 15) {
-                intervalByModeForChange = (int) (2000 * 0.92 * 0.92 * 0.92);
-                level++;
-                levelLb2.setText(Integer.toString(level));
-            } else if (eraseCnt < 25 && eraseCnt >= 20) {
-                intervalByModeForChange = (int) (2000 * 0.92 * 0.92 * 0.92 * 0.92);
-                level++;
-                levelLb2.setText(Integer.toString(level));
-            } else if (eraseCnt < 30 && eraseCnt >= 25) {
-                intervalByModeForChange = (int) (2000 * 0.92 * 0.92 * 0.92 * 0.92 * 0.92);
-                level++;
-                levelLb2.setText(Integer.toString(level));
-            } else if (eraseCnt >= 30) {
-                intervalByModeForChange = (int) (2000 * 0.92 * 0.92 * 0.92 * 0.92 * 0.92 * 0.92);
-                level++;
-                levelLb2.setText(Integer.toString(level));
-            }
-        } else if (intervalByMode == 800) {
-            if (eraseCnt < 5 && eraseCnt >= 0) {
-                intervalByModeForChange = 800;
-                level++;
-                levelLb2.setText(Integer.toString(level));
-            } else if (eraseCnt < 10 && eraseCnt >= 5) {
-                intervalByModeForChange = (int) (800 * 0.88);
-                level++;
-                levelLb2.setText(Integer.toString(level));
-            } else if (eraseCnt < 15 && eraseCnt >= 10) {
-                intervalByModeForChange = (int) (800 * 0.88 * 0.88);
-                level++;
-                levelLb2.setText(Integer.toString(level));
-            } else if (eraseCnt < 20 && eraseCnt >= 15) {
-                intervalByModeForChange = (int) (800 * 0.88 * 0.88 * 0.88);
-                level++;
-                levelLb2.setText(Integer.toString(level));
-            } else if (eraseCnt < 25 && eraseCnt >= 20) {
-                intervalByModeForChange = (int) (800 * 0.88 * 0.88 * 0.88 * 0.88);
-                level++;
-                levelLb2.setText(Integer.toString(level));
-            } else if (eraseCnt < 30 && eraseCnt >= 25) {
-                intervalByModeForChange = (int) (800 * 0.88 * 0.88 * 0.88 * 0.88 * 0.88);
-                level++;
-                levelLb2.setText(Integer.toString(level));
-            } else if (eraseCnt >= 30) {
-                intervalByModeForChange = (int) (800 * 0.88 * 0.88 * 0.88 * 0.88 * 0.88 * 0.88);
-                level++;
-                levelLb2.setText(Integer.toString(level));
-            }
-        }
-        System.out.println("Created : " + blockNumber + "   Removed : " + eraseCnt +"   intervalByMode" +intervalByMode + "   interval Number : " + intervalByModeForChange);
-        return intervalByModeForChange;
-    }
-	
+		if (blockNumber == 30 || blockNumber == 60 || blockNumber == 80 || blockNumber == 100 || blockNumber == 120) {
+			if (intervalByMode == 1000) {
+				getScore(5*eraseCnt, "std");
+				setScore();
+			} else if (intervalByMode == 2000) {
+				getScore(11*eraseCnt, "std");
+				setScore();
+			} else if (intervalByMode == 800) {
+				getScore(20*eraseCnt, "std");
+				setScore();
+			}
+		}
+		if (intervalByMode == 1000) {
+			if (eraseCnt < 5 && eraseCnt >= 0) {
+				setting.intervalNumber = 1000;
+				level = 1;
+				levelLb2.setText(Integer.toString(level));
+			} else if (eraseCnt < 10 && eraseCnt >= 5) {
+				setting.intervalNumber = (int) (1000 * 0.9);
+				level = 2;
+				levelLb2.setText(Integer.toString(level));
+			} else if (eraseCnt < 15 && eraseCnt >= 10) {
+				setting.intervalNumber = (int) (1000 * 0.9 * 0.9);
+				level = 3;
+				levelLb2.setText(Integer.toString(level));
+			} else if (eraseCnt < 20 && eraseCnt >= 15) {
+				setting.intervalNumber = (int) (1000 * 0.9 * 0.9 * 0.9);
+				level = 4;
+				levelLb2.setText(Integer.toString(level));
+			} else if (eraseCnt < 25 && eraseCnt >= 20) {
+				setting.intervalNumber = (int) (1000 * 0.9 * 0.9 * 0.9 * 0.9);
+				level = 5;
+				levelLb2.setText(Integer.toString(level));
+			} else if (eraseCnt < 30 && eraseCnt >= 25) {
+				setting.intervalNumber = (int) (1000 * 0.9 * 0.9 * 0.9 * 0.9 * 0.9);
+				level = 6;
+				levelLb2.setText(Integer.toString(level));
+			} else if (eraseCnt >= 30) {
+				setting.intervalNumber = (int) (1000 * 0.9 * 0.9 * 0.9 * 0.9 * 0.9 * 0.9);
+				level = 7;
+				levelLb2.setText(Integer.toString(level));
+			}
+		} else if (intervalByMode == 2000) {
+			if (eraseCnt < 5 && eraseCnt >= 0) {
+				setting.intervalNumber = 2000;
+				level = 1;
+				levelLb2.setText(Integer.toString(level));
+			} else if (eraseCnt < 10 && eraseCnt >= 5) {
+				setting.intervalNumber = (int) (2000 * 0.92);
+				level = 2;
+				levelLb2.setText(Integer.toString(level));
+			} else if (eraseCnt < 15 && eraseCnt >= 10) {
+				setting.intervalNumber = (int) (2000 * 0.92 * 0.92);
+				level = 3;
+				levelLb2.setText(Integer.toString(level));
+			} else if (eraseCnt < 20 && eraseCnt >= 15) {
+				setting.intervalNumber = (int) (2000 * 0.92 * 0.92 * 0.92);
+				level = 4;
+				levelLb2.setText(Integer.toString(level));
+			} else if (eraseCnt < 25 && eraseCnt >= 20) {
+				setting.intervalNumber = (int) (2000 * 0.92 * 0.92 * 0.92 * 0.92);
+				level = 5;
+				levelLb2.setText(Integer.toString(level));
+			} else if (eraseCnt < 30 && eraseCnt >= 25) {
+				setting.intervalNumber = (int) (2000 * 0.92 * 0.92 * 0.92 * 0.92 * 0.92);
+				level = 6;
+				levelLb2.setText(Integer.toString(level));
+			} else if (eraseCnt >= 30) {
+				setting.intervalNumber = (int) (2000 * 0.92 * 0.92 * 0.92 * 0.92 * 0.92 * 0.92);
+				level = 7;
+				levelLb2.setText(Integer.toString(level));
+			}
+		} else if (intervalByMode == 800) {
+			if (eraseCnt < 5 && eraseCnt >= 0) {
+				setting.intervalNumber = 800;
+				level = 1;
+				levelLb2.setText(Integer.toString(level));
+			} else if (eraseCnt < 10 && eraseCnt >= 5) {
+				setting.intervalNumber = (int) (800 * 0.88);
+				level = 2;
+				levelLb2.setText(Integer.toString(level));
+			} else if (eraseCnt < 15 && eraseCnt >= 10) {
+				setting.intervalNumber = (int) (800 * 0.88 * 0.88);
+				level = 3;
+				levelLb2.setText(Integer.toString(level));
+			} else if (eraseCnt < 20 && eraseCnt >= 15) {
+				setting.intervalNumber = (int) (800 * 0.88 * 0.88 * 0.88);
+				level = 4;
+				levelLb2.setText(Integer.toString(level));
+			} else if (eraseCnt < 25 && eraseCnt >= 20) {
+				setting.intervalNumber = (int) (800 * 0.88 * 0.88 * 0.88 * 0.88);
+				level = 5;
+				levelLb2.setText(Integer.toString(level));
+			} else if (eraseCnt < 30 && eraseCnt >= 25) {
+				setting.intervalNumber = (int) (800 * 0.88 * 0.88 * 0.88 * 0.88 * 0.88);
+				level = 6;
+				levelLb2.setText(Integer.toString(level));
+			} else if (eraseCnt >= 30) {
+				setting.intervalNumber = (int) (800 * 0.88 * 0.88 * 0.88 * 0.88 * 0.88 * 0.88);
+				level = 7;
+				levelLb2.setText(Integer.toString(level));
+			}
+		}
+		System.out.println("Created : " + blockNumber + "   Removed : " + eraseCnt +"   intervalByMode" +intervalByMode + "   interval Number : " + setting.intervalNumber);
+		return setting.intervalNumber;
+	}
 	public void reset() {
 		board = new int[HEIGHT][WIDTH];
 		nextBoard = new int[4][5];
@@ -994,7 +1006,7 @@ public class ItemBoard extends JFrame {
 				}
 			}
 			eraseCnt++;
-			if ((eraseCnt != 0) && (eraseCnt % 10 == 0))
+			if ((eraseCnt != 0) && (eraseCnt % 10  == 0))
 				itemFlag = true;
 		}
 		if (itemFlag == true) {
@@ -1114,7 +1126,7 @@ public class ItemBoard extends JFrame {
 					case KeyEvent.VK_ESCAPE:
 						timer.stop();
 						String[] stopOption = {"재시작", "계속", "종료"};
-						int choice = JOptionPane.showOptionDialog(null, "무엇을 선택하시겠습니까?", "일시중지", 0, 0, null, stopOption,stopOption[1]);
+						int choice = JOptionPane.showOptionDialog(null, "무엇을 선택하시겠습니까?", "일시정지", 0, 0, null, stopOption,stopOption[1]);
 						switch(choice) {
 							case 0:
 								int confirm1 = JOptionPane.showConfirmDialog(null, "정말 게임을 재시작 하시겠습니까?", "확인", JOptionPane.YES_NO_OPTION);
@@ -1252,12 +1264,12 @@ public class ItemBoard extends JFrame {
 		
 		}
 	}
-	
-	//max - 30, default - 20,  
-	public void setSize(int size) {
-		StyleConstants.setFontSize(stylesetBr, size);
-		StyleConstants.setFontSize(stylesetCur, size);
-		StyleConstants.setFontSize(stylesetNx, size+5);
+
+	//max - 30, default - 20,
+	public void setStylesetSize(int size1, int size2, int size3) {
+		StyleConstants.setFontSize(stylesetBr, size1);
+		StyleConstants.setFontSize(stylesetCur, size1);
+		StyleConstants.setFontSize(stylesetNx, size3);
 		drawBoard();
 		drawNext();
 	}
@@ -1267,7 +1279,7 @@ public class ItemBoard extends JFrame {
 	public static void setRtSize(int xSize, int ySize) {
 		scorePanel.setPreferredSize(new Dimension(xSize, ySize));
 		levelPanel.setPreferredSize(new Dimension(xSize, ySize));
-		nextArea.setPreferredSize(new Dimension(xSize, ySize * 4));
+		nextArea.setPreferredSize(new Dimension(xSize, xSize));
 	}
 	
 	//max - 17, default - nothing, 
@@ -1287,7 +1299,12 @@ public class ItemBoard extends JFrame {
 	
 	public void getScore(int lines, String mode) {
 		int scorePre = lines;
-		updateSroce(scorePre, mode);
+		if(mode == "line") {
+			updateSroce(scorePre, mode);
+		}else if(mode=="block") {
+			updateSroce(1, mode);
+		}
+
 	}
 	
 	public int getNowScore() {
@@ -1310,14 +1327,46 @@ public class ItemBoard extends JFrame {
 			if(sc%11 ==0) {
 				this.score += 11;
 			}
-		}else {
+		}else if(mode=="block") {
 			this.score += sc;
 		}
 
 		setScore();
 		return score;
 	}
-	
+	public void changeSize(int sizeNumber){
+		switch (sizeNumber) {
+			case 1:
+				setSize(400, 600);
+				setStylesetSize(30, 25, 20);
+				setRtSize(110, 50);
+				setLbSize(10);
+				tetrisArea.setPreferredSize(new Dimension(250, 460));
+				break;
+			case 2:
+				setSize(800, 800);
+				setStylesetSize(50, 50, 45);
+				setRtSize(250, 55);
+				setLbSize(15);
+				tetrisArea.setPreferredSize(new Dimension(400, 750));
+				break;
+			case 3:
+				setSize(screenWidth, screenHeight);
+				setStylesetSize(50, 50, 45);
+				setRtSize(250, 60);
+				setLbSize(17);
+				tetrisArea.setPreferredSize(new Dimension(400, 750));
+				break;
+			default:
+				setSize(400, 600);
+				setStylesetSize(30, 25, 25);
+				setRtSize(120, 50);
+				setLbSize(10);
+				tetrisArea.setPreferredSize(new Dimension(220, 400));
+				break;
+		}
+	}
+
 	public static ItemBoard getItemBoard(){
 		return itemBoardMain;
 	}
