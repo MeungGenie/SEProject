@@ -32,10 +32,10 @@ class DBCreate {
 
 		String sql = "CREATE TABLE IF NOT EXISTS StInit (\n" 	
 				+ " id integer PRIMARY KEY AUTOINCREMENT,\n"
-				+ " code text NOT NULL DEFAULT '',\n" // window, Color, Level
+				+ " code text NOT NULL DEFAULT '',\n" // window, Color, Level, Key
 				+ " type integer NOT NULL DEFAULT 0\n" + ");";
 
-		String initsql = "INSERT INTO StInit(code) VALUES('Window'), ('Color'), ('Level');";
+		String initsql = "INSERT INTO StInit(code) VALUES('Window'), ('Color'), ('Level'), ('Key');";
 
 		try {
 			Connection conn = DriverManager.getConnection(url);
@@ -61,20 +61,6 @@ class DBCreate {
 			conn.close();
 		} catch (SQLException e) {
 			System.out.println("0"+e.getMessage());
-		}
-
-		sql = "CREATE TABLE IF NOT EXISTS StGameKey (\n" 
-				+ " id integer PRIMARY KEY AUTOINCREMENT,\n"
-				+ " code text NOT NULL DEFAULT '',\n" 
-				+ " key text NOT NULL DEFAULT ''\n" + ");";
-		try {
-			Connection conn = DriverManager.getConnection(url);
-
-			Statement stmt = conn.createStatement();
-			stmt.execute(sql);
-			conn.close();
-		} catch (SQLException e) {
-			System.out.println("1"+e.getMessage());
 		}
 
 		sql = "CREATE TABLE IF NOT EXISTS Score (\n" 

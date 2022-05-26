@@ -589,5 +589,59 @@ public class DBCalls extends DBConnectionManager {
 
 		return Result;
 	}
+	
+	
+	public void UpdateKeySetting(int Code) {
+		String sql = "";
+
+		if (Code >= 0 && Code < 2) {
+			sql = "UPDATE StInit set type = " + String.valueOf(Code) + " where id = 4";
+		} else {
+			System.out.println("Key Setting : Code Error");
+		}
+
+		try {
+			Connection conn = DriverManager.getConnection(url);
+
+			Statement stmt = conn.createStatement();
+			stmt.executeUpdate(sql);
+
+			conn.close();
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+
+	}
+
+	public int getKeySetting() {
+		int Result = 0;
+
+		String sql = "select type from StInit Where id = 4;";
+
+		try {
+			Connection conn = DriverManager.getConnection(url);
+
+			Statement stmt = conn.createStatement();
+			stmt.execute(sql);
+
+			ResultSet rs = stmt.executeQuery(sql);
+
+			int count = 0;
+
+			while (rs.next()) {
+				count = rs.getInt(1);
+			}
+
+			System.out.println("Get Key Setting : " + count);
+
+			Result = count;
+
+			conn.close();
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+
+		return Result;
+	}
 
 }

@@ -15,4 +15,9 @@ public class SettingValues {
     public static SettingValues getInstance() {
         return instance;
     }
+    /*
+    public static void setIntervalNumber(int intervalNumber) {
+        instance.intervalNumber = intervalNumber;
+    }
+    */
 }
