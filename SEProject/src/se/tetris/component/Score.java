@@ -494,10 +494,29 @@ class itemTable extends JPanel {
 		JTable table = new JTable(data, title);
 		JTable table2 = new JTable(data2, title);
 		JTable table3 = new JTable(data3, title);
+		
+		table.setOpaque(true);
+		table2.setOpaque(true);
+		table3.setOpaque(true);
+		
+		table.setForeground(Color.black);
+		table2.setForeground(Color.black);
+		table3.setForeground(Color.black);
+		
 
 		JScrollPane scrollview = new JScrollPane(table);
 		JScrollPane scrollview2 = new JScrollPane(table2);
 		JScrollPane scrollview3 = new JScrollPane(table3);
+		
+		scrollview.setOpaque(true);
+		scrollview2.setOpaque(true);
+		scrollview3.setOpaque(true);
+		
+		scrollview.setForeground(Color.black);
+		scrollview2.setForeground(Color.black);
+		scrollview3.setForeground(Color.black);
+		
+
 
 		if (Count == 0) {
 			//scrollview.setPreferredSize(new Dimension(350, 450));
