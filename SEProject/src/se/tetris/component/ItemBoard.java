@@ -364,7 +364,7 @@ public class ItemBoard extends JFrame {
 			eraseCnt++;
 			getScore(eraseCnt, "line");
 			setScore();
-			if ((eraseCnt != 0) && (eraseCnt % 3 == 0))
+			if ((eraseCnt != 0) && (eraseCnt % 10 == 0))
 				itemFlag = true;
 		}
 		if (itemFlag == true) {
@@ -995,7 +995,7 @@ public class ItemBoard extends JFrame {
 				}
 			}
 			eraseCnt++;
-			if ((eraseCnt != 0) && (eraseCnt % 3 == 0))
+			if ((eraseCnt != 0) && (eraseCnt % 10 == 0))
 				itemFlag = true;
 		}
 		if (itemFlag == true) {
