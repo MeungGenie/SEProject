@@ -1,7 +1,6 @@
 package se.tetris.component;
 
-import java.awt.Color;
-import java.awt.Dimension;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -34,7 +33,12 @@ import se.tetris.blocks.ZBlock;
 import se.tetris.setting.SettingValues;
 import se.tetris.data.*;
 
+import static se.tetris.setting.SettingCode.screenHeight;
+import static se.tetris.setting.SettingCode.screenWidth;
+
 public class InnerBoard extends JPanel {
+	
+	public static String BattleMode;
 
     public static Board innerBoardMain;
     private static final long serialVersionUID = 2434035659171694595L;
@@ -109,9 +113,12 @@ public class InnerBoard extends JPanel {
     
     boolean whoIs = false;
     boolean whoAttacked = false;
-    public int attackLineCount = 3;
+    public int attackLineCount = 0;
+    
     StringBuffer sbByAttack;
-    boolean alreadyAttacked = false;   
+    
+    boolean alreadyAttacked = false;
+    boolean attackBoardFull = false;
 
     public InnerBoard() {
         //Board display setting.
@@ -122,12 +129,16 @@ public class InnerBoard extends JPanel {
                 BorderFactory.createLineBorder(Color.GRAY, 10),
                 BorderFactory.createLineBorder(Color.DARK_GRAY, 5));
         tetrisArea.setBorder(border);
+        tetrisArea.setAlignmentX(CENTER_ALIGNMENT);
+        tetrisArea.setAlignmentY(CENTER_ALIGNMENT);
 
         nextArea = new JTextPane();
         nextArea.setEditable(false);
         nextArea.setBackground(Color.BLACK);
         nextArea.setBorder(border);
-        nextArea.setPreferredSize(new Dimension(150, 150));
+        nextArea.setAlignmentX(CENTER_ALIGNMENT);
+        nextArea.setAlignmentY(CENTER_ALIGNMENT);
+        //nextArea.setPreferredSize(new Dimension(150, 150));
 
         scorePanel = new JPanel();
         EtchedBorder scoreBorder = new EtchedBorder();
@@ -136,7 +147,11 @@ public class InnerBoard extends JPanel {
 
 
         scoreLb1.setForeground(Color.darkGray);
+      //정렬
         scoreLb1.setAlignmentX(CENTER_ALIGNMENT);
+        scoreLb2.setAlignmentX(CENTER_ALIGNMENT);
+        levelLb1.setAlignmentX(CENTER_ALIGNMENT);
+        levelLb2.setAlignmentX(CENTER_ALIGNMENT);
 
         scoreLb2.setForeground(Color.RED);
 
@@ -168,7 +183,9 @@ public class InnerBoard extends JPanel {
                 BorderFactory.createLineBorder(Color.GRAY, 3),
                 BorderFactory.createLineBorder(Color.WHITE, 3));
         attackArea.setBorder(attackBorder);
-        attackArea.setPreferredSize(new Dimension(150, 150));
+        attackArea.setAlignmentX(CENTER_ALIGNMENT);
+        attackArea.setAlignmentY(CENTER_ALIGNMENT);
+        //attackArea.setPreferredSize(new Dimension(150, 150));
 
         leftPanel = new JPanel();
         leftPanel.add(tetrisArea);
@@ -213,7 +230,8 @@ public class InnerBoard extends JPanel {
         StyleConstants.setBold(stylesetBr, true);
         StyleConstants.setForeground(stylesetBr, Color.WHITE);
         StyleConstants.setAlignment(stylesetBr, StyleConstants.ALIGN_CENTER);
-
+        StyleConstants.setLineSpacing(stylesetBr, -0.45f);
+        
         stylesetCur = new SimpleAttributeSet();
         StyleConstants.setFontSize(stylesetCur, 20);
         StyleConstants.setFontFamily(stylesetCur, "Courier New");
@@ -225,14 +243,16 @@ public class InnerBoard extends JPanel {
         StyleConstants.setFontFamily(stylesetNx, "Courier New");
         StyleConstants.setBold(stylesetNx, true);
         StyleConstants.setAlignment(stylesetNx, StyleConstants.ALIGN_CENTER);
-
+        StyleConstants.setLineSpacing(stylesetNx, -0.45f);
+        
         stylesetAk = new SimpleAttributeSet();
         StyleConstants.setFontSize(stylesetAk, 10);
         StyleConstants.setFontFamily(stylesetAk, "Courier New");
         StyleConstants.setBold(stylesetAk, true);
         StyleConstants.setForeground(stylesetAk, Color.GRAY);
         StyleConstants.setAlignment(stylesetAk, StyleConstants.ALIGN_CENTER);
-
+        StyleConstants.setLineSpacing(stylesetAk, -0.45f);
+        
         boardDoc = tetrisArea.getStyledDocument();
         nextDoc = nextArea.getStyledDocument();
         attackDoc = attackArea.getStyledDocument();
@@ -244,9 +264,11 @@ public class InnerBoard extends JPanel {
         drawBoard();
         placeNext();
         drawNext();
-        
 
         timer.start();
+        
+        changeSize(sizeNumber);
+        System.out.println(sizeNumber);
     }
 
     public Block getRandomBlock(int modeChoose) {
@@ -416,21 +438,39 @@ public class InnerBoard extends JPanel {
         x = 3;
         y = 0;
         if (isGameOver() == true) {
-            BattleBoard.gameStop();
-            String[] overOption = {"종료하기", "다시하기"};
-            String winner;
+        	String winner;
             if (name == "Player1") {
                 winner = "Player2";
             }
             else
                 winner = "Player1";
+
+        	if(BattleMode == "Battle") {
+        		BattleBoard.gameStop();
+        	}else if(BattleMode == "TimeBattle") {
+        		TimeBattleBoard.gameStop();
+        		TimeBattleBoard.collisionStop();
+
+        		TimeBattleBoard.ColPlayer = winner;
+        		return;
+        	}
+
+            String[] overOption = {"종료하기", "다시하기"};
+
+
+
+
+
             int over = JOptionPane.showOptionDialog(null, winner + "이(가) 게임에서 승리했습니다!", "종료", 0, 0, null, overOption, overOption[0]);
-            if (over == 0) {
-            	BattleBoard.gameClose();
-            }
-            if (over == 1) {
-                BattleBoard.gameReset();
-            }
+
+        	if(BattleMode == "Battle") {
+                if (over == 0) {
+                	BattleBoard.gameClose();
+                }
+                if (over == 1) {
+                    BattleBoard.gameReset();
+                }
+        	}
         }
         else {
             eraseNext();
@@ -458,7 +498,6 @@ public class InnerBoard extends JPanel {
                     board[i][j] = board[i-1][j];
                 }
             }
-            index = 0;
             eraseCnt++;
             getScore(eraseCnt, "line");
             setScore();
@@ -513,6 +552,10 @@ public class InnerBoard extends JPanel {
 
     public void moveDown() {
         eraseCurr();
+        
+        getScore(eraseCnt, "block");
+		setScore();
+
         if (collisionBottom()) {
             collisionOccur();
             if (whoAttacked) {
@@ -539,6 +582,7 @@ public class InnerBoard extends JPanel {
         }
         System.out.println(attackLineCount);
         BattleBoard.forAttack();
+        attackBoardFull = false;
     }
 
 
@@ -572,7 +616,8 @@ public class InnerBoard extends JPanel {
         }
         for(int t=0; t<WIDTH+2; t++) sb.append(BORDER_CHAR);
         tetrisArea.setText(sb.toString());
-        boardDoc.setCharacterAttributes(0, boardDoc.getLength(), stylesetBr, false);
+        boardDoc.setParagraphAttributes(1, boardDoc.getLength() - 1, stylesetBr, false);
+        boardDoc.setCharacterAttributes(1, boardDoc.getLength() - 1, stylesetBr, false);
 
         for(int j = 0; j < curr.height(); j++) {
             int rows = y+j == 0 ? 1 : y+j+1;
@@ -670,8 +715,9 @@ public class InnerBoard extends JPanel {
     //blockNumber 증가 + timer 변경
     public void drawNext() {
         StringBuffer sb = new StringBuffer();
-        sb.append("\n");
         blockNumber++;
+        sb.append("\n");
+        sb.append("\n");
         timer.setDelay(getInterval(blockNumber, eraseCnt));
         for(int i=0; i < nextBoard.length; i++) {
             for(int j=0; j < nextBoard[i].length; j++) {
@@ -705,111 +751,108 @@ public class InnerBoard extends JPanel {
 
     //interval 함수
     public int getInterval(int blockNumber, int eraseCnt) {
+        //생성
         if (blockNumber == 30 || blockNumber == 60 || blockNumber == 80 || blockNumber == 100 || blockNumber == 120) {
             if (intervalByMode == 1000) {
                 getScore(5*eraseCnt, "std");
                 setScore();
-                level++;
-                levelLb2.setText(Integer.toString(level));
             } else if (intervalByMode == 2000) {
                 getScore(11*eraseCnt, "std");
                 setScore();
-                level++;                levelLb2.setText(Integer.toString(level));
             } else if (intervalByMode == 800) {
                 getScore(20*eraseCnt, "std");
                 setScore();
-                level++;
-                levelLb2.setText(Integer.toString(level));
             }
         }
+        //삭제
         if (intervalByMode == 1000) {
             if (eraseCnt < 5 && eraseCnt >= 0) {
                 intervalByModeForChange = 1000;
-                level++;
+                level = 1;
                 levelLb2.setText(Integer.toString(level));
             } else if (eraseCnt < 10 && eraseCnt >= 5) {
                 intervalByModeForChange = (int) (1000 * 0.9);
-                level++;
+                level = 2;
                 levelLb2.setText(Integer.toString(level));
             } else if (eraseCnt < 15 && eraseCnt >= 10) {
                 intervalByModeForChange = (int) (1000 * 0.9 * 0.9);
-                level++;
+                level = 3;
                 levelLb2.setText(Integer.toString(level));
             } else if (eraseCnt < 20 && eraseCnt >= 15) {
                 intervalByModeForChange = (int) (1000 * 0.9 * 0.9 * 0.9);
-                level++;
+                level = 4;
                 levelLb2.setText(Integer.toString(level));
             } else if (eraseCnt < 25 && eraseCnt >= 20) {
                 intervalByModeForChange = (int) (1000 * 0.9 * 0.9 * 0.9 * 0.9);
-                level++;
+                level = 5;
                 levelLb2.setText(Integer.toString(level));
             } else if (eraseCnt < 30 && eraseCnt >= 25) {
                 intervalByModeForChange = (int) (1000 * 0.9 * 0.9 * 0.9 * 0.9 * 0.9);
-                level++;
+                level = 6;
                 levelLb2.setText(Integer.toString(level));
             } else if (eraseCnt >= 30) {
                 intervalByModeForChange = (int) (1000 * 0.9 * 0.9 * 0.9 * 0.9 * 0.9 * 0.9);
-                level++;
+                level = 7;
                 levelLb2.setText(Integer.toString(level));
             }
         } else if (intervalByMode == 2000) {
             if (eraseCnt < 5 && eraseCnt >= 0) {
                 intervalByModeForChange = 2000;
-                level++;
+                level = 1;
                 levelLb2.setText(Integer.toString(level));
             } else if (eraseCnt < 10 && eraseCnt >= 5) {
                 intervalByModeForChange = (int) (2000 * 0.92);
-                level++;
+                level = 2;
                 levelLb2.setText(Integer.toString(level));
             } else if (eraseCnt < 15 && eraseCnt >= 10) {
                 intervalByModeForChange = (int) (2000 * 0.92 * 0.92);
-                level++;
+                level = 3;
                 levelLb2.setText(Integer.toString(level));
             } else if (eraseCnt < 20 && eraseCnt >= 15) {
                 intervalByModeForChange = (int) (2000 * 0.92 * 0.92 * 0.92);
-                level++;
+                level = 4;
                 levelLb2.setText(Integer.toString(level));
             } else if (eraseCnt < 25 && eraseCnt >= 20) {
                 intervalByModeForChange = (int) (2000 * 0.92 * 0.92 * 0.92 * 0.92);
-                level++;
+                level = 5;
                 levelLb2.setText(Integer.toString(level));
             } else if (eraseCnt < 30 && eraseCnt >= 25) {
                 intervalByModeForChange = (int) (2000 * 0.92 * 0.92 * 0.92 * 0.92 * 0.92);
-                level++;
+                level = 6;
                 levelLb2.setText(Integer.toString(level));
             } else if (eraseCnt >= 30) {
                 intervalByModeForChange = (int) (2000 * 0.92 * 0.92 * 0.92 * 0.92 * 0.92 * 0.92);
-                level++;
+                level = 7;
                 levelLb2.setText(Integer.toString(level));
             }
         } else if (intervalByMode == 800) {
             if (eraseCnt < 5 && eraseCnt >= 0) {
                 intervalByModeForChange = 800;
-                level++;
+                level = 1;
                 levelLb2.setText(Integer.toString(level));
             } else if (eraseCnt < 10 && eraseCnt >= 5) {
                 intervalByModeForChange = (int) (800 * 0.88);
-                level++;
+                level = 2;
                 levelLb2.setText(Integer.toString(level));
             } else if (eraseCnt < 15 && eraseCnt >= 10) {
                 intervalByModeForChange = (int) (800 * 0.88 * 0.88);
-                level++;
+                level = 3;
                 levelLb2.setText(Integer.toString(level));
             } else if (eraseCnt < 20 && eraseCnt >= 15) {
                 intervalByModeForChange = (int) (800 * 0.88 * 0.88 * 0.88);
-                level++;
+                level = 4;
                 levelLb2.setText(Integer.toString(level));
             } else if (eraseCnt < 25 && eraseCnt >= 20) {
                 intervalByModeForChange = (int) (800 * 0.88 * 0.88 * 0.88 * 0.88);
-                level++;
+                level = 5;
                 levelLb2.setText(Integer.toString(level));
             } else if (eraseCnt < 30 && eraseCnt >= 25) {
                 intervalByModeForChange = (int) (800 * 0.88 * 0.88 * 0.88 * 0.88 * 0.88);
-                level++;
+                level = 6;
                 levelLb2.setText(Integer.toString(level));
             } else if (eraseCnt >= 30) {
                 intervalByModeForChange = (int) (800 * 0.88 * 0.88 * 0.88 * 0.88 * 0.88 * 0.88);
-                level++;
+                level = 7;
                 levelLb2.setText(Integer.toString(level));
             }
         }
@@ -828,6 +871,8 @@ public class InnerBoard extends JPanel {
         drawBoard();
         placeNext();
         drawNext();
+        this.score = 0;
+        this.setScore();
         this.board = new int[20][10];
     }
 
@@ -898,15 +943,17 @@ public class InnerBoard extends JPanel {
 
     public void setScore() {
         String scoretxt = Integer.toString(score);
-//				String.valueOf(score);
         String prescoretxt = scoreLb2.getText();
-        System.out.println("점수 변경" + prescoretxt+"...>"+ scoretxt);
         scoreLb2.setText(scoretxt);
     }
 
     public void getScore(int lines, String mode) {
         int scorePre = lines;
-        updateSroce(scorePre, mode);
+        if(mode == "line") {
+			updateSroce(scorePre, mode);
+		}else if(mode=="block") {
+			updateSroce(1, mode);
+		}
     }
 
     public int getNowScore() {
@@ -915,27 +962,27 @@ public class InnerBoard extends JPanel {
     }
 
     public int updateSroce(int sc, String mode) {
-        if(mode =="line") {
-            if(sc>0 && sc<=5) {
-                this.score += 10;
-            }else if(sc>5 && sc<=10) {
-                this.score += 15;
-            }else {
-                this.score += 20;
-            }
-            if(sc%3 ==0) {
-                this.score += 3*sc;
-            }
-            if(sc%11 ==0) {
-                this.score += 11;
-            }
-        }else {
-            this.score += sc;
-        }
+		if(mode =="line") {
+			if(sc>0 && sc<=5) {
+				this.score += 10;
+			}else if(sc>5 && sc<=10) {
+				this.score += 15;
+			}else {
+				this.score += 20;
+			}
+			if(sc%3 ==0) {
+				this.score += 3*sc;
+			}
+			if(sc%11 ==0) {
+				this.score += 11;
+			}
+		}else if(mode=="block") {
+			this.score += sc;
+		}
 
-        setScore();
-        return score;
-    }
+		setScore();
+		return score;
+	}
 
     public void gameStop() {
         timer.stop();
@@ -966,6 +1013,59 @@ public class InnerBoard extends JPanel {
     }
     public int getAttackLineCount() {
         return attackLineCount;
+    }
+    
+    public void setStylesetSize(int size1, int size2, int size3) {
+        StyleConstants.setFontSize(stylesetBr, size1);
+        StyleConstants.setFontSize(stylesetCur, size1);
+        StyleConstants.setFontSize(stylesetNx, size3);
+        StyleConstants.setFontSize(stylesetAk, size2);
+        drawBoard();
+        drawNext();
+    }
+
+    //max - (200, 60), default - (150, 50)
+    public void setRtSize(int xSize, int ySize, int ySize2) {
+        scorePanel.setPreferredSize(new Dimension(xSize, ySize));
+        levelPanel.setPreferredSize(new Dimension(xSize, ySize));
+        nextArea.setPreferredSize(new Dimension(xSize, xSize));
+        attackArea.setPreferredSize(new Dimension(ySize2, ySize2));
+    }
+
+    //max - 17, default - nothing,
+    public void setLbSize(int size) {
+        scoreLb1.setFont(new Font(null, Font.BOLD, size));
+        scoreLb2.setFont(new Font(null, Font.BOLD, size));
+        levelLb1.setFont(new Font(null, Font.BOLD, size));
+        levelLb2.setFont(new Font(null, Font.BOLD, size));
+    }
+    public void changeSize(int sizeNumber){
+        switch (sizeNumber) {
+            case 1:
+                setStylesetSize(20, 13, 20);
+                setRtSize(120, 50, 120);
+                setLbSize(10);
+                tetrisArea.setPreferredSize(new Dimension(180, 330));
+                break;
+            case 2:
+                setStylesetSize(40, 22, 36);
+                setRtSize(200, 55, 200);
+                setLbSize(15);
+                tetrisArea.setPreferredSize(new Dimension(330, 625));
+                break;
+            case 3:
+                setStylesetSize(40, 22, 36);
+                setRtSize(200, 55, 200);
+                setLbSize(17);
+                tetrisArea.setPreferredSize(new Dimension(330, 625));
+                break;
+            default:
+                setStylesetSize(25, 13, 20);
+                setRtSize(120, 50, 120);
+                setLbSize(10);
+                tetrisArea.setPreferredSize(new Dimension(220, 400));
+                break;
+        }
     }
 
 }
