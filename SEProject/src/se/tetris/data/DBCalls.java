@@ -525,7 +525,7 @@ public class DBCalls extends DBConnectionManager {
 				count = rs.getInt(1);
 			}
 
-			System.out.println("Get Color Setting : " + count);
+			//System.out.println("Get Color Setting : " + count);
 
 			Result = count;
 
@@ -578,7 +578,7 @@ public class DBCalls extends DBConnectionManager {
 				count = rs.getInt(1);
 			}
 
-			System.out.println("Get Level Setting : " + count);
+			//System.out.println("Get Level Setting : " + count);
 
 			Result = count;
 
@@ -632,7 +632,7 @@ public class DBCalls extends DBConnectionManager {
 				count = rs.getInt(1);
 			}
 
-			System.out.println("Get Key Setting : " + count);
+			//System.out.println("Get Key Setting : " + count);
 
 			Result = count;
 
