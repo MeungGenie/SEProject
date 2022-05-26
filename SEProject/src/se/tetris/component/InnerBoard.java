@@ -143,6 +143,12 @@ public class InnerBoard extends JPanel {
         scoreLb1.setAlignmentX(CENTER_ALIGNMENT);
 
         scoreLb2.setForeground(Color.RED);
+        
+        //Á¤·Ä
+        scoreLb1.setAlignmentX(CENTER_ALIGNMENT);
+        scoreLb2.setAlignmentX(CENTER_ALIGNMENT);
+        levelLb1.setAlignmentX(CENTER_ALIGNMENT);
+        levelLb2.setAlignmentX(CENTER_ALIGNMENT);
 
         scorePanel.setLayout(new BoxLayout(scorePanel, BoxLayout.Y_AXIS));
         scorePanel.add(scoreLb1);
