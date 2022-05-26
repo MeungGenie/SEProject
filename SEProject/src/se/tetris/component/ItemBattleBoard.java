@@ -79,7 +79,7 @@ public class ItemBattleBoard extends JFrame {
                 case KeyEvent.VK_TAB:
                 	while(true){
 						player1.eraseCurr();
-						if (player1.itemType == 12) {
+						if (player1.itemDrop && player1.itemType == 12) {
 							for (int i = player1.y; i < 20; i++) {
 								for (int j = player1.x; j < player1.x + player1.curr.width(); j++) {
 									player1.board[i][j] = 0;
@@ -98,6 +98,7 @@ public class ItemBattleBoard extends JFrame {
 							player1.notMove = false;
 							player1.itemType = 0;
 							player1.itemFlag = false;
+							player1.itemDrop = false;
 							break;
 						}
 						else {
@@ -107,10 +108,6 @@ public class ItemBattleBoard extends JFrame {
 	                                player1.attackedFunction();
 	                            }
 								player1.lineRemove();
-								if (player1.itemFlag == true) {
-									player1.itemSet();
-									player1.itemDrop = true;
-								}
 								if (!player1.isGameOver()) {
 									player1.placeBlock();
 									player1.drawBoard();
@@ -151,7 +148,7 @@ public class ItemBattleBoard extends JFrame {
                 case KeyEvent.VK_ENTER:
                 	while(true){
 						player2.eraseCurr();
-						if (player2.itemType == 12) {
+						if (player2.itemDrop && player2.itemType == 12) {
 							for (int i = player2.y; i < 20; i++) {
 								for (int j = player2.x; j < player2.x + player2.curr.width(); j++) {
 									player2.board[i][j] = 0;
@@ -170,6 +167,7 @@ public class ItemBattleBoard extends JFrame {
 							player2.notMove = false;
 							player2.itemType = 0;
 							player2.itemFlag = false;
+							player2.itemDrop = false;
 							break;
 						}
 						else {
@@ -179,10 +177,6 @@ public class ItemBattleBoard extends JFrame {
 	                                player2.attackedFunction();
 	                            }
 								player2.lineRemove();
-								if (player2.itemFlag == true) {
-									player2.itemSet();
-									player2.itemDrop = true;
-								}
 								if (!player2.isGameOver()) {
 									player2.placeBlock();
 									player2.drawBoard();
