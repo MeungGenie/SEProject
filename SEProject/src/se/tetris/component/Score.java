@@ -48,10 +48,27 @@ class tabViewBox extends JFrame {
 		setSize(400, 600);
 
 		setBackground(Color.white);
+		
 		display();
 	}
 
 	public void display() {
+		JPanel AllPane = new JPanel();
+		
+		AllPane.setLayout(new BorderLayout());
+		
+		
+		JPanel btnPane = new JPanel();
+		
+		JButton startBtn = new JButton("시작하기");
+		JButton endBtn = new JButton("종료하기");
+		
+		btnPane.add(startBtn);
+		btnPane.add(endBtn);
+		
+		AllPane.add(btnPane);
+		
+		
 		JTabbedPane tabView = new JTabbedPane();
 
 		stdTable stdScoreView = new stdTable();
@@ -59,7 +76,9 @@ class tabViewBox extends JFrame {
 		tabView.addTab("기본 모드 랭킹", stdScoreView);
 		tabView.addTab("아이템 모드 랭킹", itemScoreView);
 
-		add(tabView);
+		AllPane.add(tabView);
+		
+		add(AllPane);
 	}
 }
 
