@@ -77,6 +77,7 @@ public class ItemBoard extends JFrame {
 	int eraseCnt = 0;
 	boolean itemFlag = false;
 	boolean itemDrop = false;
+	boolean itemApplied = false;
 	boolean blockFix = false;
 	boolean notMove = false;
 	int itemX = 0;
@@ -94,8 +95,9 @@ public class ItemBoard extends JFrame {
 	//public static int initEasyInterval = 2000;
 	//public static int initNormalInterval = 1000;
 	//public static int initHardInterval = 500;
-	final SettingValues setting = SettingValues.getInstance();
-	int intervalByMode = setting.intervalNumber;
+	public final SettingValues setting = SettingValues.getInstance();
+    public int intervalByMode = setting.intervalNumber;
+    public int intervalByModeForChange = setting.intervalNumber;
 	
 	private static int blockNumber = 0;
 	
@@ -300,7 +302,7 @@ public class ItemBoard extends JFrame {
 	private void placeBlock() {
 		for(int j=0; j<curr.height(); j++) {
 			for(int i=0; i<curr.width(); i++) {
-				if (curr.getShape(i, j) != 0 && board[y+j][x+i] == 0)
+				if (curr.getShape(i, j) > 0)
 					board[y+j][x+i] = curr.getShape(i, j);
 			}
 		}
@@ -317,7 +319,7 @@ public class ItemBoard extends JFrame {
 	private void eraseCurr() {
 		for(int i=x; i<x+curr.width(); i++) {
 			for(int j=y; j<y+curr.height(); j++) {
-				if(curr.getShape(i-x,j-y) != 0)
+				if(curr.getShape(i-x,j-y) > 0)
 					board[j][i] = 0;
 			}
 		}
@@ -338,7 +340,7 @@ public class ItemBoard extends JFrame {
 		for(int i = 0; i < HEIGHT; i++) {
 			count = 0;
 			for(int j = 0; j < WIDTH; j++)
-				if(board[i][j] == 1) 
+				if(board[i][j] > 0) 
 				{
 					count++;
 				}
@@ -349,7 +351,6 @@ public class ItemBoard extends JFrame {
 	}
  
 	public void lineRemove() {
-		itemFlag = false;
 		line = lineCheck();
 		Iterator<Integer> iter = line.iterator();
 		int index = 0;
@@ -363,41 +364,51 @@ public class ItemBoard extends JFrame {
 			eraseCnt++;
 			getScore(eraseCnt, "line");
 			setScore();
-			if ((eraseCnt != 0) && (eraseCnt % 1 == 0))
+			if ((eraseCnt != 0) && (eraseCnt % 3 == 0))
 				itemFlag = true;
+		}
+		if (itemFlag == true) {
+			eraseNext();
+			itemSet();
+			placeNext();
+			drawNext();
+			itemFlag = false;
+			itemApplied = true;
 		}
 	}
 	
 	
 	public void collisionOccur() {
 		saveBoard();
+		
 		if (itemDrop == true) {
 			itemX = x + getItemX();
 			itemY = y + getItemY();
 			switch(itemType) {
-				case 2: //LR
+				case 8: //LR
 					lRItem();
 					break;
-				case 3:
+				case 9:
 					curr.getInitBlock(curr);
 					placeBlock();
 					drawBoard();
 					break;
-				case 4:
+				case 10:
 					blockFix = false;
 					curr.getInitBlock(curr);
 					placeBlock();
 					drawBoard();
 					break;
-				case 5://CRI
+				case 11://CRI
 					cRItem();
 					break;
-				case 6:
+				case 12:
 					blockFix = false;
 					break;
 					
 			}
 			itemDrop = false;
+			itemFlag = false;
 		}
 		curr = next;
 		x = 3;
@@ -414,12 +425,24 @@ public class ItemBoard extends JFrame {
 			placeNext();
 			drawNext();
 		}
+		if (itemApplied == true) {
+			itemDrop = true;
+			switch(itemType) {
+			case 10:
+				blockFix = true;
+				break;
+			case 12:
+				blockFix = true;
+				break;
+			}
+			itemApplied = false;
+		}
 	}
 	
 	
 	protected void moveDown() {
 		eraseCurr();
-		if (itemType == 6) {
+		if (itemDrop && itemType == 12) {
 			if (collisionLeft() || collisionRight() || collisionBottom()) {
 				notMove = true;
 			}
@@ -443,6 +466,7 @@ public class ItemBoard extends JFrame {
 				blockFix = false;
 				itemType = 0;
 				itemFlag = false;
+				itemDrop = false;
 			}
 			eraseCurr();
 			placeBlock();
@@ -454,15 +478,12 @@ public class ItemBoard extends JFrame {
 			}
 			else y++;
 			lineRemove();
-			if (itemFlag == true) {
-				itemSet();
-				itemDrop = true;
-			}
 			if (!isGameOver()) {
 				placeBlock();
 				drawBoard();
 			}
 		}
+		System.out.println("ItemDrop >>  " + itemDrop);
 	}
 	
 	protected void moveRight() {
@@ -486,27 +507,33 @@ public class ItemBoard extends JFrame {
 			for(int j=0; j < board[i].length; j++) {
 				int blockType = board[i][j];
 				switch(blockType) {
-					case 1:
-						sb.append("■");
-						break;
-					case 2:
-						sb.append("L");
-						break;
-					case 3:
-						sb.append("●");
-						break;
-					case 4:
-						sb.append("×");
-						break;
-					case 5:
-						sb.append("C");
-						break;
-					case 6:
-						sb.append("O");
-						break;
-					default:
-						sb.append(" ");
-					
+				case 1:
+				case 2:
+				case 3:
+				case 4:
+				case 5:
+				case 6:
+				case 7, 13:
+					sb.append("■");
+					break;
+				case 8:
+					sb.append("L");
+					break;
+				case 9:
+					sb.append("●");
+					break;
+				case 10:
+					sb.append("×");
+					break;
+				case 11:
+					sb.append("C");
+					break;
+				case 12:
+					sb.append("O");
+					break;
+				default:
+					sb.append(" ");
+				
 				}
 			}
 			sb.append(BORDER_CHAR);
@@ -517,14 +544,93 @@ public class ItemBoard extends JFrame {
 		boardDoc.setCharacterAttributes(0, boardDoc.getLength(), stylesetBr, false);
 		
 		for(int j = 0; j < curr.height(); j++) {
-			int rows = y+j == 0 ? 1 : y+j+1;
-			int offset = rows * (WIDTH+3) + x + 1;
-			for (int i = 0; i < curr.width(); i++) {
-				 if (curr.getShape(i, j) == 1) {
-					 colorBlindModeCurrent(offset + i);
-		            }	
-			}
-		}
+            int rows = y+j == 0 ? 1 : y+j+1;
+            int offset = rows * (WIDTH+3) + x + 1;
+            for (int i = 0; i < curr.width(); i++) {
+                if (curr.getShape(i, j) > 0  && curr.getShape(i, j) < 8) {
+                    colorBlindModeCurrent(offset + i);
+                }
+            }
+        }
+		
+		for (int i = 0; i < board.length; i++) {
+            int offset = (i + 1) * (WIDTH + 3) + 1;
+            for (int j = 0; j < board[0].length ; j++) {
+                int block = board[i][j];
+                switch(block) {
+                    case 1:
+                    	if (setting.colorBlindModeCheck == 1) {
+                    		StyleConstants.setForeground(stylesetCur, new Color(0, 58, 97));
+                            boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+                    	}
+                    	else {
+                    		StyleConstants.setForeground(stylesetCur, Color.CYAN);
+                            boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+                    	}
+                        break;
+                    case 2:
+                        if (setting.colorBlindModeCheck == 1) {
+                        	StyleConstants.setForeground(stylesetCur, new Color(126, 98, 61));
+                            boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+                        }
+                        else {
+                        	StyleConstants.setForeground(stylesetCur, Color.BLUE);
+                            boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+                        }
+                        break;
+                    case 3:
+                    	if (setting.colorBlindModeCheck == 1) {
+                    		StyleConstants.setForeground(stylesetCur, new Color(165, 148, 159));
+                            boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+                    	}
+                    	else {
+                    		StyleConstants.setForeground(stylesetCur, Color.PINK);
+                            boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+                    	}
+                        break;
+                    case 4:
+                    	if (setting.colorBlindModeCheck == 1) {
+                    		StyleConstants.setForeground(stylesetCur, new Color(187, 190, 242));
+                            boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+                    	}
+                    	else {
+                    		StyleConstants.setForeground(stylesetCur, Color.YELLOW);
+                            boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+                    	}
+                        break;
+                    case 5:
+                    	if (setting.colorBlindModeCheck == 1) {
+                    		StyleConstants.setForeground(stylesetCur, new Color(247, 193, 121));
+                            boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+                    	}
+                    	else {
+                    		StyleConstants.setForeground(stylesetCur, Color.GREEN);
+                            boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+                    	}
+                    	break;
+                    case 6:
+                    	if (setting.colorBlindModeCheck == 1) {
+                    		StyleConstants.setForeground(stylesetCur, new Color(154, 127, 112));
+                            boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+                    	}
+                    	else {
+                    		StyleConstants.setForeground(stylesetCur, Color.MAGENTA);
+                            boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+                    	}
+                        break;
+                    case 7:
+                    	if (setting.colorBlindModeCheck == 1) {
+                    		StyleConstants.setForeground(stylesetCur, new Color(99, 106, 141));
+                            boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+                    	}
+                    	else {
+                    		StyleConstants.setForeground(stylesetCur, Color.RED);
+                            boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+                    	}
+                        break;
+                }
+            }
+        }
 	}
 	
 	public void drawNext() {
@@ -534,9 +640,33 @@ public class ItemBoard extends JFrame {
 		timer.setDelay(getInterval(blockNumber, eraseCnt));
 		for(int i=0; i < nextBoard.length; i++) {
 			for(int j=0; j < nextBoard[i].length; j++) {
-				if(nextBoard[i][j] == 1) {
+				int nextBlock = nextBoard[i][j];
+				switch(nextBlock) {
+				case 1:
+				case 2:
+				case 3:
+				case 4:
+				case 5:
+				case 6:
+				case 7, 13:
 					sb.append("■");
-				} else {
+					break;
+				case 8:
+					sb.append("L");
+					break;
+				case 9:
+					sb.append("●");
+					break;
+				case 10:
+					sb.append("×");
+					break;
+				case 11:
+					sb.append("C");
+					break;
+				case 12:
+					sb.append("O");
+					break;
+				default:
 					sb.append(" ");
 				}
 			}
@@ -544,6 +674,18 @@ public class ItemBoard extends JFrame {
 		}
 		nextArea.setText(sb.toString());
 		colorBlindModeNext();
+		
+		
+		for(int i = 0; i < nextBoard.length; i++) {
+			int offset = i * 6 + 1;
+			for (int j = 0; j < nextBoard[0].length; j++) {
+				int nextBlock = nextBoard[i][j];
+				if (nextBlock > 7) {
+					StyleConstants.setForeground(stylesetNx, Color.WHITE);
+                    nextDoc.setCharacterAttributes(offset + j, 1, stylesetNx, true);
+				}
+			}
+		}
 	}
 	
 	private void colorBlindMode(SimpleAttributeSet styleSet, Block block) {
@@ -564,52 +706,117 @@ public class ItemBoard extends JFrame {
 	
 	//interval 함수
 	public int getInterval(int blockNumber, int eraseCnt) {
-		if (blockNumber == 30 || blockNumber == 60 || blockNumber == 80 || blockNumber == 100 || blockNumber == 120) {
-			if (intervalByMode == 1000) {
-				SettingValues.getInstance().intervalNumber *= 0.9;
-				getScore(3*eraseCnt, "std");
-				setScore();
-				level++;
-				levelLb2.setText(Integer.toString(level));
-			} else if (intervalByMode == 2000) {
-				SettingValues.getInstance().intervalNumber *= 0.92;
-				getScore(7*eraseCnt, "std");
-				setScore();
-				level++;
-				levelLb2.setText(Integer.toString(level));
-			} else if (intervalByMode == 800) {
-				SettingValues.getInstance().intervalNumber *= 0.88;
-				getScore(11*eraseCnt, "std");
-				setScore();
-				level++;
-				levelLb2.setText(Integer.toString(level));
-			}
-		}
-		if (eraseCnt == 5 || eraseCnt == 10 || eraseCnt == 15 || eraseCnt == 20 || eraseCnt == 25) {
-			if (intervalByMode == 1000) {
-				setting.intervalNumber *= 0.9;
-				level++;
-				getScore(7*eraseCnt, "std");
-				setScore();
-				levelLb2.setText(Integer.toString(level));
-			} else if (intervalByMode == 2000) {
-				setting.intervalNumber *= 0.92;
-				level++;
-				getScore(10*eraseCnt, "std");
-				setScore();
-				levelLb2.setText(Integer.toString(level));
-			} else if (intervalByMode == 800) {
-				setting.intervalNumber *= 0.88;
-				level++;
-				getScore(20*eraseCnt, "std");
-				setScore();
-				levelLb2.setText(Integer.toString(level));
-			}
-		}
-		System.out.println("Created : " + blockNumber + "   Removed : " + eraseCnt +"   intervalByMode" +intervalByMode + "   interval Number : " + setting.intervalNumber);
-		return setting.intervalNumber;
-	}
-	
+        if (blockNumber == 30 || blockNumber == 60 || blockNumber == 80 || blockNumber == 100 || blockNumber == 120) {
+            if (intervalByMode == 1000) {
+                getScore(5*eraseCnt, "std");
+                setScore();
+                level++;
+                levelLb2.setText(Integer.toString(level));
+            } else if (intervalByMode == 2000) {
+                getScore(11*eraseCnt, "std");
+                setScore();
+                level++;                levelLb2.setText(Integer.toString(level));
+            } else if (intervalByMode == 800) {
+                getScore(20*eraseCnt, "std");
+                setScore();
+                level++;
+                levelLb2.setText(Integer.toString(level));
+            }
+        }
+        if (intervalByMode == 1000) {
+            if (eraseCnt < 5 && eraseCnt >= 0) {
+                intervalByModeForChange = 1000;
+                level++;
+                levelLb2.setText(Integer.toString(level));
+            } else if (eraseCnt < 10 && eraseCnt >= 5) {
+                intervalByModeForChange = (int) (1000 * 0.9);
+                level++;
+                levelLb2.setText(Integer.toString(level));
+            } else if (eraseCnt < 15 && eraseCnt >= 10) {
+                intervalByModeForChange = (int) (1000 * 0.9 * 0.9);
+                level++;
+                levelLb2.setText(Integer.toString(level));
+            } else if (eraseCnt < 20 && eraseCnt >= 15) {
+                intervalByModeForChange = (int) (1000 * 0.9 * 0.9 * 0.9);
+                level++;
+                levelLb2.setText(Integer.toString(level));
+            } else if (eraseCnt < 25 && eraseCnt >= 20) {
+                intervalByModeForChange = (int) (1000 * 0.9 * 0.9 * 0.9 * 0.9);
+                level++;
+                levelLb2.setText(Integer.toString(level));
+            } else if (eraseCnt < 30 && eraseCnt >= 25) {
+                intervalByModeForChange = (int) (1000 * 0.9 * 0.9 * 0.9 * 0.9 * 0.9);
+                level++;
+                levelLb2.setText(Integer.toString(level));
+            } else if (eraseCnt >= 30) {
+                intervalByModeForChange = (int) (1000 * 0.9 * 0.9 * 0.9 * 0.9 * 0.9 * 0.9);
+                level++;
+                levelLb2.setText(Integer.toString(level));
+            }
+        } else if (intervalByMode == 2000) {
+            if (eraseCnt < 5 && eraseCnt >= 0) {
+                intervalByModeForChange = 2000;
+                level++;
+                levelLb2.setText(Integer.toString(level));
+            } else if (eraseCnt < 10 && eraseCnt >= 5) {
+                intervalByModeForChange = (int) (2000 * 0.92);
+                level++;
+                levelLb2.setText(Integer.toString(level));
+            } else if (eraseCnt < 15 && eraseCnt >= 10) {
+                intervalByModeForChange = (int) (2000 * 0.92 * 0.92);
+                level++;
+                levelLb2.setText(Integer.toString(level));
+            } else if (eraseCnt < 20 && eraseCnt >= 15) {
+                intervalByModeForChange = (int) (2000 * 0.92 * 0.92 * 0.92);
+                level++;
+                levelLb2.setText(Integer.toString(level));
+            } else if (eraseCnt < 25 && eraseCnt >= 20) {
+                intervalByModeForChange = (int) (2000 * 0.92 * 0.92 * 0.92 * 0.92);
+                level++;
+                levelLb2.setText(Integer.toString(level));
+            } else if (eraseCnt < 30 && eraseCnt >= 25) {
+                intervalByModeForChange = (int) (2000 * 0.92 * 0.92 * 0.92 * 0.92 * 0.92);
+                level++;
+                levelLb2.setText(Integer.toString(level));
+            } else if (eraseCnt >= 30) {
+                intervalByModeForChange = (int) (2000 * 0.92 * 0.92 * 0.92 * 0.92 * 0.92 * 0.92);
+                level++;
+                levelLb2.setText(Integer.toString(level));
+            }
+        } else if (intervalByMode == 800) {
+            if (eraseCnt < 5 && eraseCnt >= 0) {
+                intervalByModeForChange = 800;
+                level++;
+                levelLb2.setText(Integer.toString(level));
+            } else if (eraseCnt < 10 && eraseCnt >= 5) {
+                intervalByModeForChange = (int) (800 * 0.88);
+                level++;
+                levelLb2.setText(Integer.toString(level));
+            } else if (eraseCnt < 15 && eraseCnt >= 10) {
+                intervalByModeForChange = (int) (800 * 0.88 * 0.88);
+                level++;
+                levelLb2.setText(Integer.toString(level));
+            } else if (eraseCnt < 20 && eraseCnt >= 15) {
+                intervalByModeForChange = (int) (800 * 0.88 * 0.88 * 0.88);
+                level++;
+                levelLb2.setText(Integer.toString(level));
+            } else if (eraseCnt < 25 && eraseCnt >= 20) {
+                intervalByModeForChange = (int) (800 * 0.88 * 0.88 * 0.88 * 0.88);
+                level++;
+                levelLb2.setText(Integer.toString(level));
+            } else if (eraseCnt < 30 && eraseCnt >= 25) {
+                intervalByModeForChange = (int) (800 * 0.88 * 0.88 * 0.88 * 0.88 * 0.88);
+                level++;
+                levelLb2.setText(Integer.toString(level));
+            } else if (eraseCnt >= 30) {
+                intervalByModeForChange = (int) (800 * 0.88 * 0.88 * 0.88 * 0.88 * 0.88 * 0.88);
+                level++;
+                levelLb2.setText(Integer.toString(level));
+            }
+        }
+        System.out.println("Created : " + blockNumber + "   Removed : " + eraseCnt +"   intervalByMode" +intervalByMode + "   interval Number : " + intervalByModeForChange);
+        return intervalByModeForChange;
+    }
 	
 	public void reset() {
 		board = new int[HEIGHT][WIDTH];
@@ -628,7 +835,7 @@ public class ItemBoard extends JFrame {
 	public boolean startCheck() {
 		for (int i = 0; i < curr.height(); i++) {
 			for (int j = 0; j < curr.width(); j++)
-				if(curr.getShape(j,i) != 0 && board[y + i][x + j] == 1)
+				if(curr.getShape(j,i) > 0 && board[y + i][x + j] > 0)
 					return true;
 		}
 		return false;
@@ -647,34 +854,32 @@ public class ItemBoard extends JFrame {
 	
 	public void itemSet() {
 		Random rnd = new Random(System.currentTimeMillis());
-		itemType = rnd.nextInt(5) + 2;
+		itemType = rnd.nextInt(5) + 8;
 		switch(itemType) {
-			case 2://LRemoveBlock
-				LRemoveBlock LR = new LRemoveBlock(curr);
-				curr = LR.getItemBlock();
+			case 8://LRemoveBlock
+				LRemoveBlock LR = new LRemoveBlock(next);
+				next = LR.getItemBlock();
 				break;
-			case 3:
-				curr.setShape(new int [][] {{1}});
-				OneBlock OB = new OneBlock(curr);
-				curr = OB.getItemBlock();
+			case 9:
+				next.setShape(new int [][] {{9}});
+				OneBlock OB = new OneBlock(next);
+				next = OB.getItemBlock();
 				break;
-			case 4:
-				blockFix = true;
-				FixedBlock FR = new FixedBlock(curr);
-				curr = FR.getItemBlock();
+			case 10:
+				FixedBlock FR = new FixedBlock(next);
+				next = FR.getItemBlock();
 				break;
-			case 5:
-				CRemoveBlock CR = new CRemoveBlock(curr);
-				curr = CR.getItemBlock();
+			case 11:
+				CRemoveBlock CR = new CRemoveBlock(next);
+				next = CR.getItemBlock();
 				break;
-			case 6: 
-				blockFix = true;
-				curr.setShape(new int [][] {
-					{0, 1, 1, 0},
-					{1, 1, 1, 1}
+			case 12: 
+				next.setShape(new int [][] {
+					{0, 12, 12, 0},
+					{12, 12, 12, 12}
 				});
-				WeightBlock WB = new WeightBlock(curr);
-				curr = WB.getItemBlock();
+				WeightBlock WB = new WeightBlock(next);
+				next = WB.getItemBlock();
 				break;
 		}
 	}
@@ -683,9 +888,9 @@ public class ItemBoard extends JFrame {
 		for (int i = 0; i < curr.height(); i++) {
 			for (int j = 0; j < curr.width(); j++) {
 				if (y >= HEIGHT - curr.height()) return true;
-				if (curr.getShape(j, i) != 0 && i + y < 19) {
+				if (curr.getShape(j, i) > 0 && i + y < 19) {
 					int checkBottom = board[i + y + 1][j + x];
-					if (checkBottom == 1) {
+					if (checkBottom > 0) {
 						return true;
 					}
 				}
@@ -701,9 +906,9 @@ public class ItemBoard extends JFrame {
 				if (j + x > 9) {
 					return true;
 				}
-				if (curr.getShape(j, i) != 0 && j + x < 9 && i + y < 19) {
+				if (curr.getShape(j, i) > 0 && j + x < 9 && i + y < 19) {
 					int checkRight = board[i + y][j + x + 1];
-					if(checkRight == 1) {
+					if(checkRight > 0) {
 						return true;
 					}
 				}
@@ -715,9 +920,9 @@ public class ItemBoard extends JFrame {
 	public boolean collisionLeft() {
 		for (int i = 0; i < curr.height(); i++) {
 			for (int j = 0; j < curr.width(); j++) {
-				if (curr.getShape(j, i) != 0 && j + x > 0) {
+				if (curr.getShape(j, i) > 0 && j + x > 0) {
 					int checkLeft = board[i + y][j + x - 1];
-					if(checkLeft == 1) {
+					if(checkLeft > 0) {
 						return true;
 					}
 				}
@@ -730,8 +935,8 @@ public class ItemBoard extends JFrame {
 	public void saveBoard() {
 		for (int i = 0; i < curr.height(); i++) {
 			for (int j = 0; j < curr.width(); j++) {
-				if (curr.getShape(j, i) == 1) {
-					board[y + i][j + x] = 1;
+				if (curr.getShape(j, i) > 0) {
+					board[y + i][j + x] = curr.getShape(j, i);
 				}
 			}
 		}
@@ -779,7 +984,6 @@ public class ItemBoard extends JFrame {
 	}
 	
 	public void lRItem() {
-		itemFlag = false;
 		line = new ArrayList<Integer>() {{add(itemY);}};
 		Iterator<Integer> iter = line.iterator();
 		int index = 0;
@@ -791,9 +995,18 @@ public class ItemBoard extends JFrame {
 				}
 			}
 			eraseCnt++;
-			if ((eraseCnt != 0) && (eraseCnt % 10 == 0))
+			if ((eraseCnt != 0) && (eraseCnt % 3 == 0))
 				itemFlag = true;
 		}
+		if (itemFlag == true) {
+			eraseNext();
+			itemSet();
+			placeNext();
+			drawNext();
+			itemFlag = false;
+			itemApplied = true;
+		}
+		
 	}
 	
 	public void cRItem() {
@@ -806,7 +1019,7 @@ public class ItemBoard extends JFrame {
 	public int getItemX() {
 		for (int i = 0; i < curr.height(); i++) {
 			for (int j = 0; j < curr.width(); j++) {
-				if(curr.getShape(j, i) > 1)
+				if(curr.getShape(j, i) > 7)
 					return j;
 			}
 		}
@@ -816,7 +1029,7 @@ public class ItemBoard extends JFrame {
 	public int getItemY() {
 		for (int i = 0; i < curr.height(); i++) {
 			for (int j = 0; j < curr.width(); j++) {
-				if(curr.getShape(j, i) > 1)
+				if(curr.getShape(j, i) > 7)
 					return i;
 			}
 		}
@@ -858,7 +1071,7 @@ public class ItemBoard extends JFrame {
 					case KeyEvent.VK_SPACE:
 						while(true){
 							eraseCurr();
-							if (itemType == 6) {
+							if (itemDrop && itemType == 12) {
 								for (int i = y; i < 20; i++) {
 									for (int j = x; j < x + curr.width(); j++) {
 										board[i][j] = 0;
@@ -873,20 +1086,17 @@ public class ItemBoard extends JFrame {
 								drawNext();
 								placeBlock();
 								drawBoard();
-								blockFix = false;
 								notMove = false;
+								blockFix = false;
 								itemType = 0;
 								itemFlag = false;
+								itemDrop = false;
 								break;
 							}
 							else {
 								if (collisionBottom()) {
 									collisionOccur();
 									lineRemove();
-									if (itemFlag == true) {
-										itemSet();
-										itemDrop = true;
-									}
 									if (!isGameOver()) {
 										placeBlock();
 										drawBoard();
@@ -904,11 +1114,11 @@ public class ItemBoard extends JFrame {
 						break;
 					case KeyEvent.VK_ESCAPE:
 						timer.stop();
-						String[] stopOption = {"Restart", "Play", "Exit"};
-						int choice = JOptionPane.showOptionDialog(null, "What Do You Want?", "Stop", 0, 0, null, stopOption,stopOption[1]);
+						String[] stopOption = {"재시작", "계속", "종료"};
+						int choice = JOptionPane.showOptionDialog(null, "무엇을 선택하시겠습니까?", "일시중지", 0, 0, null, stopOption,stopOption[1]);
 						switch(choice) {
 							case 0:
-								int confirm1 = JOptionPane.showConfirmDialog(null, "Are you sure?", "Confirm", JOptionPane.YES_NO_OPTION);
+								int confirm1 = JOptionPane.showConfirmDialog(null, "정말 게임을 재시작 하시겠습니까?", "확인", JOptionPane.YES_NO_OPTION);
 								if (confirm1 == 0) {
 									reset();
 									score = 0;
@@ -923,7 +1133,7 @@ public class ItemBoard extends JFrame {
 								timer.start();
 								break;
 							case 2:
-								int confirm2 = JOptionPane.showConfirmDialog(null, "Are you sure?", "Confirm", JOptionPane.YES_NO_OPTION);
+								int confirm2 = JOptionPane.showConfirmDialog(null, "정말 게임을 종료하시겠습니까?", "확인", JOptionPane.YES_NO_OPTION);
 								if (confirm2 == 0) {
 									dispose(); //or save score and move to score board.
 								}
@@ -958,9 +1168,9 @@ public class ItemBoard extends JFrame {
 						drawBoard();
 						break;
 					case KeyEvent.VK_SPACE:
-						while (true) {
+						while(true){
 							eraseCurr();
-							if (itemType == 6) {
+							if (itemDrop && itemType == 12) {
 								for (int i = y; i < 20; i++) {
 									for (int j = x; j < x + curr.width(); j++) {
 										board[i][j] = 0;
@@ -975,25 +1185,24 @@ public class ItemBoard extends JFrame {
 								drawNext();
 								placeBlock();
 								drawBoard();
-								blockFix = false;
 								notMove = false;
+								blockFix = false;
 								itemType = 0;
 								itemFlag = false;
+								itemDrop = false;
 								break;
-							} else {
+							}
+							else {
 								if (collisionBottom()) {
 									collisionOccur();
 									lineRemove();
-									if (itemFlag == true) {
-										itemSet();
-										itemDrop = true;
-									}
 									if (!isGameOver()) {
 										placeBlock();
 										drawBoard();
 									}
 									break;
-								} else {
+								}
+								else {
 									y++;
 								}
 								lineRemove();
@@ -1013,6 +1222,10 @@ public class ItemBoard extends JFrame {
 									reset();
 									score = 0;
 									level = 0;
+									itemFlag = false;
+									itemDrop = false;
+									blockFix = false;
+									notMove = false;
 									timer.restart();
 								} else {
 									timer.start();
