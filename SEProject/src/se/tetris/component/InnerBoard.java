@@ -120,7 +120,7 @@ public class InnerBoard extends JPanel {
     boolean alreadyAttacked = false;
     boolean attackBoardFull = false;
 
-    public InnerBoard() {
+    public InnerBoard(int sizeNumber) {
         //Board display setting.
         tetrisArea = new JTextPane();
         tetrisArea.setEditable(false);
