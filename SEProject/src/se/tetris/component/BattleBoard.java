@@ -150,12 +150,13 @@ public class BattleBoard extends JFrame {
                 case KeyEvent.VK_ESCAPE:
                     player1.timer.stop();
                     player2.timer.stop();
-                    int choice = JOptionPane.showConfirmDialog(null, "게임을 종료하시겠습니까?", "게임 종료", JOptionPane.YES_NO_CANCEL_OPTION);
+                    String[] stopOption = {"재시작", "계속", "종료"};
+                    int choice = JOptionPane.showOptionDialog(null, "무엇을 선택하시겠습니까?", "일시정지", 0, 0, null, stopOption,stopOption[1]);
                     switch(choice) {
                         case 0:
-                            int confirm = JOptionPane.showConfirmDialog(null, "정말 종료하시겠습니까?", "확인", JOptionPane.YES_NO_OPTION);
-                            if (confirm == 0) {
-                                dispose();
+                        	int confirm1 = JOptionPane.showConfirmDialog(null, "정말 게임을 재시작 하시겠습니까?", "확인", JOptionPane.YES_NO_OPTION);
+                            if (confirm1 == 0) {
+                                gameReset();
                             }
                             else {
                                 player1.timer.restart();
@@ -167,8 +168,15 @@ public class BattleBoard extends JFrame {
                             player2.timer.restart();
                             break;
                         case 2:
-                            player1.timer.restart();
-                            player2.timer.restart();
+                        	int confirm2 = JOptionPane.showConfirmDialog(null, "정말 게임을 종료하시겠습니까?", "확인", JOptionPane.YES_NO_OPTION);
+                            if (confirm2 == 0) {
+                            	dispose();
+                            }
+                            else {
+                            	player1.timer.restart();
+                            	player2.timer.restart();
+                            }
+                            break;
                     }
             }
         }
