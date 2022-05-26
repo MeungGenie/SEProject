@@ -23,8 +23,8 @@ import se.tetris.data.DBCalls;
 
 public class TimeBattleBoard extends JFrame {
 	
-    private static InnerTimeBoard player1;
-    private static InnerTimeBoard player2;
+    private static InnerBoard player1;
+    private static InnerBoard player2;
     private JPanel panel;
     private KeyListener playerKeyListener;
     public static JLabel timerCount;
@@ -55,8 +55,8 @@ public class TimeBattleBoard extends JFrame {
 		panelTop.add(timerCount);
 
         DBCalls dataCalls = new DBCalls();
-        player1 = new InnerTimeBoard(dataCalls.getWindowSetting() + 1);
-        player2 = new InnerTimeBoard(dataCalls.getWindowSetting() + 1);
+        player1 = new InnerBoard(dataCalls.getWindowSetting() + 1);
+        player2 = new InnerBoard(dataCalls.getWindowSetting() + 1);
         
         InnerBoard.BattleMode = "TimeBattle";
         
@@ -156,7 +156,7 @@ public class TimeBattleBoard extends JFrame {
                     break;
                 case KeyEvent.VK_ENTER:
                     while(true){
-                        player2.eraseCurr();
+                    	player2.eraseCurr();
                         if(player2.collisionBottom()) {
                             player2.collisionOccur();
                             player2.lineRemove();

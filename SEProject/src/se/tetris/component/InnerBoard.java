@@ -758,14 +758,14 @@ public class InnerBoard extends JPanel {
         //생성
         if (blockNumber == 30 || blockNumber == 60 || blockNumber == 80 || blockNumber == 100 || blockNumber == 120) {
             if (intervalByMode == 1000) {
-                getScore(5*eraseCnt, "std");
-                setScore();
+				getScore(2 * eraseCnt, "std");
+				setScore();
             } else if (intervalByMode == 2000) {
-                getScore(11*eraseCnt, "std");
-                setScore();
+				getScore(1 * eraseCnt, "std");
+				setScore();
             } else if (intervalByMode == 800) {
-                getScore(20*eraseCnt, "std");
-                setScore();
+				getScore(3 * eraseCnt, "std");
+				setScore();
             }
         }
         //삭제
@@ -774,40 +774,58 @@ public class InnerBoard extends JPanel {
                 intervalByModeForChange = 1000;
                 level = 1;
                 levelLb2.setText(Integer.toString(level));
+				getScore(1 * eraseCnt, "std");
+				setScore();
             } else if (eraseCnt < 10 && eraseCnt >= 5) {
                 intervalByModeForChange = (int) (1000 * 0.9);
                 level = 2;
                 levelLb2.setText(Integer.toString(level));
+				getScore(1 * eraseCnt, "std");
+				setScore();
             } else if (eraseCnt < 15 && eraseCnt >= 10) {
                 intervalByModeForChange = (int) (1000 * 0.9 * 0.9);
                 level = 3;
                 levelLb2.setText(Integer.toString(level));
+				getScore(1 * eraseCnt, "std");
+				setScore();
             } else if (eraseCnt < 20 && eraseCnt >= 15) {
                 intervalByModeForChange = (int) (1000 * 0.9 * 0.9 * 0.9);
                 level = 4;
                 levelLb2.setText(Integer.toString(level));
+				getScore(2 * eraseCnt, "std");
+				setScore();
             } else if (eraseCnt < 25 && eraseCnt >= 20) {
                 intervalByModeForChange = (int) (1000 * 0.9 * 0.9 * 0.9 * 0.9);
                 level = 5;
                 levelLb2.setText(Integer.toString(level));
+				getScore(2 * eraseCnt, "std");
+				setScore();
             } else if (eraseCnt < 30 && eraseCnt >= 25) {
                 intervalByModeForChange = (int) (1000 * 0.9 * 0.9 * 0.9 * 0.9 * 0.9);
                 level = 6;
                 levelLb2.setText(Integer.toString(level));
+				getScore(2 * eraseCnt, "std");
+				setScore();
             } else if (eraseCnt >= 30) {
                 intervalByModeForChange = (int) (1000 * 0.9 * 0.9 * 0.9 * 0.9 * 0.9 * 0.9);
                 level = 7;
                 levelLb2.setText(Integer.toString(level));
+				getScore(3 * eraseCnt, "std");
+				setScore();
             }
         } else if (intervalByMode == 2000) {
             if (eraseCnt < 5 && eraseCnt >= 0) {
                 intervalByModeForChange = 2000;
                 level = 1;
                 levelLb2.setText(Integer.toString(level));
+				getScore(2 * eraseCnt, "std");
+				setScore();
             } else if (eraseCnt < 10 && eraseCnt >= 5) {
                 intervalByModeForChange = (int) (2000 * 0.92);
                 level = 2;
                 levelLb2.setText(Integer.toString(level));
+				getScore(2 * eraseCnt, "std");
+				setScore();
             } else if (eraseCnt < 15 && eraseCnt >= 10) {
                 intervalByModeForChange = (int) (2000 * 0.92 * 0.92);
                 level = 3;

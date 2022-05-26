@@ -54,10 +54,10 @@ public class BattleBoard extends JFrame {
         requestFocus();
 
         Timer player1Timer = player1.getTimer();
-        player1Timer.setDelay(10000);
+        //player1Timer.setDelay(10000);
 
         Timer player2Timer = player2.getTimer();
-        player2Timer.setDelay(10000);
+        //player2Timer.setDelay(10000);
 
     }
 
