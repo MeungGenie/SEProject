@@ -80,6 +80,7 @@ public class InnerItemBoard extends JPanel{
     public ArrayList<Integer> attackLine;
     boolean itemFlag = false;
 	boolean itemDrop = false;
+	boolean itemApplied = false;
 	boolean blockFix = false;
 	boolean notMove = false;
 	int itemX = 0;
@@ -428,8 +429,16 @@ public class InnerItemBoard extends JPanel{
 			eraseCnt++;
 			getScore(eraseCnt, "line");
 			setScore();
-			if ((eraseCnt != 0) && (eraseCnt % 1 == 0))
+			if ((eraseCnt != 0) && (eraseCnt % 10 == 0))
 				itemFlag = true;
+		}
+		if (itemFlag == true) {
+			eraseNext();
+			itemSet();
+			placeNext();
+			drawNext();
+			itemFlag = false;
+			itemApplied = true;
 		}
 	}
 
@@ -465,6 +474,7 @@ public class InnerItemBoard extends JPanel{
 					
 			}
 			itemDrop = false;
+			itemFlag = false;
 		}
 		curr = next;
 		x = 3;
@@ -487,6 +497,7 @@ public class InnerItemBoard extends JPanel{
             	notMove = false;
             	itemFlag = false;
             	itemDrop = false;
+            	itemApplied = false;
                 ItemBattleBoard.gameReset();
             }
 		}
@@ -495,6 +506,18 @@ public class InnerItemBoard extends JPanel{
 			next = getRandomBlock(setting.modeChoose);
 			placeNext();
 			drawNext();
+		}
+		if (itemApplied == true) {
+			itemDrop = true;
+			switch(itemType) {
+			case 10:
+				blockFix = true;
+				break;
+			case 12:
+				blockFix = true;
+				break;
+			}
+			itemApplied = false;
 		}
 	}
 	
@@ -544,7 +567,7 @@ public class InnerItemBoard extends JPanel{
 
 	public void moveDown() {
 		eraseCurr();
-		if (itemType == 12) {
+		if (itemDrop && itemType == 12) {
 			if (collisionLeft() || collisionRight() || collisionBottom()) {
 				notMove = true;
 			}
@@ -568,6 +591,7 @@ public class InnerItemBoard extends JPanel{
 				blockFix = false;
 				itemType = 0;
 				itemFlag = false;
+				itemDrop = false;
 			}
 			eraseCurr();
 			placeBlock();
@@ -585,10 +609,6 @@ public class InnerItemBoard extends JPanel{
 			}
 			else y++;
 			lineRemove();
-			if (itemFlag == true) {
-				itemSet();
-				itemDrop = true;
-			}
 			if (!isGameOver()) {
 				placeBlock();
 				drawBoard();
@@ -757,22 +777,58 @@ public class InnerItemBoard extends JPanel{
 	}
 	
 	public void drawNext() {
-        StringBuffer sb = new StringBuffer();
-        sb.append("\n");
-        blockNumber++;
-        timer.setDelay(getInterval(blockNumber, eraseCnt));
-        for(int i=0; i < nextBoard.length; i++) {
-            for(int j=0; j < nextBoard[i].length; j++) {
-                if(nextBoard[i][j] > 0) {
-                    sb.append("бс");
-                } else {
-                    sb.append(" ");
-                }
-            }
-            sb.append("\n");
-        }
-        nextArea.setText(sb.toString());
-        colorBlindModeNext();
+		StringBuffer sb = new StringBuffer();
+		sb.append("\n");
+		blockNumber++;
+		timer.setDelay(getInterval(blockNumber, eraseCnt));
+		for(int i=0; i < nextBoard.length; i++) {
+			for(int j=0; j < nextBoard[i].length; j++) {
+				int nextBlock = nextBoard[i][j];
+				switch(nextBlock) {
+				case 1:
+				case 2:
+				case 3:
+				case 4:
+				case 5:
+				case 6:
+				case 7, 13:
+					sb.append("бс");
+					break;
+				case 8:
+					sb.append("L");
+					break;
+				case 9:
+					sb.append("б▄");
+					break;
+				case 10:
+					sb.append("б┐");
+					break;
+				case 11:
+					sb.append("C");
+					break;
+				case 12:
+					sb.append("O");
+					break;
+				default:
+					sb.append(" ");
+				}
+			}
+			sb.append("\n");
+		}
+		nextArea.setText(sb.toString());
+		colorBlindModeNext();
+		
+		
+		for(int i = 0; i < nextBoard.length; i++) {
+			int offset = i * 6 + 1;
+			for (int j = 0; j < nextBoard[0].length; j++) {
+				int nextBlock = nextBoard[i][j];
+				if (nextBlock > 7) {
+					StyleConstants.setForeground(stylesetNx, Color.WHITE);
+                    nextDoc.setCharacterAttributes(offset + j, 1, stylesetNx, true);
+				}
+			}
+		}
     }
 	
 	public void itemSet() {
@@ -780,38 +836,35 @@ public class InnerItemBoard extends JPanel{
 		itemType = rnd.nextInt(5) + 8;
 		System.out.println(itemType);
 		switch(itemType) {
-			case 8://LRemoveBlock
-				LRemoveBlock LR = new LRemoveBlock(curr);
-				curr = LR.getItemBlock();
-				break;
-			case 9:
-				curr.setShape(new int [][] {{9}});
-				OneBlock OB = new OneBlock(curr);
-				curr = OB.getItemBlock();
-				break;
-			case 10:
-				blockFix = true;
-				FixedBlock FR = new FixedBlock(curr);
-				curr = FR.getItemBlock();
-				break;
-			case 11:
-				CRemoveBlock CR = new CRemoveBlock(curr);
-				curr = CR.getItemBlock();
-				break;
-			case 12: 
-				blockFix = true;
-				curr.setShape(new int [][] {
-					{0, 12, 12, 0},
-					{12, 12, 12, 12}
-				});
-				WeightBlock WB = new WeightBlock(curr);
-				curr = WB.getItemBlock();
-				break;
+		case 8://LRemoveBlock
+			LRemoveBlock LR = new LRemoveBlock(next);
+			next = LR.getItemBlock();
+			break;
+		case 9:
+			next.setShape(new int [][] {{9}});
+			OneBlock OB = new OneBlock(next);
+			next = OB.getItemBlock();
+			break;
+		case 10:
+			FixedBlock FR = new FixedBlock(next);
+			next = FR.getItemBlock();
+			break;
+		case 11:
+			CRemoveBlock CR = new CRemoveBlock(next);
+			next = CR.getItemBlock();
+			break;
+		case 12: 
+			next.setShape(new int [][] {
+				{0, 12, 12, 0},
+				{12, 12, 12, 12}
+			});
+			WeightBlock WB = new WeightBlock(next);
+			next = WB.getItemBlock();
+			break;
 		}
 	}
 	
 	public void lRItem() {
-		itemFlag = false;
 		line = new ArrayList<Integer>() {{add(itemY);}};
 		Iterator<Integer> iter = line.iterator();
 		int index = 0;
@@ -823,8 +876,16 @@ public class InnerItemBoard extends JPanel{
 				}
 			}
 			eraseCnt++;
-			if ((eraseCnt != 0) && (eraseCnt % 1 == 0))
+			if ((eraseCnt != 0) && (eraseCnt % 10 == 0))
 				itemFlag = true;
+		}
+		if (itemFlag == true) {
+			eraseNext();
+			itemSet();
+			placeNext();
+			drawNext();
+			itemFlag = false;
+			itemApplied = true;
 		}
 	}
 	
@@ -1005,6 +1066,11 @@ public class InnerItemBoard extends JPanel{
         placeNext();
         drawNext();
         this.board = new int[20][10];
+        blockFix = false;
+    	notMove = false;
+    	itemFlag = false;
+    	itemDrop = false;
+    	itemApplied = false;
     }
 
     public boolean startCheck() {
