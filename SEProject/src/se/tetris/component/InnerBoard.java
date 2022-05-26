@@ -1,7 +1,6 @@
 package se.tetris.component;
 
-import java.awt.Color;
-import java.awt.Dimension;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -34,8 +33,11 @@ import se.tetris.blocks.ZBlock;
 import se.tetris.setting.SettingValues;
 import se.tetris.data.*;
 
+import static se.tetris.setting.SettingCode.screenHeight;
+import static se.tetris.setting.SettingCode.screenWidth;
+
 public class InnerBoard extends JPanel {
-	
+
 	public static String BattleMode;
 
     public static Board innerBoardMain;
@@ -108,16 +110,17 @@ public class InnerBoard extends JPanel {
     private JLabel scoreLb2 = new JLabel(Integer.toString(score));
     private JLabel levelLb1 = new JLabel("Level");
     private JLabel levelLb2 = new JLabel(Integer.toString(level));
-    
+
     boolean whoIs = false;
     boolean whoAttacked = false;
-    public int attackLineCount = 3;
+    public int attackLineCount = 0;
+
     StringBuffer sbByAttack;
-    
-    boolean alreadyAttacked = false;   
+
+    boolean alreadyAttacked = false;
     boolean attackBoardFull = false;
 
-    public InnerBoard() {
+    public InnerBoard(int sizeNumber) {
         //Board display setting.
         tetrisArea = new JTextPane();
         tetrisArea.setEditable(false);
@@ -126,12 +129,16 @@ public class InnerBoard extends JPanel {
                 BorderFactory.createLineBorder(Color.GRAY, 10),
                 BorderFactory.createLineBorder(Color.DARK_GRAY, 5));
         tetrisArea.setBorder(border);
+        tetrisArea.setAlignmentX(CENTER_ALIGNMENT);
+        tetrisArea.setAlignmentY(CENTER_ALIGNMENT);
 
         nextArea = new JTextPane();
         nextArea.setEditable(false);
         nextArea.setBackground(Color.BLACK);
         nextArea.setBorder(border);
-        nextArea.setPreferredSize(new Dimension(150, 150));
+        nextArea.setAlignmentX(CENTER_ALIGNMENT);
+        nextArea.setAlignmentY(CENTER_ALIGNMENT);
+        //nextArea.setPreferredSize(new Dimension(150, 150));
 
         scorePanel = new JPanel();
         EtchedBorder scoreBorder = new EtchedBorder();
@@ -140,15 +147,13 @@ public class InnerBoard extends JPanel {
 
 
         scoreLb1.setForeground(Color.darkGray);
-        scoreLb1.setAlignmentX(CENTER_ALIGNMENT);
-
-        scoreLb2.setForeground(Color.RED);
-        
         //정렬
         scoreLb1.setAlignmentX(CENTER_ALIGNMENT);
         scoreLb2.setAlignmentX(CENTER_ALIGNMENT);
         levelLb1.setAlignmentX(CENTER_ALIGNMENT);
         levelLb2.setAlignmentX(CENTER_ALIGNMENT);
+
+        scoreLb2.setForeground(Color.RED);
 
         scorePanel.setLayout(new BoxLayout(scorePanel, BoxLayout.Y_AXIS));
         scorePanel.add(scoreLb1);
@@ -178,7 +183,9 @@ public class InnerBoard extends JPanel {
                 BorderFactory.createLineBorder(Color.GRAY, 3),
                 BorderFactory.createLineBorder(Color.WHITE, 3));
         attackArea.setBorder(attackBorder);
-        attackArea.setPreferredSize(new Dimension(150, 150));
+        attackArea.setAlignmentX(CENTER_ALIGNMENT);
+        attackArea.setAlignmentY(CENTER_ALIGNMENT);
+        //attackArea.setPreferredSize(new Dimension(150, 150));
 
         leftPanel = new JPanel();
         leftPanel.add(tetrisArea);
@@ -223,18 +230,21 @@ public class InnerBoard extends JPanel {
         StyleConstants.setBold(stylesetBr, true);
         StyleConstants.setForeground(stylesetBr, Color.WHITE);
         StyleConstants.setAlignment(stylesetBr, StyleConstants.ALIGN_CENTER);
+        StyleConstants.setLineSpacing(stylesetBr, -0.45f);
 
         stylesetCur = new SimpleAttributeSet();
         StyleConstants.setFontSize(stylesetCur, 20);
         StyleConstants.setFontFamily(stylesetCur, "Courier New");
         StyleConstants.setBold(stylesetCur, true);
         StyleConstants.setAlignment(stylesetCur, StyleConstants.ALIGN_CENTER);
+        //StyleConstants.setLineSpacing(stylesetCur, -0.45f);
 
         stylesetNx = new SimpleAttributeSet();
         StyleConstants.setFontSize(stylesetNx, 25);
         StyleConstants.setFontFamily(stylesetNx, "Courier New");
         StyleConstants.setBold(stylesetNx, true);
         StyleConstants.setAlignment(stylesetNx, StyleConstants.ALIGN_CENTER);
+        StyleConstants.setLineSpacing(stylesetNx, -0.45f);
 
         stylesetAk = new SimpleAttributeSet();
         StyleConstants.setFontSize(stylesetAk, 10);
@@ -242,21 +252,24 @@ public class InnerBoard extends JPanel {
         StyleConstants.setBold(stylesetAk, true);
         StyleConstants.setForeground(stylesetAk, Color.GRAY);
         StyleConstants.setAlignment(stylesetAk, StyleConstants.ALIGN_CENTER);
+        StyleConstants.setLineSpacing(stylesetAk, -0.45f);
 
         boardDoc = tetrisArea.getStyledDocument();
         nextDoc = nextArea.getStyledDocument();
         attackDoc = attackArea.getStyledDocument();
 
         attackLine = new ArrayList<Integer>();
-        
-        
+
+
         placeBlock();
         drawBoard();
         placeNext();
         drawNext();
-        
 
         timer.start();
+
+        changeSize(sizeNumber);
+        System.out.println(sizeNumber);
     }
 
     public Block getRandomBlock(int modeChoose) {
@@ -287,7 +300,7 @@ public class InnerBoard extends JPanel {
                     }
                 }
             case 2:
-            	block = (int)(Math.random() * 7);
+                block = (int)(Math.random() * 7);
                 switch(block) {
                     case 0:
                         return new IBlock();
@@ -312,7 +325,7 @@ public class InnerBoard extends JPanel {
                     return new IBlock();
                 else
                 {
-                	block = (int)(Math.random() * 6);
+                    block = (int)(Math.random() * 6);
                     switch(block) {
                         case 0:
                             return new JBlock();
@@ -426,32 +439,32 @@ public class InnerBoard extends JPanel {
         x = 3;
         y = 0;
         if (isGameOver() == true) {
-        	
+
             String winner;
             if (name == "Player1") {
                 winner = "Player2";
             }
             else
                 winner = "Player1";
-        	
+
         	if(BattleMode == "Battle") {
         		BattleBoard.gameStop();
         	}else if(BattleMode == "TimeBattle") {
         		TimeBattleBoard.gameStop();
         		TimeBattleBoard.collisionStop();
-        		
+
         		TimeBattleBoard.ColPlayer = winner;
         		return;
         	}
-        	
-            String[] overOption = {"종료하기", "다시하기"};
-            
 
-            
-            
-            
+            String[] overOption = {"종료하기", "다시하기"};
+
+
+
+
+
             int over = JOptionPane.showOptionDialog(null, winner + "이(가) 게임에서 승리했습니다!", "종료", 0, 0, null, overOption, overOption[0]);
-            
+
         	if(BattleMode == "Battle") {
                 if (over == 0) {
                 	BattleBoard.gameClose();
@@ -472,7 +485,7 @@ public class InnerBoard extends JPanel {
     public void lineRemove() {
         line = lineCheck();
         if (line.size() > 1) {
-        	whoIs = true;
+            whoIs = true;
             BattleBoard.placeAttack(line);
             eraseLast();
             BattleBoard.drawAttack();
@@ -542,10 +555,10 @@ public class InnerBoard extends JPanel {
 
     public void moveDown() {
         eraseCurr();
-        
+
 		getScore(eraseCnt, "block");
 		setScore();
-		
+
         if (collisionBottom()) {
             collisionOccur();
             if (whoAttacked) {
@@ -562,7 +575,7 @@ public class InnerBoard extends JPanel {
             drawBoard();
         }
     }
-    
+
     public void attackedFunction() {
         System.out.println("Clear");
         for (int a = attackLineCount; a < HEIGHT; a++) {
@@ -606,7 +619,8 @@ public class InnerBoard extends JPanel {
         }
         for(int t=0; t<WIDTH+2; t++) sb.append(BORDER_CHAR);
         tetrisArea.setText(sb.toString());
-        boardDoc.setCharacterAttributes(0, boardDoc.getLength(), stylesetBr, false);
+        boardDoc.setParagraphAttributes(1, boardDoc.getLength() - 1, stylesetBr, false);
+        boardDoc.setCharacterAttributes(1, boardDoc.getLength() - 1, stylesetBr, false);
 
         for(int j = 0; j < curr.height(); j++) {
             int rows = y+j == 0 ? 1 : y+j+1;
@@ -618,94 +632,95 @@ public class InnerBoard extends JPanel {
             }
         }
 
-        
+
         for (int i = 0; i < board.length; i++) {
             int offset = (i + 1) * (WIDTH + 3) + 1;
             for (int j = 0; j < board[0].length ; j++) {
                 int block = board[i][j];
                 switch(block) {
                     case 1:
-                    	if (setting.colorBlindModeCheck == 1) {
-                    		StyleConstants.setForeground(stylesetCur, new Color(0, 58, 97));
-                            boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
-                    	}
-                    	else {
-                    		StyleConstants.setForeground(stylesetCur, Color.CYAN);
-                            boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
-                    	}
-                        break;
-                    case 2:
                         if (setting.colorBlindModeCheck == 1) {
-                        	StyleConstants.setForeground(stylesetCur, new Color(126, 98, 61));
+                            StyleConstants.setForeground(stylesetCur, new Color(0, 58, 97));
                             boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
                         }
                         else {
-                        	StyleConstants.setForeground(stylesetCur, Color.BLUE);
+                            StyleConstants.setForeground(stylesetCur, Color.CYAN);
+                            boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+                        }
+                        break;
+                    case 2:
+                        if (setting.colorBlindModeCheck == 1) {
+                            StyleConstants.setForeground(stylesetCur, new Color(126, 98, 61));
+                            boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+                        }
+                        else {
+                            StyleConstants.setForeground(stylesetCur, Color.BLUE);
                             boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
                         }
                         break;
                     case 3:
-                    	if (setting.colorBlindModeCheck == 1) {
-                    		StyleConstants.setForeground(stylesetCur, new Color(165, 148, 159));
+                        if (setting.colorBlindModeCheck == 1) {
+                            StyleConstants.setForeground(stylesetCur, new Color(165, 148, 159));
                             boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
-                    	}
-                    	else {
-                    		StyleConstants.setForeground(stylesetCur, Color.PINK);
+                        }
+                        else {
+                            StyleConstants.setForeground(stylesetCur, Color.PINK);
                             boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
-                    	}
+                        }
                         break;
                     case 4:
-                    	if (setting.colorBlindModeCheck == 1) {
-                    		StyleConstants.setForeground(stylesetCur, new Color(187, 190, 242));
+                        if (setting.colorBlindModeCheck == 1) {
+                            StyleConstants.setForeground(stylesetCur, new Color(187, 190, 242));
                             boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
-                    	}
-                    	else {
-                    		StyleConstants.setForeground(stylesetCur, Color.YELLOW);
+                        }
+                        else {
+                            StyleConstants.setForeground(stylesetCur, Color.YELLOW);
                             boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
-                    	}
+                        }
                         break;
                     case 5:
-                    	if (setting.colorBlindModeCheck == 1) {
-                    		StyleConstants.setForeground(stylesetCur, new Color(247, 193, 121));
+                        if (setting.colorBlindModeCheck == 1) {
+                            StyleConstants.setForeground(stylesetCur, new Color(247, 193, 121));
                             boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
-                    	}
-                    	else {
-                    		StyleConstants.setForeground(stylesetCur, Color.GREEN);
+                        }
+                        else {
+                            StyleConstants.setForeground(stylesetCur, Color.GREEN);
                             boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
-                    	}
-                    	break;
+                        }
+                        break;
                     case 6:
-                    	if (setting.colorBlindModeCheck == 1) {
-                    		StyleConstants.setForeground(stylesetCur, new Color(154, 127, 112));
+                        if (setting.colorBlindModeCheck == 1) {
+                            StyleConstants.setForeground(stylesetCur, new Color(154, 127, 112));
                             boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
-                    	}
-                    	else {
-                    		StyleConstants.setForeground(stylesetCur, Color.MAGENTA);
+                        }
+                        else {
+                            StyleConstants.setForeground(stylesetCur, Color.MAGENTA);
                             boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
-                    	}
+                        }
                         break;
                     case 7:
-                    	if (setting.colorBlindModeCheck == 1) {
-                    		StyleConstants.setForeground(stylesetCur, new Color(99, 106, 141));
+                        if (setting.colorBlindModeCheck == 1) {
+                            StyleConstants.setForeground(stylesetCur, new Color(99, 106, 141));
                             boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
-                    	}
-                    	else {
-                    		StyleConstants.setForeground(stylesetCur, Color.RED);
+                        }
+                        else {
+                            StyleConstants.setForeground(stylesetCur, Color.RED);
                             boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
-                    	}
+                        }
                         break;
                 }
             }
         }
-        
-        
+
+
     }
 
     //blockNumber 증가 + timer 변경
     public void drawNext() {
         StringBuffer sb = new StringBuffer();
-        sb.append("\n");
         blockNumber++;
+        sb.append("\n");
+        sb.append("\n");
         timer.setDelay(getInterval(blockNumber, eraseCnt));
         for(int i=0; i < nextBoard.length; i++) {
             for(int j=0; j < nextBoard[i].length; j++) {
@@ -720,7 +735,7 @@ public class InnerBoard extends JPanel {
         nextArea.setText(sb.toString());
         colorBlindModeNext();
     }
-    
+
     public void colorBlindMode(SimpleAttributeSet styleSet, Block block) {
         if (setting.colorBlindModeCheck == 1) {
             StyleConstants.setForeground(styleSet, block.getColorBlind());
@@ -738,116 +753,114 @@ public class InnerBoard extends JPanel {
     }
 
     //interval 함수
+    //interval 함수
     public int getInterval(int blockNumber, int eraseCnt) {
+        //생성
         if (blockNumber == 30 || blockNumber == 60 || blockNumber == 80 || blockNumber == 100 || blockNumber == 120) {
             if (intervalByMode == 1000) {
                 getScore(5*eraseCnt, "std");
                 setScore();
-                level++;
-                levelLb2.setText(Integer.toString(level));
             } else if (intervalByMode == 2000) {
                 getScore(11*eraseCnt, "std");
                 setScore();
-                level++;                levelLb2.setText(Integer.toString(level));
             } else if (intervalByMode == 800) {
                 getScore(20*eraseCnt, "std");
                 setScore();
-                level++;
-                levelLb2.setText(Integer.toString(level));
             }
         }
+        //삭제
         if (intervalByMode == 1000) {
             if (eraseCnt < 5 && eraseCnt >= 0) {
                 intervalByModeForChange = 1000;
-                level++;
+                level = 1;
                 levelLb2.setText(Integer.toString(level));
             } else if (eraseCnt < 10 && eraseCnt >= 5) {
                 intervalByModeForChange = (int) (1000 * 0.9);
-                level++;
+                level = 2;
                 levelLb2.setText(Integer.toString(level));
             } else if (eraseCnt < 15 && eraseCnt >= 10) {
                 intervalByModeForChange = (int) (1000 * 0.9 * 0.9);
-                level++;
+                level = 3;
                 levelLb2.setText(Integer.toString(level));
             } else if (eraseCnt < 20 && eraseCnt >= 15) {
                 intervalByModeForChange = (int) (1000 * 0.9 * 0.9 * 0.9);
-                level++;
+                level = 4;
                 levelLb2.setText(Integer.toString(level));
             } else if (eraseCnt < 25 && eraseCnt >= 20) {
                 intervalByModeForChange = (int) (1000 * 0.9 * 0.9 * 0.9 * 0.9);
-                level++;
+                level = 5;
                 levelLb2.setText(Integer.toString(level));
             } else if (eraseCnt < 30 && eraseCnt >= 25) {
                 intervalByModeForChange = (int) (1000 * 0.9 * 0.9 * 0.9 * 0.9 * 0.9);
-                level++;
+                level = 6;
                 levelLb2.setText(Integer.toString(level));
             } else if (eraseCnt >= 30) {
                 intervalByModeForChange = (int) (1000 * 0.9 * 0.9 * 0.9 * 0.9 * 0.9 * 0.9);
-                level++;
+                level = 7;
                 levelLb2.setText(Integer.toString(level));
             }
         } else if (intervalByMode == 2000) {
             if (eraseCnt < 5 && eraseCnt >= 0) {
                 intervalByModeForChange = 2000;
-                level++;
+                level = 1;
                 levelLb2.setText(Integer.toString(level));
             } else if (eraseCnt < 10 && eraseCnt >= 5) {
                 intervalByModeForChange = (int) (2000 * 0.92);
-                level++;
+                level = 2;
                 levelLb2.setText(Integer.toString(level));
             } else if (eraseCnt < 15 && eraseCnt >= 10) {
                 intervalByModeForChange = (int) (2000 * 0.92 * 0.92);
-                level++;
+                level = 3;
                 levelLb2.setText(Integer.toString(level));
             } else if (eraseCnt < 20 && eraseCnt >= 15) {
                 intervalByModeForChange = (int) (2000 * 0.92 * 0.92 * 0.92);
-                level++;
+                level = 4;
                 levelLb2.setText(Integer.toString(level));
             } else if (eraseCnt < 25 && eraseCnt >= 20) {
                 intervalByModeForChange = (int) (2000 * 0.92 * 0.92 * 0.92 * 0.92);
-                level++;
+                level = 5;
                 levelLb2.setText(Integer.toString(level));
             } else if (eraseCnt < 30 && eraseCnt >= 25) {
                 intervalByModeForChange = (int) (2000 * 0.92 * 0.92 * 0.92 * 0.92 * 0.92);
-                level++;
+                level = 6;
                 levelLb2.setText(Integer.toString(level));
             } else if (eraseCnt >= 30) {
                 intervalByModeForChange = (int) (2000 * 0.92 * 0.92 * 0.92 * 0.92 * 0.92 * 0.92);
-                level++;
+                level = 7;
                 levelLb2.setText(Integer.toString(level));
             }
         } else if (intervalByMode == 800) {
             if (eraseCnt < 5 && eraseCnt >= 0) {
                 intervalByModeForChange = 800;
-                level++;
+                level = 1;
                 levelLb2.setText(Integer.toString(level));
             } else if (eraseCnt < 10 && eraseCnt >= 5) {
                 intervalByModeForChange = (int) (800 * 0.88);
-                level++;
+                level = 2;
                 levelLb2.setText(Integer.toString(level));
             } else if (eraseCnt < 15 && eraseCnt >= 10) {
                 intervalByModeForChange = (int) (800 * 0.88 * 0.88);
-                level++;
+                level = 3;
                 levelLb2.setText(Integer.toString(level));
             } else if (eraseCnt < 20 && eraseCnt >= 15) {
                 intervalByModeForChange = (int) (800 * 0.88 * 0.88 * 0.88);
-                level++;
+                level = 4;
                 levelLb2.setText(Integer.toString(level));
             } else if (eraseCnt < 25 && eraseCnt >= 20) {
                 intervalByModeForChange = (int) (800 * 0.88 * 0.88 * 0.88 * 0.88);
-                level++;
+                level = 5;
                 levelLb2.setText(Integer.toString(level));
             } else if (eraseCnt < 30 && eraseCnt >= 25) {
                 intervalByModeForChange = (int) (800 * 0.88 * 0.88 * 0.88 * 0.88 * 0.88);
-                level++;
+                level = 6;
                 levelLb2.setText(Integer.toString(level));
             } else if (eraseCnt >= 30) {
                 intervalByModeForChange = (int) (800 * 0.88 * 0.88 * 0.88 * 0.88 * 0.88 * 0.88);
-                level++;
+                level = 7;
                 levelLb2.setText(Integer.toString(level));
             }
         }
-//        System.out.println("Created : " + blockNumber + "   Removed : " + eraseCnt +"   intervalByMode" +intervalByMode + "   interval Number : " + intervalByModeForChange);
+        System.out.println("Created : " + blockNumber + "   Removed : " + eraseCnt +"   intervalByMode" +intervalByMode + "   interval Number : " + intervalByModeForChange);
         return intervalByModeForChange;
     }
 
@@ -947,7 +960,7 @@ public class InnerBoard extends JPanel {
 		}
 
 	}
-	
+
 	public int getNowScore() {
 		int score = this.score;
 		return score;
@@ -995,16 +1008,69 @@ public class InnerBoard extends JPanel {
     public void setAttackBoard(int[][] attackBoard) {
         this.attackBoard = attackBoard;
     }
-    
+
     public int[][] getBoard() {
         return board;
     }
-    
+
     public void setAttackLineCount(int attackLineCount) {
         this.attackLineCount = attackLineCount;
     }
     public int getAttackLineCount() {
         return attackLineCount;
+    }
+
+    public void setStylesetSize(int size1, int size2, int size3) {
+        StyleConstants.setFontSize(stylesetBr, size1);
+        StyleConstants.setFontSize(stylesetCur, size1);
+        StyleConstants.setFontSize(stylesetNx, size3);
+        StyleConstants.setFontSize(stylesetAk, size2);
+        drawBoard();
+        drawNext();
+    }
+
+    //max - (200, 60), default - (150, 50)
+    public void setRtSize(int xSize, int ySize, int ySize2) {
+        scorePanel.setPreferredSize(new Dimension(xSize, ySize));
+        levelPanel.setPreferredSize(new Dimension(xSize, ySize));
+        nextArea.setPreferredSize(new Dimension(xSize, xSize));
+        attackArea.setPreferredSize(new Dimension(ySize2, ySize2));
+    }
+
+    //max - 17, default - nothing,
+    public void setLbSize(int size) {
+        scoreLb1.setFont(new Font(null, Font.BOLD, size));
+        scoreLb2.setFont(new Font(null, Font.BOLD, size));
+        levelLb1.setFont(new Font(null, Font.BOLD, size));
+        levelLb2.setFont(new Font(null, Font.BOLD, size));
+    }
+    public void changeSize(int sizeNumber){
+        switch (sizeNumber) {
+            case 1:
+                setStylesetSize(20, 13, 20);
+                setRtSize(120, 50, 120);
+                setLbSize(10);
+                tetrisArea.setPreferredSize(new Dimension(180, 330));
+                break;
+            case 2:
+                setStylesetSize(40, 22, 36);
+                setRtSize(200, 55, 200);
+                setLbSize(15);
+                tetrisArea.setPreferredSize(new Dimension(330, 625));
+                break;
+            case 3:
+                setStylesetSize(40, 22, 36);
+                setRtSize(200, 55, 200);
+                setLbSize(17);
+                tetrisArea.setPreferredSize(new Dimension(330, 625));
+                break;
+            default:
+                setStylesetSize(25, 13, 20);
+                setRtSize(120, 50, 120);
+                setLbSize(10);
+                tetrisArea.setPreferredSize(new Dimension(220, 400));
+                break;
+        }
     }
 
 }

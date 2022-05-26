@@ -18,6 +18,9 @@ import javax.swing.Timer;
 
 import java.util.TimerTask;
 
+import se.tetris.component.*;
+import se.tetris.data.DBCalls;
+
 public class TimeBattleBoard extends JFrame {
 	
     private static InnerBoard player1;
@@ -51,9 +54,10 @@ public class TimeBattleBoard extends JFrame {
 		panelTop.add(LtimerIcon);
 		panelTop.add(timerCount);
 
-        player1 = new InnerBoard();
-        player2 = new InnerBoard();
-
+        DBCalls dataCalls = new DBCalls();
+        player1 = new InnerBoard(dataCalls.getWindowSetting() + 1);
+        player2 = new InnerBoard(dataCalls.getWindowSetting() + 1);
+        
         InnerBoard.BattleMode = "TimeBattle";
         
         player1.setName("Player1");
