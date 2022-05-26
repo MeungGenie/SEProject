@@ -11,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.beans.ConstructorProperties;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,6 +32,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.Timer;
 import javax.swing.border.EtchedBorder;
+import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.border.CompoundBorder;
 import javax.swing.text.SimpleAttributeSet;
@@ -39,6 +41,66 @@ import javax.swing.text.StyledDocument;
 
 import se.tetris.component.*;
 import se.tetris.data.DBCalls;
+import se.tetris.setting.SettingCode;
+
+public class Score extends tabViewBox {
+	
+	DBCalls dataCalls = new DBCalls();
+
+	public Score() {
+
+		JLabel Title = new JLabel("SeoulTech SE Tettris Score");
+		Title.setFont(new Font("Serif", Font.BOLD, 17));
+		Title.setHorizontalAlignment(JLabel.CENTER);
+		Title.setVerticalAlignment(JLabel.CENTER);
+
+		JLabel Team = new JLabel("Team one");
+		Team.setHorizontalAlignment(JLabel.CENTER);
+		Team.setVerticalAlignment(JLabel.CENTER);
+
+		// JPanel btnGroup = new JPanel();
+		// btnGroup.setBackground(Color.white);
+		// btnGroup.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+
+		tabViewBox tabScoreView = new tabViewBox();
+
+	}
+}
+
+class SButton extends JButton {
+
+	Color Impact = new Color(106, 215, 255);
+	Color Normal = new Color(0, 0, 0);
+
+	public SButton() {
+		super();
+		Default();
+	}
+
+	@ConstructorProperties({ "text" })
+	public SButton(String text) {
+		super(text, null);
+		Default();
+	}
+
+	public void Active() {
+		setBackground(Impact);
+		setBorder(new LineBorder(Impact));
+		setForeground(Color.BLACK);
+	}
+
+	public void Default() {
+		setBackground(Color.BLACK);
+		setBorder(new LineBorder(Impact));
+
+		setForeground(Impact);
+		
+		setPreferredSize(new Dimension(100, 35));
+		setFont(new Font("고딕", Font.CENTER_BASELINE, 12));
+	}
+}
+
+
 
 class tabViewBox extends JFrame {
 
@@ -51,6 +113,26 @@ class tabViewBox extends JFrame {
 		
 		display();
 	}
+	
+	DBCalls dataCalls = new DBCalls();
+
+	int Window = dataCalls.getWindowSetting();
+	SettingCode setting = new SettingCode();
+
+	public void startMode() {
+		Start start = new Start();
+		if (Window == 0) {
+			start.setSize(400, 600);
+		} else if (Window == 1) {
+			start.setSize(800, 800);
+		} else {
+			start.setSize(SettingCode.screenWidth, SettingCode.screenHeight);
+		}
+
+		start.setVisible(true);
+
+		setVisible(false);
+	}
 
 	public void display() {
 		JPanel AllPane = new JPanel();
@@ -60,25 +142,42 @@ class tabViewBox extends JFrame {
 		
 		JPanel btnPane = new JPanel();
 		
-		JButton startBtn = new JButton("시작하기");
-		JButton endBtn = new JButton("종료하기");
+		SButton startBtn = new SButton("시작화면");
+		SButton endBtn = new SButton("게임종료");
 		
+		btnPane.setBackground(Color.BLACK);
 		btnPane.add(startBtn);
 		btnPane.add(endBtn);
 		
-		AllPane.add(btnPane);
+		AllPane.add(btnPane, BorderLayout.SOUTH);
 		
 		
 		JTabbedPane tabView = new JTabbedPane();
+		
+		tabView.setBackground(Color.white);
 
 		stdTable stdScoreView = new stdTable();
 		itemTable itemScoreView = new itemTable();
 		tabView.addTab("기본 모드 랭킹", stdScoreView);
 		tabView.addTab("아이템 모드 랭킹", itemScoreView);
 
-		AllPane.add(tabView);
+		AllPane.add(tabView, BorderLayout.CENTER);
 		
 		add(AllPane);
+		
+		startBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				startMode();
+			}
+		});
+		
+		endBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}
+		});
 	}
 }
 
@@ -89,6 +188,16 @@ class stdTable extends JPanel {
 	int FocusMode = 0;
 
 	String[] title = { "랭킹", "모드", "닉네임", "점수" };
+	
+	SButton b1;
+	SButton b2;
+	SButton b3;
+	
+	public void allBtnDefault() {
+		b1.Default();
+		b2.Default();
+		b3.Default();
+	}
 
 	stdTable() {
 
@@ -125,12 +234,15 @@ class stdTable extends JPanel {
 			data3[i][3] = String.valueOf(listHard.get(i).getScore());
 		}
 
+		
+		setLayout(new BorderLayout());
+		
 		JPanel p1 = new JPanel();
-		p1.setBackground(Color.white);
+		p1.setBackground(Color.BLACK);
 
-		JButton b1 = new JButton("Easy");
-		JButton b2 = new JButton("NormL");
-		JButton b3 = new JButton("Hard");
+		b1 = new SButton("Easy");
+		b2 = new SButton("NormL");
+		b3 = new SButton("Hard");
 
 		p1.add(b1);
 		p1.add(b2);
@@ -166,16 +278,25 @@ class stdTable extends JPanel {
 		JScrollPane scrollview = new JScrollPane(table);
 		JScrollPane scrollview2 = new JScrollPane(table2);
 		JScrollPane scrollview3 = new JScrollPane(table3);
+		
+
 
 		if (Count == 0) {
-			scrollview.setPreferredSize(new Dimension(350, 450));
+			//scrollview.setPreferredSize(new Dimension(350, 450));
 			scrollview.setBackground(Color.white);
 
 			add(p1, BorderLayout.NORTH);
-			add(scrollview, BorderLayout.CENTER);
+			add(scrollview2, BorderLayout.CENTER);
+			
+			allBtnDefault();
+			b1.Active();
+			
+			table.hide();
+			table2.show();
+			table3.hide();
 
-			scrollview.show();
-			scrollview2.hide();
+			scrollview.hide();
+			scrollview2.show();
 			scrollview3.hide();
 
 			if (ScoreItem.CODE_RECENT == 1)
@@ -191,6 +312,9 @@ class stdTable extends JPanel {
 				// TODO Auto-generated method stub
 				FocusMode = 1;
 				Count++;
+				
+				allBtnDefault();
+				b1.Active();
 
 				table.hide();
 				table2.show();
@@ -219,6 +343,9 @@ class stdTable extends JPanel {
 				// TODO Auto-generated method stub
 				FocusMode = 0;
 				Count++;
+				
+				allBtnDefault();
+				b2.Active();
 
 				table.show();
 				table2.hide();
@@ -247,6 +374,9 @@ class stdTable extends JPanel {
 				// TODO Auto-generated method stub
 				FocusMode = 2;
 				Count++;
+				
+				allBtnDefault();
+				b3.Active();
 
 				table.hide();
 				table2.hide();
@@ -276,6 +406,16 @@ class itemTable extends JPanel {
 
 	int Count = 0;
 	int FocusMode = 0;
+	
+	SButton b1;
+	SButton b2;
+	SButton b3;
+	
+	public void allBtnDefault() {
+		b1.Default();
+		b2.Default();
+		b3.Default();
+	}
 
 	String[] title = { "랭킹", "모드", "닉네임", "점수" };
 
@@ -313,13 +453,15 @@ class itemTable extends JPanel {
 			data3[i][2] = listHard.get(i).getNickName();
 			data3[i][3] = String.valueOf(listHard.get(i).getScore());
 		}
+		
+		setLayout(new BorderLayout());
 
 		JPanel p1 = new JPanel();
-		p1.setBackground(Color.white);
+		p1.setBackground(Color.BLACK);
 
-		JButton b1 = new JButton("Easy");
-		JButton b2 = new JButton("NormL");
-		JButton b3 = new JButton("Hard");
+		b1 = new SButton("Easy");
+		b2 = new SButton("NormL");
+		b3 = new SButton("Hard");
 
 		p1.add(b1);
 		p1.add(b2);
@@ -340,9 +482,9 @@ class itemTable extends JPanel {
 		l2.setForeground(new Color(106, 215, 255));
 		l3.setForeground(new Color(106, 215, 255));
 
-		System.out.println("Mode : " +ScoreItem.STD_SCORE_RECENT[0]);
-		System.out.println("Name : " + ScoreItem.ITEM_SCORE_RECENT[1]);
-		System.out.println("Score : " + ScoreItem.ITEM_SCORE_RECENT[2]);
+//		System.out.println("Mode : " +ScoreItem.STD_SCORE_RECENT[0]);
+//		System.out.println("Name : " + ScoreItem.ITEM_SCORE_RECENT[1]);
+//		System.out.println("Score : " + ScoreItem.ITEM_SCORE_RECENT[2]);
 
 		p2.add(l0);
 		p2.add(l1);
@@ -358,14 +500,21 @@ class itemTable extends JPanel {
 		JScrollPane scrollview3 = new JScrollPane(table3);
 
 		if (Count == 0) {
-			scrollview.setPreferredSize(new Dimension(350, 450));
+			//scrollview.setPreferredSize(new Dimension(350, 450));
 			scrollview.setBackground(Color.white);
 
 			add(p1, BorderLayout.NORTH);
-			add(scrollview, BorderLayout.CENTER);
+			add(scrollview2, BorderLayout.CENTER);
 
-			scrollview.show();
-			scrollview2.hide();
+			allBtnDefault();
+			b1.Active();
+			
+			table.hide();
+			table2.show();
+			table3.hide();
+
+			scrollview.hide();
+			scrollview2.show();
 			scrollview3.hide();
 
 			if (ScoreItem.CODE_RECENT == 2)
@@ -381,6 +530,9 @@ class itemTable extends JPanel {
 				// TODO Auto-generated method stub
 				FocusMode = 1;
 				Count++;
+				
+				allBtnDefault();
+				b1.Active();
 
 				table.hide();
 				table2.show();
@@ -409,6 +561,9 @@ class itemTable extends JPanel {
 				// TODO Auto-generated method stub
 				FocusMode = 0;
 				Count++;
+				
+				allBtnDefault();
+				b2.Active();
 
 				table.show();
 				table2.hide();
@@ -437,6 +592,9 @@ class itemTable extends JPanel {
 				// TODO Auto-generated method stub
 				FocusMode = 2;
 				Count++;
+				
+				allBtnDefault();
+				b3.Active();
 
 				table.hide();
 				table2.hide();
@@ -461,25 +619,6 @@ class itemTable extends JPanel {
 	}
 }
 
-public class Score extends tabViewBox {
 
-	public Score() {
 
-		JLabel Title = new JLabel("SeoulTech SE Tettris Score");
-		Title.setFont(new Font("Serif", Font.BOLD, 17));
-		Title.setHorizontalAlignment(JLabel.CENTER);
-		Title.setVerticalAlignment(JLabel.CENTER);
 
-		JLabel Team = new JLabel("Team one");
-		Team.setHorizontalAlignment(JLabel.CENTER);
-		Team.setVerticalAlignment(JLabel.CENTER);
-
-		// JPanel btnGroup = new JPanel();
-		// btnGroup.setBackground(Color.white);
-		// btnGroup.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
-
-		tabViewBox tabScoreView = new tabViewBox();
-
-	}
-
-}
