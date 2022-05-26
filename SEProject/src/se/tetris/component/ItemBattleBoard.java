@@ -1,61 +1,32 @@
 package se.tetris.component;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
-import java.util.Arrays;
 
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import java.util.TimerTask;
+import se.tetris.setting.*;
 
-public class TimeBattleBoard extends JFrame {
-	
-    private static InnerBoard player1;
-    private static InnerBoard player2;
+public class ItemBattleBoard extends JFrame {
+
+    private static InnerItemBoard player1;
+    private static InnerItemBoard player2;
     private JPanel panel;
     private KeyListener playerKeyListener;
-    public static JLabel timerCount;
-    public static GameTimer GameT;
-    public static boolean IsCollision;
-    public static String ColPlayer;
     
+    final SettingValues setting = SettingValues.getInstance();
 
-    public TimeBattleBoard() {
-        super("SeoulTech SE Tetris - TimeBattle");
+    public ItemBattleBoard() {
+        super("SeoulTech SE Tetris");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    	
-    	JPanel panelTotal = new JPanel();
-    	JPanel panelTop = new JPanel();
-        timerCount = new JLabel("3:00");
-        
-        timerCount.setFont(new Font("고딕", Font.CENTER_BASELINE, 20));
-    	
-    	panelTotal.setLayout(new BorderLayout());
-    	panelTotal.add(panelTop, BorderLayout.NORTH);
-    	
-    	
-		ImageIcon timerIcon = new ImageIcon("./img/timeicon.png");
-		JLabel LtimerIcon = new JLabel(timerIcon);
 
-		
-		panelTop.add(LtimerIcon);
-		panelTop.add(timerCount);
+        player1 = new InnerItemBoard();
+        player2 = new InnerItemBoard();
 
-        player1 = new InnerBoard();
-        player2 = new InnerBoard();
-
-        InnerBoard.BattleMode = "TimeBattle";
-        
         player1.setName("Player1");
         player2.setName("Player2");
 
@@ -64,31 +35,13 @@ public class TimeBattleBoard extends JFrame {
         panel.add(player1);
         panel.add(player2);
 
-        panelTotal.add(panel, BorderLayout.CENTER);
-        
-        add(panelTotal);
+        add(panel);
 
         playerKeyListener = new PlayerKeyListener();
         addKeyListener(playerKeyListener);
-        setFocusable(true);
         setFocusTraversalKeysEnabled(false);
+        setFocusable(true);
         requestFocus();
-        
-		// 카운트 다운 쓰레드 실행
-        IsCollision = false;
-        startGameTimer();
-		//inputCheck = true;
-       
-    }
-    
-    public void startGameTimer() {
-        GameT = new GameTimer();
-        GameT.start();
-    }
-    
-    public static void stopGameTimer() {
-    	GameT.stop = true;
-    	GameT.setStop(true);
     }
 
 
@@ -106,67 +59,145 @@ public class TimeBattleBoard extends JFrame {
                     player1.drawBoard();
                     break;
                 case KeyEvent.VK_D:
-                    player1.moveRight();
+                	if(player1.notMove == false) {
+                		player1.moveRight();
+                	}
                     player1.drawBoard();
                     break;
                 case KeyEvent.VK_A:
-                    player1.moveLeft();
+                	if(player1.notMove == false) {
+                		player1.moveLeft();
+                	}
                     player1.drawBoard();
                     break;
                 case KeyEvent.VK_W:
-                    player1.blockRotate();
+                	if(player1.blockFix == false) {
+                		player1.blockRotate();
+                	}
                     player1.drawBoard();
                     break;
                 case KeyEvent.VK_TAB:
-                    while(true){
-                        player1.eraseCurr();
-                        if(player1.collisionBottom()) {
-                            player1.collisionOccur();
-                            player1.lineRemove();
-                            player1.placeBlock();
-                            player1.drawBoard();
-                            break;
-                        }
-                        else {
-                            player1.y++;
-                        }
-                        player1.placeBlock();
-                        player1.drawBoard();
-                    }
-                    break;
+                	while(true){
+						player1.eraseCurr();
+						if (player1.itemType == 12) {
+							for (int i = player1.y; i < 20; i++) {
+								for (int j = player1.x; j < player1.x + player1.curr.width(); j++) {
+									player1.board[i][j] = 0;
+								}
+							}
+							player1.x = 3;
+							player1.y = 0;
+							player1.curr = player1.next;
+							player1.eraseNext();
+							player1.next = player1.getRandomBlock(setting.modeChoose);
+							player1.placeNext();
+							player1.drawNext();
+							player1.placeBlock();
+							player1.drawBoard();
+							player1.blockFix = false;
+							player1.notMove = false;
+							player1.itemType = 0;
+							player1.itemFlag = false;
+							break;
+						}
+						else {
+							if (player1.collisionBottom()) {
+								player1.collisionOccur();
+								if (player1.whoAttacked) {
+	                                player1.attackedFunction();
+	                            }
+								player1.lineRemove();
+								if (player1.itemFlag == true) {
+									player1.itemSet();
+									player1.itemDrop = true;
+								}
+								if (!player1.isGameOver()) {
+									player1.placeBlock();
+									player1.drawBoard();
+								}
+								break;
+							}
+							else {
+								player1.y++;
+							}
+							player1.lineRemove();
+							player1.placeBlock();
+							player1.drawBoard();
+						}
+					}
+					break;
                 case KeyEvent.VK_DOWN:
                     player2.moveDown();
                     player2.drawBoard();
                     break;
                 case KeyEvent.VK_RIGHT:
-                    player2.moveRight();
+                	if(player2.notMove == false) {
+                		player2.moveRight();
+                	}
                     player2.drawBoard();
                     break;
                 case KeyEvent.VK_LEFT:
-                    player2.moveLeft();
+                	if(player2.notMove == false) {
+                		player2.moveLeft();
+                	}
                     player2.drawBoard();
                     break;
                 case KeyEvent.VK_UP:
-                    player2.blockRotate();
+                	if(player2.blockFix == false) {
+                		player2.blockRotate();
+                	}
                     player2.drawBoard();
                     break;
                 case KeyEvent.VK_ENTER:
-                    while(true){
-                        player2.eraseCurr();
-                        if(player2.collisionBottom()) {
-                            player2.collisionOccur();
-                            player2.lineRemove();
-                            player2.placeBlock();
-                            player2.drawBoard();
-                            break;
-                        }
-                        else {
-                            player2.y++;
-                        }
-                        player2.placeBlock();
-                        player2.drawBoard();
-                    }
-                    break;
+                	while(true){
+						player2.eraseCurr();
+						if (player2.itemType == 12) {
+							for (int i = player2.y; i < 20; i++) {
+								for (int j = player2.x; j < player2.x + player2.curr.width(); j++) {
+									player2.board[i][j] = 0;
+								}
+							}
+							player2.x = 3;
+							player2.y = 0;
+							player2.curr = player2.next;
+							player2.eraseNext();
+							player2.next = player2.getRandomBlock(setting.modeChoose);
+							player2.placeNext();
+							player2.drawNext();
+							player2.placeBlock();
+							player2.drawBoard();
+							player2.blockFix = false;
+							player2.notMove = false;
+							player2.itemType = 0;
+							player2.itemFlag = false;
+							break;
+						}
+						else {
+							if (player2.collisionBottom()) {
+								player2.collisionOccur();
+								if (player2.whoAttacked) {
+	                                player2.attackedFunction();
+	                            }
+								player2.lineRemove();
+								if (player2.itemFlag == true) {
+									player2.itemSet();
+									player2.itemDrop = true;
+								}
+								if (!player2.isGameOver()) {
+									player2.placeBlock();
+									player2.drawBoard();
+								}
+								break;
+							}
+							else {
+								player2.y++;
+							}
+							player2.lineRemove();
+							player2.placeBlock();
+							player2.drawBoard();
+						}
+					}
+					break;
                 case KeyEvent.VK_ESCAPE:
                     player1.timer.stop();
                     player2.timer.stop();
@@ -198,12 +229,7 @@ public class TimeBattleBoard extends JFrame {
 
         }
     }
-    
-    public static void collisionStop() {
-    	IsCollision = true;
-    	stopGameTimer();
-    }
-   
+
     public static void gameStop() {
         Timer player1Timer = player1.getTimer();
         Timer player2Timer = player2.getTimer();
@@ -217,13 +243,13 @@ public class TimeBattleBoard extends JFrame {
     	Timer player1Timer = player1.getTimer();
         Timer player2Timer = player2.getTimer();
         player1Timer.restart();
-        player2Timer.restart();   
+        player2Timer.restart();
     }
     
     public static void gameClose() {
     	System.exit(0);
     }
-
+    
     public static void placeAttack(ArrayList<Integer> attack) {
         if (player1.whoIs == true) {
             int[][] player1AttackBoard = player1.getAttackBoard();
@@ -420,75 +446,5 @@ public class TimeBattleBoard extends JFrame {
             }
         }
         return 0;
-    }
-    
-    /**
-     * 게임 타이머
-     */
-    class GameTimer extends Thread{
-    	
-        private boolean stop = false;
-        
-        public void setStop(boolean stop){
-            this.stop = stop;
-        }
-        
-    	@Override
-    	public void run() {
-    		
-    		for(int i=20; i>=0; i--){
-				if(stop) {
-					break;
-				}
-    			
-    			int Min = i/60;
-    			int Sec = i%60;
-    			
-    			String timerTxt = Min >= 10 ? Integer.toString(Min) : "0" + Integer.toString(Min);
-        		timerTxt += " : "+ (Sec >= 10 ? Integer.toString(Sec): "0" + Integer.toString(Sec));
-        		
-        		if(Min == 0) {
-        			timerCount.setForeground(Color.RED);
-        		}
-    			
-    			timerCount.setText(timerTxt);
-    			
-    			try {
-    				Thread.sleep(1000);
-    			} catch (InterruptedException e) {
-    				e.printStackTrace();
-    			}
-    		}
-    		stopGameTimer();
-    		gameStop();
-    		
-
-    		String[] overOption = {"종료하기", "다시하기"};
-    		int over = 0;
-    		
-    		
-    		if(IsCollision) {
-    			//블록 더이상 쌓을 수 없음
-    			over = JOptionPane.showOptionDialog(null, ColPlayer +" 이(가) 게임에서 승리했습니다!", "종료", 0, 0, null, overOption, overOption[0]);
-    		}else {
-    			//점수 비교
-        		if(player1.getNowScore() > player2.getNowScore()) {
-        			over = JOptionPane.showOptionDialog(null, "Player1 이(가) 게임에서 승리했습니다!", "종료", 0, 0, null, overOption, overOption[0]);
-        		}else if(player1.getNowScore() == player2.getNowScore()) {
-        			over = JOptionPane.showOptionDialog(null, "무승부입니다!", "종료", 0, 0, null, overOption, overOption[0]);
-        		}else {
-        			over = JOptionPane.showOptionDialog(null, "Player2 이(가) 게임에서 승리했습니다!", "종료", 0, 0, null, overOption, overOption[0]);
-        		}
-    		}
-    		
-            if (over == 0) {
-            	gameClose();
-            }
-            if (over == 1) {
-            	startGameTimer();
-            	gameReset();
-            }
-    		
-    	}
     }
 }

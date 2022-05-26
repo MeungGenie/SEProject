@@ -173,7 +173,7 @@ public class StartBattle extends JFrame {
           public void actionPerformed(ActionEvent e) {
               setVisible(false);
               BattleBoard battle = new BattleBoard();
-              battle.setSize(800, 600);
+              battle.setSize(800, 650);
               battle.setVisible(true);
           }
       });
@@ -181,7 +181,10 @@ public class StartBattle extends JFrame {
       item.addActionListener(new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
-
+              setVisible(false);
+              ItemBattleBoard itembattle = new ItemBattleBoard();
+              itembattle.setSize(800, 650);
+              itembattle.setVisible(true);
           }
       });
 
@@ -190,7 +193,7 @@ public class StartBattle extends JFrame {
           public void actionPerformed(ActionEvent e) {
               setVisible(false);
               TimeBattleBoard timebattle = new TimeBattleBoard();
-              timebattle.setSize(800, 600);
+              timebattle.setSize(800, 650);
               timebattle.setVisible(true);
           }
       });
