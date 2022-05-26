@@ -9,6 +9,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import se.tetris.data.DBCalls;
 import se.tetris.setting.*;
 
 public class ItemBattleBoard extends JFrame {
@@ -17,6 +18,7 @@ public class ItemBattleBoard extends JFrame {
     private static InnerItemBoard player2;
     private JPanel panel;
     private KeyListener playerKeyListener;
+    private static boolean restart;
     
     final SettingValues setting = SettingValues.getInstance();
 
@@ -24,8 +26,9 @@ public class ItemBattleBoard extends JFrame {
         super("SeoulTech SE Tetris");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        player1 = new InnerItemBoard();
-        player2 = new InnerItemBoard();
+        DBCalls dataCalls = new DBCalls();
+        player1 = new InnerItemBoard(dataCalls.getWindowSetting() + 1);
+        player2 = new InnerItemBoard(dataCalls.getWindowSetting() + 1);
 
         player1.setName("Player1");
         player2.setName("Player2");
@@ -106,6 +109,7 @@ public class ItemBattleBoard extends JFrame {
 								player1.collisionOccur();
 								if (player1.whoAttacked) {
 	                                player1.attackedFunction();
+                                    drawAttack();
 	                            }
 								player1.lineRemove();
 								if (!player1.isGameOver()) {
@@ -175,6 +179,7 @@ public class ItemBattleBoard extends JFrame {
 								player2.collisionOccur();
 								if (player2.whoAttacked) {
 	                                player2.attackedFunction();
+                                    drawAttack();
 	                            }
 								player2.lineRemove();
 								if (!player2.isGameOver()) {
@@ -238,6 +243,13 @@ public class ItemBattleBoard extends JFrame {
         Timer player2Timer = player2.getTimer();
         player1Timer.restart();
         player2Timer.restart();
+        player1.whoIs = false;
+        player2.whoIs = false;
+        player1.whoAttacked = false;
+        player2.whoAttacked = false;
+        restart = true;
+        drawAttack();
+        restart = false;
     }
     
     public static void gameClose() {
@@ -247,79 +259,169 @@ public class ItemBattleBoard extends JFrame {
     public static void placeAttack(ArrayList<Integer> attack) {
         if (player1.whoIs == true) {
             int[][] player1AttackBoard = player1.getAttackBoard();
-            if (player1.alreadyAttacked == true) {
-                System.out.println("counted");
-                player1.attackLineCount = lineCounter(player1AttackBoard);
-                System.out.println(player2.attackLineCount);
-                for (int i = attack.size(); i < 10; i++) {
-                    for (int j = 0; j < 10; j++) {
-                        player1AttackBoard[i - attack.size()][j] = player1AttackBoard[i][j];
+            int difference = attack.size();
+            if (player1.attackBoardFull == false) {
+                if (player1.alreadyAttacked == true) {
+                    System.out.println("counted");
+                    player1.attackLineCount = lineCounter(player1AttackBoard);
+                    System.out.println(player2.attackLineCount);
+                    if (player1.attackLineCount + attack.size() >= 10) {
+                        difference = player1.attackLineCount + attack.size() - 10;
+                        for (int i = attack.size() - difference; i < 10; i++) {
+                            for (int j = 0; j < 10; j++) {
+                                player1AttackBoard[i - attack.size() + difference][j] = player1AttackBoard[i][j];
+                            }
+                        }
+                        for (int i = 0; i < attack.size() - difference; i++) {
+                            player1.attackLine.add(attack.get(i) - player1.lastY);
+                        }
+                        player1.attackY -= attack.size() - difference;
+                        player1.attackBoardFull = true;
+                    } else {
+                        for (int i = attack.size(); i < 10; i++) {
+                            for (int j = 0; j < 10; j++) {
+                                player1AttackBoard[i - attack.size()][j] = player1AttackBoard[i][j];
+                            }
+                        }
+                        for (int i = 0; i < attack.size(); i++) {
+                            player1.attackLine.add(attack.get(i) - player1.lastY);
+                        }
+                        player1.attackY -= attack.size();
                     }
-                }
-                for (int i = 0; i < attack.size(); i++) {
-                    player1.attackLine.add(attack.get(i) - player1.lastY);
-                }
-                //int firstY = player1.attackY - player1.attackLineCount;
-                player1.attackY -= attack.size();
-                int firstY = player1.attackY;
-                for (int i = 9; i > 9 - attack.size(); i--) {
-                    for (int j = 0; j < player1AttackBoard[0].length; j++) {
-                        player1AttackBoard[i][j] = 1;
+                    int firstY = player1.attackY;
+                    for (int i = 9; i > 9 - difference; i--) {
+                        for (int j = 0; j < player1AttackBoard[0].length; j++) {
+                            player1AttackBoard[i][j] = 1;
+                        }
                     }
-                }
 
-            } else {
-                for (int i = 0; i < attack.size(); i++) {
-                    player1.attackLine.add(attack.get(i) - player1.lastY);
-                }
-                int firstY = player1.attackY;
-                for (int i = firstY; i > firstY - attack.size(); i--, player1.attackY--) {
-                    for (int j = 0; j < player1AttackBoard[0].length; j++) {
-                        player1AttackBoard[i][j] = 1;
+                } else {
+                    if (attack.size() > 10) {
+                        difference = attack.size() - 10;
+                        for (int i = 0; i < difference; i++) {
+                            player1.attackLine.add(attack.get(i) - player1.lastY);
+                        }
+                        int firstY = player1.attackY;
+                        for (int i = firstY; i > firstY - difference; i--, player1.attackY--) {
+                            for (int j = 0; j < player1AttackBoard[0].length; j++) {
+                                player1AttackBoard[i][j] = 1;
+                            }
+                        }
+                        player1.alreadyAttacked = true;
+                    } else {
+                        for (int i = 0; i < attack.size(); i++) {
+                            player1.attackLine.add(attack.get(i) - player1.lastY);
+                        }
+                        int firstY = player1.attackY;
+                        for (int i = firstY; i > firstY - attack.size(); i--, player1.attackY--) {
+                            for (int j = 0; j < player1AttackBoard[0].length; j++) {
+                                player1AttackBoard[i][j] = 1;
+                            }
+                        }
+                        player1.alreadyAttacked = true;
                     }
                 }
-                player1.alreadyAttacked = true;
+                if (lineCounter(player1AttackBoard) == 10) {
+                    player1.attackBoardFull = true;
+                }
+            } else {
+                System.out.println("this");
             }
         }
         if (player2.whoIs == true) {
             int[][] player2AttackBoard = player2.getAttackBoard();
-            if (player2.alreadyAttacked == true) {
-                System.out.println("counted");
-                player2.attackLineCount = lineCounter(player2AttackBoard);
-                System.out.println(player2.attackLineCount);
-                for (int i = attack.size(); i < 10; i++) {
-                    for (int j = 0; j < 10; j++) {
-                        player2AttackBoard[i - attack.size()][j] = player2AttackBoard[i][j];
+            int difference = attack.size();
+            if (player2.attackBoardFull == false) {
+                if (player2.alreadyAttacked == true) {
+                    System.out.println("counted");
+                    player2.attackLineCount = lineCounter(player2AttackBoard);
+                    System.out.println(player2.attackLineCount);
+                    if (player2.attackLineCount + attack.size() > 10) {
+                        difference = player2.attackLineCount + attack.size() - 10;
+                        for (int i = attack.size() - difference; i < 10; i++) {
+                            for (int j = 0; j < 10; j++) {
+                                player2AttackBoard[i - attack.size() + difference][j] = player2AttackBoard[i][j];
+                            }
+                        }
+                        for (int i = 0; i < attack.size() - difference; i++) {
+                            player2.attackLine.add(attack.get(i) - player2.lastY);
+                        }
+                        player2.attackY -= attack.size() - difference;
+                        player2.attackBoardFull = true;
+                    } else {
+                        for (int i = attack.size(); i < 10; i++) {
+                            for (int j = 0; j < 10; j++) {
+                                player2AttackBoard[i - attack.size()][j] = player2AttackBoard[i][j];
+                            }
+                        }
+                        for (int i = 0; i < attack.size(); i++) {
+                            player2.attackLine.add(attack.get(i) - player2.lastY);
+                        }
+                        player2.attackY -= attack.size();
+                    }
+                    //int firstY = player2.attackY - player2.attackLineCount;
+                    int firstY = player2.attackY;
+                    for (int i = 9; i > 9 - difference; i--) {
+                        for (int j = 0; j < player2AttackBoard[0].length; j++) {
+                            player2AttackBoard[i][j] = 1;
+                        }
+                    }
+                } else {
+                    if (attack.size() > 10) {
+                        difference = attack.size() - 10;
+                        for (int i = 0; i < difference; i++) {
+                            player2.attackLine.add(attack.get(i) - player2.lastY);
+                        }
+                        int firstY = player2.attackY;
+                        for (int i = firstY; i > firstY - difference; i--, player2.attackY--) {
+                            for (int j = 0; j < player2AttackBoard[0].length; j++) {
+                                player2AttackBoard[i][j] = 1;
+                            }
+                        }
+                        player2.alreadyAttacked = true;
+                    } else {
+                        for (int i = 0; i < attack.size(); i++) {
+                            player2.attackLine.add(attack.get(i) - player2.lastY);
+                        }
+                        int firstY = player2.attackY;
+                        for (int i = firstY; i > firstY - attack.size(); i--, player2.attackY--) {
+                            for (int j = 0; j < player2AttackBoard[0].length; j++) {
+                                player2AttackBoard[i][j] = 1;
+                            }
+                        }
+                        player2.alreadyAttacked = true;
                     }
                 }
-                for (int i = 0; i < attack.size(); i++) {
-                    player2.attackLine.add(attack.get(i) - player2.lastY);
-                }
-                //int firstY = player2.attackY - player2.attackLineCount;
-                player2.attackY -= attack.size();
-                int firstY = player2.attackY;
-                for (int i = 9; i > 9 - attack.size(); i--) {
-                    for (int j = 0; j < player2AttackBoard[0].length; j++) {
-                        player2AttackBoard[i][j] = 1;
-                    }
-                }
-            } else {
-                for (int i = 0; i < attack.size(); i++) {
-                    player2.attackLine.add(attack.get(i) - player2.lastY);
-                }
-                int firstY = player2.attackY;
-                for (int i = firstY; i > firstY - attack.size(); i--, player2.attackY--) {
-                    for (int j = 0; j < player2AttackBoard[0].length; j++) {
-                        player2AttackBoard[i][j] = 1;
-                    }
-                }
-                player2.alreadyAttacked = true;
             }
+            if (lineCounter(player2AttackBoard) == 10) {
+                player2.attackBoardFull = true;
+            }
+        } else {
+            System.out.println("this");
         }
         //drawAttack();
     }
 
     public static void drawAttack() {
+    	if (restart) {
+    		int [][] attackP1 = player1.getAttackBoard();
+    		int [][] attackP2 = player2.getAttackBoard();
+    		player1.sbByAttack = new StringBuffer();
+    		player2.sbByAttack = new StringBuffer();
+    		for( int i = 0; i < 10; i++) {
+    			for (int j = 0; j < 10; j++) {
+    				attackP1[i][j] = 0;
+        			attackP2[i][j] = 0;
+    				player1.sbByAttack.append(" ");
+    				player2.sbByAttack.append(" ");
+    			}
+    			player1.sbByAttack.append("\n");
+    			player2.sbByAttack.append("\n");
+    		}
+    		 player2.attackArea.setText(player1.sbByAttack.toString());
+    		 player1.attackArea.setText(player2.sbByAttack.toString());
+    		
+    	}
         if (player1.whoIs == true) {
             player1.sbByAttack = new StringBuffer();
             int[][] player1AttackBoard = player1.getAttackBoard();
@@ -341,6 +443,7 @@ public class ItemBattleBoard extends JFrame {
             player1.whoIs = false;
         } else if (player2.whoIs == true) {
             player2.sbByAttack = new StringBuffer();
+            player2.sbByAttack.append("\n");
             int[][] player2AttackBoard = player2.getAttackBoard();
             for (int i = 0; i < player2AttackBoard.length; i++) {
                 for (int j = 0; j < player2AttackBoard[i].length; j++) {
@@ -441,4 +544,5 @@ public class ItemBattleBoard extends JFrame {
         }
         return 0;
     }
+    
 }
