@@ -117,10 +117,7 @@ public class ScoreItem {
 
 	public void getScoreInfo(int sc, int mode, int level) {
 		String name = JOptionPane.showInputDialog(null, "점수에 기록될 닉네임을 입력해주세요.","스코어 기록",JOptionPane.OK_CANCEL_OPTION);
-		System.out.println("이름 : " +name);
-		System.out.println("점수 : " +sc);
-		System.out.println("모드 : " +mode);
-		System.out.println("레벨 : " +level);
+
 		
 		String modeTxt ="";
 		

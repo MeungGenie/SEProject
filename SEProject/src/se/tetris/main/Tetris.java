@@ -10,11 +10,6 @@ import se.tetris.component.Score;
 import se.tetris.setting.*;
 
 public class Tetris {
-	protected String path = System.getProperty("user.dir");
-    protected String url = "jdbc:sqlite:./lib/tetris.db"; 
-    
-
-
 	public static void main(String[] args) {
 		DBConnectionManager data = new DBConnectionManager();
 		
@@ -32,21 +27,11 @@ public class Tetris {
 			startView.setSize(SettingCode.screenWidth, SettingCode.screenHeight);
 		}
 		
-		
+		startView.setResizable(false);
 		startView.setVisible(true);
-		
-
 		
 		data.connect();
 		data.createNewTable();
-		
-//		
-//		dataCalls.getWindowSetting();
-//		dataCalls.getLevelSetting();
-//		dataCalls.getColorSetting();
-		
-//		
-//		dataCalls.get10ItemScoreData();
 		
 	}
 }
