@@ -11,7 +11,6 @@ class NormalTest {
 	@Test
 	void testPercent() {
 		int block;
-		
 		int normalI = 0;
 		int normalJ = 0;
 		int normalT = 0;
