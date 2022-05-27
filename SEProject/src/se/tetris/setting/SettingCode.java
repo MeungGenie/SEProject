@@ -39,25 +39,25 @@ public class SettingCode extends JFrame {
 
 	Color grayMade = new Color(238, 238, 238);
 
-	JLabel settingTitle = new JLabel("Å×Æ®¸®½º °ÔÀÓ ¼³Á¤");
+	JLabel settingTitle = new JLabel("í…ŒíŠ¸ë¦¬ìŠ¤ ê²Œì„ ì„¤ì •");
 
-	JButton scoreReset = new JButton("<html><body style='text-align:center;'>½ºÄÚ¾îº¸µå<br>ÃÊ±âÈ­</body></html>");
-	JButton BackToGame = new JButton("<html><body style='text-align:center;'>ÀÏ¹İ<br>°ÔÀÓÀ¸·Î</body></html>");
-	JButton BackToItemGame = new JButton("<html><body style='text-align:center;'>¾ÆÀÌÅÛ ¸ğµå<br>°ÔÀÓÀ¸·Î</body></html>");
-	JButton BackToStart = new JButton("<html><body style='text-align:center;'>½ÃÀÛ ¸Ş´º</body></html>");
-	JButton BackToBattle = new JButton("<html><body style='text-align:center;'>´ëÀü ¸ğµå</body></html>");
-	JButton settingReset = new JButton("<html><body style='text-align:center;'>¼³Á¤<br>ÃÊ±âÈ­</body></html>");
+	JButton scoreReset = new JButton("<html><body style='text-align:center;'>ìŠ¤ì½”ì–´ë³´ë“œ<br>ì´ˆê¸°í™”</body></html>");
+	JButton BackToGame = new JButton("<html><body style='text-align:center;'>ì¼ë°˜<br>ê²Œì„ìœ¼ë¡œ</body></html>");
+	JButton BackToItemGame = new JButton("<html><body style='text-align:center;'>ì•„ì´í…œ ëª¨ë“œ<br>ê²Œì„ìœ¼ë¡œ</body></html>");
+	JButton BackToStart = new JButton("<html><body style='text-align:center;'>ì‹œì‘ ë©”ë‰´</body></html>");
+	JButton BackToBattle = new JButton("<html><body style='text-align:center;'>ëŒ€ì „ ëª¨ë“œ</body></html>");
+	JButton settingReset = new JButton("<html><body style='text-align:center;'>ì„¤ì •<br>ì´ˆê¸°í™”</body></html>");
 
-	JLabel screenSizeTitle = new JLabel("È­¸é Å©±â Á¶Àı");
-	JLabel keyTitle = new JLabel("¹æÇâÅ° ¼±ÅÃ");
-	JLabel colorBlindTitle = new JLabel("»ö¸Í¸ğµå");
-	JLabel modeTitle = new JLabel("¸ğµå ¼±ÅÃ");
+	JLabel screenSizeTitle = new JLabel("í™”ë©´ í¬ê¸° ì¡°ì ˆ");
+	JLabel keyTitle = new JLabel("ë°©í–¥í‚¤ ì„ íƒ");
+	JLabel colorBlindTitle = new JLabel("ìƒ‰ë§¹ëª¨ë“œ");
+	JLabel modeTitle = new JLabel("ëª¨ë“œ ì„ íƒ");
 
-	public JRadioButton sizeOne = new JRadioButton("Ç¥ÁØ");
-	public JRadioButton sizeTwo = new JRadioButton("Å©°Ô");
-	public JRadioButton sizeThree = new JRadioButton("ÀüÃ¼ È­¸é ¸ğµå");
+	public JRadioButton sizeOne = new JRadioButton("í‘œì¤€");
+	public JRadioButton sizeTwo = new JRadioButton("í¬ê²Œ");
+	public JRadioButton sizeThree = new JRadioButton("ì „ì²´ í™”ë©´ ëª¨ë“œ");
 
-	JRadioButton keyOne = new JRadioButton("¹æÇâÅ°");
+	JRadioButton keyOne = new JRadioButton("ë°©í–¥í‚¤");
 	JRadioButton keyTwo = new JRadioButton("WASD");
 
 	public JRadioButton colorBlindOne = new JRadioButton("Off");
@@ -377,7 +377,7 @@ public class SettingCode extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				dataCalls.refreshScoreData();
 
-				int Result = JOptionPane.showConfirmDialog(null, "ÃÊ±âÈ­ µÇ¾ú½À´Ï´Ù!", "½ºÄÚ¾î º¸µå ÃÊ±âÈ­",
+				int Result = JOptionPane.showConfirmDialog(null, "ì´ˆê¸°í™” ë˜ì—ˆìŠµë‹ˆë‹¤!", "ìŠ¤ì½”ì–´ ë³´ë“œ ì´ˆê¸°í™”",
 						JOptionPane.DEFAULT_OPTION);
 			}
 		});
@@ -1128,7 +1128,7 @@ public class SettingCode extends JFrame {
 		});
 		settingView.setFocusable(true);
 
-		//±âÁ¸ È­¸é ¼³Á¤ °¡Á®¿À±â
+		//ê¸°ì¡´ í™”ë©´ ì„¤ì • ê°€ì ¸ì˜¤ê¸°
 		if (Window == 0) {
 			sizeOnefun();
 		} else if (Window == 1) {
@@ -1137,7 +1137,7 @@ public class SettingCode extends JFrame {
 			sizeThreefun();
 		}
 		
-		//±âÁ¸ ³­ÀÌµµ ¼³Á¤ °¡Á®¿À±â
+		//ê¸°ì¡´ ë‚œì´ë„ ì„¤ì • ê°€ì ¸ì˜¤ê¸°
 		if (setLevel == 0) {
 			//Normal
 			modeTwofun();
@@ -1149,7 +1149,7 @@ public class SettingCode extends JFrame {
 			modeThreefun();
 		}
 		
-		//±âÁ¸ »ö»ó ¼³Á¤ °¡Á®¿À±â
+		//ê¸°ì¡´ ìƒ‰ìƒ ì„¤ì • ê°€ì ¸ì˜¤ê¸°
 		if (setColor == 0) {
 			//Off
 			colorBlindOneFun();
@@ -1158,9 +1158,9 @@ public class SettingCode extends JFrame {
 			colorBlindTwoFun();
 		}
 		
-		//±âÁ¸ Å°º¸µå ¼³Á¤ °¡Á®¿À±â
+		//ê¸°ì¡´ í‚¤ë³´ë“œ ì„¤ì • ê°€ì ¸ì˜¤ê¸°
 		if (setKey == 0) {
-			//¹æÇâÅ°
+			//ë°©í–¥í‚¤
 			keyOnefun();
 		} else if (setKey == 1) {
 			//WASD
@@ -1190,7 +1190,7 @@ public class SettingCode extends JFrame {
 
 		dataCalls.UpdateLevelSetting(2);
 
-		System.out.println("3¹ø");
+		System.out.println("3ë²ˆ");
 
 		modeThree.setSelected(true);
 	}

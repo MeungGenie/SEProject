@@ -87,14 +87,14 @@ public class Board extends JFrame {
 	public static int mode = 0;
 	int eraseCnt = 0;
 
-	//initInterval ³­ÀÌµµ¿¡ µû¶ó Á¶Àı
+	//initInterval ë‚œì´ë„ì— ë”°ë¼ ì¡°ì ˆ
 	//public static int initEasyInterval = 2000;
 	//public static int initNormalInterval = 1000;
 	//public static int initHardInterval = 500;
 	final SettingValues setting = SettingValues.getInstance();
 	int intervalByMode = setting.intervalNumber;
 
-	//¸¸µé¾îÁø ºí·° °³¼ö ¼¼±â
+	//ë§Œë“¤ì–´ì§„ ë¸”ëŸ­ ê°œìˆ˜ ì„¸ê¸°
 	private static int blockNumber = 0;
 
 	ScoreItem scoreItem = new ScoreItem();
@@ -136,7 +136,7 @@ public class Board extends JFrame {
 
 
 		scoreLb1.setForeground(Color.darkGray);
-		//Á¤·Ä
+		//ì •ë ¬
 		scoreLb1.setAlignmentX(CENTER_ALIGNMENT);
 		scoreLb2.setAlignmentX(CENTER_ALIGNMENT);
 		levelLb1.setAlignmentX(CENTER_ALIGNMENT);
@@ -373,7 +373,7 @@ public class Board extends JFrame {
 			timer.stop();
 			boolean result = scoreItem.showDialog(getNowScore(), 0 , mode);
 			setVisible(result);
-			//Á¾·á È­¸é°ú ÀÕ±â
+			//ì¢…ë£Œ í™”ë©´ê³¼ ì‡ê¸°
 		}
 		else {
 			eraseNext();
@@ -523,7 +523,7 @@ public class Board extends JFrame {
 			sb.append(BORDER_CHAR);
 			for(int j=0; j < board[i].length; j++) {
 				if(board[i][j] > 0) {
-					sb.append("¡á");
+					sb.append("â– ");
 				} else {
 					sb.append(" ");
 				}
@@ -626,7 +626,7 @@ public class Board extends JFrame {
 
 	}
 
-	//blockNumber Áõ°¡ + timer º¯°æ
+	//blockNumber ì¦ê°€ + timer ë³€ê²½
 	public void drawNext() {
 		StringBuffer sb = new StringBuffer();
 		sb.append("\n");
@@ -635,7 +635,7 @@ public class Board extends JFrame {
 		for(int i=0; i < nextBoard.length; i++) {
 			for(int j=0; j < nextBoard[i].length; j++) {
 				if(nextBoard[i][j] > 0) {
-					sb.append("¡á");
+					sb.append("â– ");
 				} else {
 					sb.append(" ");
 				}
@@ -662,9 +662,9 @@ public class Board extends JFrame {
 		boardDoc.setCharacterAttributes(offset, 1, stylesetCur, true);
 	}
 
-	// interval ÇÔ¼ö
+	// interval í•¨ìˆ˜
 		public int getInterval(int blockNumber, int eraseCnt) {
-			// »ı¼º
+			// ìƒì„±
 			if (blockNumber == 30 || blockNumber == 60 || blockNumber == 80 || blockNumber == 100 || blockNumber == 120) {
 				if (intervalByMode == 1000) {
 					getScore(2 * eraseCnt, "std");
@@ -678,7 +678,7 @@ public class Board extends JFrame {
 					setScore();
 				}
 			}
-			// »èÁ¦
+			// ì‚­ì œ
 			if (intervalByMode == 1000) {
 				if (eraseCnt < 5 && eraseCnt >= 0) {
 					setting.intervalNumber = 1000;
@@ -864,11 +864,11 @@ public class Board extends JFrame {
 	public boolean rotateTest(int [][] shape, int inputX, int inputY) {
 		for (int i = 0; i < shape.length; i++) {
 			for (int j = 0; j < shape[0].length; j++) {
-				if (inputY + i > 19) // HEIGHT ÃÊ°ú
+				if (inputY + i > 19) // HEIGHT ì´ˆê³¼
 					return true;
-				if (inputX + j > 9) // WIDTH ÃÊ°ú
+				if (inputX + j > 9) // WIDTH ì´ˆê³¼
 					return true;
-				if (shape[i][j] != 0 && board[inputY + i][inputX + j] != 0) // Ãæµ¹
+				if (shape[i][j] != 0 && board[inputY + i][inputX + j] != 0) // ì¶©ëŒ
 					return true;
 			}
 		}
@@ -946,11 +946,11 @@ public class Board extends JFrame {
 						break;
 					case KeyEvent.VK_ESCAPE:
 						timer.stop();
-						String[] stopOption = {"Àç½ÃÀÛ", "°è¼Ó", "Á¾·á"};
-						int choice = JOptionPane.showOptionDialog(null, "¹«¾ùÀ» ¼±ÅÃÇÏ½Ã°Ú½À´Ï±î?", "ÀÏ½ÃÁ¤Áö", 0, 0, null, stopOption, stopOption[1]);
+						String[] stopOption = {"ì¬ì‹œì‘", "ê³„ì†", "ì¢…ë£Œ"};
+						int choice = JOptionPane.showOptionDialog(null, "ë¬´ì—‡ì„ ì„ íƒí•˜ì‹œê² ìŠµë‹ˆê¹Œ?", "ì¼ì‹œì •ì§€", 0, 0, null, stopOption, stopOption[1]);
 						switch (choice) {
 							case 0:
-								int confirm1 = JOptionPane.showConfirmDialog(null, "Á¤¸» °ÔÀÓÀ» Àç½ÃÀÛ ÇÏ½Ã°Ú½À´Ï±î?", "È®ÀÎ", JOptionPane.YES_NO_OPTION);
+								int confirm1 = JOptionPane.showConfirmDialog(null, "ì •ë§ ê²Œì„ì„ ì¬ì‹œì‘ í•˜ì‹œê² ìŠµë‹ˆê¹Œ?", "í™•ì¸", JOptionPane.YES_NO_OPTION);
 								if (confirm1 == 0) {
 									reset();
 									score = 0;
@@ -964,7 +964,7 @@ public class Board extends JFrame {
 								timer.start();
 								break;
 							case 2:
-								int confirm2 = JOptionPane.showConfirmDialog(null, "Á¤¸» °ÔÀÓÀ» Á¾·áÇÏ½Ã°Ú½À´Ï±î?", "È®ÀÎ", JOptionPane.YES_NO_OPTION);
+								int confirm2 = JOptionPane.showConfirmDialog(null, "ì •ë§ ê²Œì„ì„ ì¢…ë£Œí•˜ì‹œê² ìŠµë‹ˆê¹Œ?", "í™•ì¸", JOptionPane.YES_NO_OPTION);
 								if (confirm2 == 0) {
 									dispose(); //or save score and move to score board.
 								} else {
