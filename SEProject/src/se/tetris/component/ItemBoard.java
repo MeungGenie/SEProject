@@ -456,10 +456,10 @@ public class ItemBoard extends JFrame {
 
 	protected void moveDown() {
 		eraseCurr();
-		
+
 		getScore(eraseCnt, "block");
 		setScore();
-		
+
 		if (itemDrop && itemType == 12) {
 			if (collisionLeft() || collisionRight() || collisionBottom()) {
 				notMove = true;
@@ -728,13 +728,13 @@ public class ItemBoard extends JFrame {
 	public int getInterval(int blockNumber, int eraseCnt) {
 		if (blockNumber == 30 || blockNumber == 60 || blockNumber == 80 || blockNumber == 100 || blockNumber == 120) {
 			if (intervalByMode == 1000) {
-				getScore(5*eraseCnt, "std");
+				getScore(2*eraseCnt, "std");
 				setScore();
 			} else if (intervalByMode == 2000) {
-				getScore(11*eraseCnt, "std");
+				getScore(1*eraseCnt, "std");
 				setScore();
 			} else if (intervalByMode == 800) {
-				getScore(20*eraseCnt, "std");
+				getScore(3*eraseCnt, "std");
 				setScore();
 			}
 		}
@@ -743,90 +743,132 @@ public class ItemBoard extends JFrame {
 				setting.intervalNumber = 1000;
 				level = 1;
 				levelLb2.setText(Integer.toString(level));
+				getScore(2*eraseCnt, "std");
+				setScore();
 			} else if (eraseCnt < 10 && eraseCnt >= 5) {
 				setting.intervalNumber = (int) (1000 * 0.9);
 				level = 2;
 				levelLb2.setText(Integer.toString(level));
+				getScore(2*eraseCnt, "std");
+				setScore();
 			} else if (eraseCnt < 15 && eraseCnt >= 10) {
 				setting.intervalNumber = (int) (1000 * 0.9 * 0.9);
 				level = 3;
 				levelLb2.setText(Integer.toString(level));
+				getScore(2*eraseCnt, "std");
+				setScore();
 			} else if (eraseCnt < 20 && eraseCnt >= 15) {
 				setting.intervalNumber = (int) (1000 * 0.9 * 0.9 * 0.9);
 				level = 4;
 				levelLb2.setText(Integer.toString(level));
+				getScore(2*eraseCnt, "std");
+				setScore();
 			} else if (eraseCnt < 25 && eraseCnt >= 20) {
 				setting.intervalNumber = (int) (1000 * 0.9 * 0.9 * 0.9 * 0.9);
 				level = 5;
 				levelLb2.setText(Integer.toString(level));
+				getScore(2*eraseCnt, "std");
+				setScore();
 			} else if (eraseCnt < 30 && eraseCnt >= 25) {
 				setting.intervalNumber = (int) (1000 * 0.9 * 0.9 * 0.9 * 0.9 * 0.9);
 				level = 6;
 				levelLb2.setText(Integer.toString(level));
+				getScore(2*eraseCnt, "std");
+				setScore();
 			} else if (eraseCnt >= 30) {
 				setting.intervalNumber = (int) (1000 * 0.9 * 0.9 * 0.9 * 0.9 * 0.9 * 0.9);
 				level = 7;
 				levelLb2.setText(Integer.toString(level));
+				getScore(2*eraseCnt, "std");
+				setScore();
 			}
 		} else if (intervalByMode == 2000) {
 			if (eraseCnt < 5 && eraseCnt >= 0) {
 				setting.intervalNumber = 2000;
 				level = 1;
 				levelLb2.setText(Integer.toString(level));
+				getScore(1*eraseCnt, "std");
+				setScore();
 			} else if (eraseCnt < 10 && eraseCnt >= 5) {
 				setting.intervalNumber = (int) (2000 * 0.92);
 				level = 2;
 				levelLb2.setText(Integer.toString(level));
+				getScore(1*eraseCnt, "std");
+				setScore();
 			} else if (eraseCnt < 15 && eraseCnt >= 10) {
 				setting.intervalNumber = (int) (2000 * 0.92 * 0.92);
 				level = 3;
 				levelLb2.setText(Integer.toString(level));
+				getScore(1*eraseCnt, "std");
+				setScore();
 			} else if (eraseCnt < 20 && eraseCnt >= 15) {
 				setting.intervalNumber = (int) (2000 * 0.92 * 0.92 * 0.92);
 				level = 4;
 				levelLb2.setText(Integer.toString(level));
+				getScore(1*eraseCnt, "std");
+				setScore();
 			} else if (eraseCnt < 25 && eraseCnt >= 20) {
 				setting.intervalNumber = (int) (2000 * 0.92 * 0.92 * 0.92 * 0.92);
 				level = 5;
 				levelLb2.setText(Integer.toString(level));
+				getScore(1*eraseCnt, "std");
+				setScore();
 			} else if (eraseCnt < 30 && eraseCnt >= 25) {
 				setting.intervalNumber = (int) (2000 * 0.92 * 0.92 * 0.92 * 0.92 * 0.92);
 				level = 6;
 				levelLb2.setText(Integer.toString(level));
+				getScore(1*eraseCnt, "std");
+				setScore();
 			} else if (eraseCnt >= 30) {
 				setting.intervalNumber = (int) (2000 * 0.92 * 0.92 * 0.92 * 0.92 * 0.92 * 0.92);
 				level = 7;
 				levelLb2.setText(Integer.toString(level));
+				getScore(1*eraseCnt, "std");
+				setScore();
 			}
 		} else if (intervalByMode == 800) {
 			if (eraseCnt < 5 && eraseCnt >= 0) {
 				setting.intervalNumber = 800;
 				level = 1;
 				levelLb2.setText(Integer.toString(level));
+				getScore(3*eraseCnt, "std");
+				setScore();
 			} else if (eraseCnt < 10 && eraseCnt >= 5) {
 				setting.intervalNumber = (int) (800 * 0.88);
 				level = 2;
 				levelLb2.setText(Integer.toString(level));
+				getScore(3*eraseCnt, "std");
+				setScore();
 			} else if (eraseCnt < 15 && eraseCnt >= 10) {
 				setting.intervalNumber = (int) (800 * 0.88 * 0.88);
 				level = 3;
 				levelLb2.setText(Integer.toString(level));
+				getScore(3*eraseCnt, "std");
+				setScore();
 			} else if (eraseCnt < 20 && eraseCnt >= 15) {
 				setting.intervalNumber = (int) (800 * 0.88 * 0.88 * 0.88);
 				level = 4;
 				levelLb2.setText(Integer.toString(level));
+				getScore(3*eraseCnt, "std");
+				setScore();
 			} else if (eraseCnt < 25 && eraseCnt >= 20) {
 				setting.intervalNumber = (int) (800 * 0.88 * 0.88 * 0.88 * 0.88);
 				level = 5;
 				levelLb2.setText(Integer.toString(level));
+				getScore(3*eraseCnt, "std");
+				setScore();
 			} else if (eraseCnt < 30 && eraseCnt >= 25) {
 				setting.intervalNumber = (int) (800 * 0.88 * 0.88 * 0.88 * 0.88 * 0.88);
 				level = 6;
 				levelLb2.setText(Integer.toString(level));
+				getScore(3*eraseCnt, "std");
+				setScore();
 			} else if (eraseCnt >= 30) {
 				setting.intervalNumber = (int) (800 * 0.88 * 0.88 * 0.88 * 0.88 * 0.88 * 0.88);
 				level = 7;
 				levelLb2.setText(Integer.toString(level));
+				getScore(3*eraseCnt, "std");
+				setScore();
 			}
 		}
 		System.out.println("Created : " + blockNumber + "   Removed : " + eraseCnt +"   intervalByMode" +intervalByMode + "   interval Number : " + setting.intervalNumber);
@@ -1131,7 +1173,7 @@ public class ItemBoard extends JFrame {
 					case KeyEvent.VK_ESCAPE:
 						timer.stop();
 						String[] stopOption = {"재시작", "계속", "종료"};
-						int choice = JOptionPane.showOptionDialog(null, "무엇을 선택하시겠습니까?", "일시중지", 0, 0, null, stopOption,stopOption[1]);
+						int choice = JOptionPane.showOptionDialog(null, "무엇을 선택하시겠습니까?", "일시정지", 0, 0, null, stopOption,stopOption[1]);
 						switch(choice) {
 							case 0:
 								int confirm1 = JOptionPane.showConfirmDialog(null, "정말 게임을 재시작 하시겠습니까?", "확인", JOptionPane.YES_NO_OPTION);
@@ -1337,6 +1379,7 @@ public class ItemBoard extends JFrame {
 		setScore();
 		return score;
 	}
+	
 	public void changeSize(int sizeNumber){
 		switch (sizeNumber) {
 			case 1:

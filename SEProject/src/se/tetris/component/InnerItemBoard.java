@@ -31,8 +31,8 @@ import static se.tetris.setting.SettingCode.screenHeight;
 import static se.tetris.setting.SettingCode.screenWidth;
 
 public class InnerItemBoard extends JPanel{
-	
-	public static Board innerItemBoardMain;
+
+    public static Board innerItemBoardMain;
     protected static final long serialVersionUID = 2434035659171694595L;
 
     public static final int HEIGHT = 20;
@@ -110,7 +110,7 @@ public class InnerItemBoard extends JPanel{
     private JLabel scoreLb2 = new JLabel(Integer.toString(score));
     private JLabel levelLb1 = new JLabel("Level");
     private JLabel levelLb2 = new JLabel(Integer.toString(level));
-    
+
     boolean whoIs = false;
     boolean whoAttacked = false;
     public int attackLineCount = 0;
@@ -118,9 +118,9 @@ public class InnerItemBoard extends JPanel{
     StringBuffer sbByAttack;
     boolean alreadyAttacked = false;
     boolean attackBoardFull = false;
-	
-	public InnerItemBoard(int sizeNumber) {
-		tetrisArea = new JTextPane();
+
+    public InnerItemBoard(int sizeNumber) {
+        tetrisArea = new JTextPane();
         tetrisArea.setEditable(false);
         tetrisArea.setBackground(Color.BLACK);
         CompoundBorder border = BorderFactory.createCompoundBorder(
@@ -145,6 +145,7 @@ public class InnerItemBoard extends JPanel{
 
 
         scoreLb1.setForeground(Color.darkGray);
+        //정렬
         scoreLb1.setAlignmentX(CENTER_ALIGNMENT);
         scoreLb2.setAlignmentX(CENTER_ALIGNMENT);
         levelLb1.setAlignmentX(CENTER_ALIGNMENT);
@@ -234,6 +235,7 @@ public class InnerItemBoard extends JPanel{
         StyleConstants.setFontFamily(stylesetCur, "Courier New");
         StyleConstants.setBold(stylesetCur, true);
         StyleConstants.setAlignment(stylesetCur, StyleConstants.ALIGN_CENTER);
+        //StyleConstants.setLineSpacing(stylesetCur, -0.45f);
 
         stylesetNx = new SimpleAttributeSet();
         StyleConstants.setFontSize(stylesetNx, 25);
@@ -295,7 +297,7 @@ public class InnerItemBoard extends JPanel{
                     }
                 }
             case 2:
-            	block = (int)(Math.random() * 7);
+                block = (int)(Math.random() * 7);
                 switch(block) {
                     case 0:
                         return new IBlock();
@@ -320,7 +322,7 @@ public class InnerItemBoard extends JPanel{
                     return new IBlock();
                 else
                 {
-                	block = (int)(Math.random() * 6);
+                    block = (int)(Math.random() * 6);
                     switch(block) {
                         case 0:
                             return new JBlock();
@@ -347,9 +349,9 @@ public class InnerItemBoard extends JPanel{
     public void placeBlock() {
         for(int j=0; j<curr.height(); j++) {
             for(int i=0; i<curr.width(); i++) {
-            	if (curr.getShape(i, j) > 0) {
-            		board[y+j][x+i] = curr.getShape(i, j);
-            	}
+                if (curr.getShape(i, j) > 0) {
+                    board[y+j][x+i] = curr.getShape(i, j);
+                }
             }
         }
     }
@@ -378,7 +380,7 @@ public class InnerItemBoard extends JPanel{
         for(int i=x; i<x+curr.width(); i++) {
             for(int j=y; j<y+curr.height(); j++) {
                 if(curr.getShape(i-x,j-y) > 0) {
-                	board[j][i] = 0;
+                    board[j][i] = 0;
                 }
             }
         }
@@ -428,45 +430,46 @@ public class InnerItemBoard extends JPanel{
     }
 
 
-	public void collisionOccur() {
-		saveBoard();
-		lastBlock = curr;
+
+    public void collisionOccur() {
+        saveBoard();
+        lastBlock = curr;
         lastX = x;
         lastY = y;
-		if (itemDrop == true) {
-			itemX = x + getItemX();
-			itemY = y + getItemY();
-			switch(itemType) {
-				case 8: //LR
-					lRItem();
-					break;
-				case 9:
-					curr.getInitBlock(curr);
-					placeBlock();
-					drawBoard();
-					break;
-				case 10:
-					blockFix = false;
-					curr.getInitBlock(curr);
-					placeBlock();
-					drawBoard();
-					break;
-				case 11://CRI
-					cRItem();
-					break;
-				case 12:
-					blockFix = false;
-					break;
-					
-			}
-			itemDrop = false;
-			itemFlag = false;
-		}
-		curr = next;
-		x = 3;
-		y = 0;
-		if (isGameOver() == true) {
-			ItemBattleBoard.gameStop();
+        if (itemDrop == true) {
+            itemX = x + getItemX();
+            itemY = y + getItemY();
+            switch(itemType) {
+                case 8: //LR
+                    lRItem();
+                    break;
+                case 9:
+                    curr.getInitBlock(curr);
+                    placeBlock();
+                    drawBoard();
+                    break;
+                case 10:
+                    blockFix = false;
+                    curr.getInitBlock(curr);
+                    placeBlock();
+                    drawBoard();
+                    break;
+                case 11://CRI
+                    cRItem();
+                    break;
+                case 12:
+                    blockFix = false;
+                    break;
+
+            }
+            itemDrop = false;
+            itemFlag = false;
+        }
+        curr = next;
+        x = 3;
+        y = 0;
+        if (isGameOver() == true) {
+            ItemBattleBoard.gameStop();
             String[] overOption = {"종료하기", "다시하기"};
             String winner;
             if (name == "Player1") {
@@ -476,7 +479,7 @@ public class InnerItemBoard extends JPanel{
                 winner = "Player1";
             int over = JOptionPane.showOptionDialog(null, winner + "이(가) 게임에서 승리했습니다!", "종료", 0, 0, null, overOption, overOption[0]);
             if (over == 0) {
-            	ItemBattleBoard.gameClose();
+                ItemBattleBoard.gameClose();
             }
             if (over == 1) {
             	blockFix = false;
@@ -506,42 +509,41 @@ public class InnerItemBoard extends JPanel{
 			itemApplied = false;
 		}
 	}
-	
-	public void lineRemove() {
-		itemFlag = false;
-		line = lineCheck();
-		if (line.size() > 1) {
-			whoIs = true;
+    public void lineRemove() {
+        itemFlag = false;
+        line = lineCheck();
+        if (line.size() > 1) {
+            whoIs = true;
             ItemBattleBoard.placeAttack(line);
             eraseLast();
             ItemBattleBoard.drawAttack();
             attackLine.clear();
         }
-		Iterator<Integer> iter = line.iterator();
-		int index = 0;
-		while(iter.hasNext()) {
-			index = iter.next();
-			for(int i = index; i > 1; i--) {
-				for(int j = 0; j < WIDTH; j++) {
-					board[i][j] = board[i-1][j];
-				}
-			}
-			eraseCnt++;
-			getScore(eraseCnt, "line");
-			setScore();
-			if ((eraseCnt != 0) && (eraseCnt % 10 == 0))
-				itemFlag = true;
-		}
-		if (itemFlag == true) {
-			eraseNext();
-			itemSet();
-			placeNext();
-			drawNext();
-			itemFlag = false;
-			itemApplied = true;
-		}
-	}
-	
+        Iterator<Integer> iter = line.iterator();
+        int index = 0;
+        while(iter.hasNext()) {
+            index = iter.next();
+            for(int i = index; i > 1; i--) {
+                for(int j = 0; j < WIDTH; j++) {
+                    board[i][j] = board[i-1][j];
+                }
+            }
+            eraseCnt++;
+            getScore(eraseCnt, "line");
+            setScore();
+            if ((eraseCnt != 0) && (eraseCnt % 10 == 0))
+                itemFlag = true;
+        }
+        if (itemFlag == true) {
+            eraseNext();
+            itemSet();
+            placeNext();
+            drawNext();
+            itemFlag = false;
+            itemApplied = true;
+        }
+    }
+
 	public boolean collisionBottom() {
         for (int i = 0; i < curr.height(); i++) {
             for (int j = 0; j < curr.width(); j++) {
@@ -640,7 +642,7 @@ public class InnerItemBoard extends JPanel{
 			}
 		}
 	}
-	
+
 	public void attackedFunction() {
         System.out.println("Clear");
         for (int a = attackLineCount; a < HEIGHT; a++) {
@@ -652,8 +654,8 @@ public class InnerItemBoard extends JPanel{
         ItemBattleBoard.forAttack();
         attackBoardFull = false;
     }
-	
-	public void moveRight() {
+
+    public void moveRight() {
         eraseCurr();
         if(x < WIDTH - curr.width() && collisionRight() == false) x++;
         placeBlock();
@@ -664,50 +666,50 @@ public class InnerItemBoard extends JPanel{
         if(x > 0 && collisionLeft() == false) x--;
         placeBlock();
     }
-	
-	public void drawBoard() {
-		StringBuffer sb = new StringBuffer();
+
+    public void drawBoard() {
+        StringBuffer sb = new StringBuffer();
         for(int t=0; t<WIDTH+2; t++) sb.append(BORDER_CHAR);
         sb.append("\n");
         for(int i=0; i < board.length; i++) {
-        	sb.append(BORDER_CHAR);
-			for(int j=0; j < board[i].length; j++) {
-				int blockType = board[i][j];
-				switch(blockType) {
-				case 1:
-				case 2:
-				case 3:
-				case 4:
-				case 5:
-				case 6:
-				case 7:
-				case 13:
-					sb.append("■");
-					break;
-				case 8:
-					sb.append("L");
-					break;
-				case 9:
-					sb.append("●");
-					break;
-				case 10:
-					sb.append("×");
-					break;
-				case 11:
-					sb.append("C");
-					break;
-				case 12:
-					sb.append("O");
-					break;
-				default:
-					sb.append(" ");
-				
-				}
+            sb.append(BORDER_CHAR);
+            for(int j=0; j < board[i].length; j++) {
+                int blockType = board[i][j];
+                switch(blockType) {
+                    case 1:
+                    case 2:
+                    case 3:
+                    case 4:
+                    case 5:
+                    case 6:
+                    case 7:
+                    case 13:
+                        sb.append("■");
+                        break;
+                    case 8:
+                        sb.append("L");
+                        break;
+                    case 9:
+                        sb.append("●");
+                        break;
+                    case 10:
+                        sb.append("×");
+                        break;
+                    case 11:
+                        sb.append("C");
+                        break;
+                    case 12:
+                        sb.append("O");
+                        break;
+                    default:
+                        sb.append(" ");
+
+                }
             }
             sb.append(BORDER_CHAR);
             sb.append("\n");
         }
-        
+
         for(int t=0; t<WIDTH+2; t++) sb.append(BORDER_CHAR);
         tetrisArea.setText(sb.toString());
         boardDoc.setParagraphAttributes(1, boardDoc.getLength() - 1, stylesetBr, false);
@@ -722,88 +724,88 @@ public class InnerItemBoard extends JPanel{
                 }
             }
         }
-        
+
         for (int i = 0; i < board.length; i++) {
             int offset = (i + 1) * (WIDTH + 3) + 1;
             for (int j = 0; j < board[0].length ; j++) {
                 int block = board[i][j];
                 switch(block) {
                     case 1:
-                    	if (setting.colorBlindModeCheck == 1) {
-                    		StyleConstants.setForeground(stylesetCur, new Color(0, 58, 97));
-                            boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
-                    	}
-                    	else {
-                    		StyleConstants.setForeground(stylesetCur, Color.CYAN);
-                            boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
-                    	}
-                        break;
-                    case 2:
                         if (setting.colorBlindModeCheck == 1) {
-                        	StyleConstants.setForeground(stylesetCur, new Color(126, 98, 61));
+                            StyleConstants.setForeground(stylesetCur, new Color(0, 58, 97));
                             boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
                         }
                         else {
-                        	StyleConstants.setForeground(stylesetCur, Color.BLUE);
+                            StyleConstants.setForeground(stylesetCur, Color.CYAN);
+                            boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+                        }
+                        break;
+                    case 2:
+                        if (setting.colorBlindModeCheck == 1) {
+                            StyleConstants.setForeground(stylesetCur, new Color(126, 98, 61));
+                            boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
+                        }
+                        else {
+                            StyleConstants.setForeground(stylesetCur, Color.BLUE);
                             boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
                         }
                         break;
                     case 3:
-                    	if (setting.colorBlindModeCheck == 1) {
-                    		StyleConstants.setForeground(stylesetCur, new Color(165, 148, 159));
+                        if (setting.colorBlindModeCheck == 1) {
+                            StyleConstants.setForeground(stylesetCur, new Color(165, 148, 159));
                             boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
-                    	}
-                    	else {
-                    		StyleConstants.setForeground(stylesetCur, Color.PINK);
+                        }
+                        else {
+                            StyleConstants.setForeground(stylesetCur, Color.PINK);
                             boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
-                    	}
+                        }
                         break;
                     case 4:
-                    	if (setting.colorBlindModeCheck == 1) {
-                    		StyleConstants.setForeground(stylesetCur, new Color(187, 190, 242));
+                        if (setting.colorBlindModeCheck == 1) {
+                            StyleConstants.setForeground(stylesetCur, new Color(187, 190, 242));
                             boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
-                    	}
-                    	else {
-                    		StyleConstants.setForeground(stylesetCur, Color.YELLOW);
+                        }
+                        else {
+                            StyleConstants.setForeground(stylesetCur, Color.YELLOW);
                             boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
-                    	}
+                        }
                         break;
                     case 5:
-                    	if (setting.colorBlindModeCheck == 1) {
-                    		StyleConstants.setForeground(stylesetCur, new Color(247, 193, 121));
+                        if (setting.colorBlindModeCheck == 1) {
+                            StyleConstants.setForeground(stylesetCur, new Color(247, 193, 121));
                             boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
-                    	}
-                    	else {
-                    		StyleConstants.setForeground(stylesetCur, Color.GREEN);
+                        }
+                        else {
+                            StyleConstants.setForeground(stylesetCur, Color.GREEN);
                             boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
-                    	}
-                    	break;
+                        }
+                        break;
                     case 6:
-                    	if (setting.colorBlindModeCheck == 1) {
-                    		StyleConstants.setForeground(stylesetCur, new Color(154, 127, 112));
+                        if (setting.colorBlindModeCheck == 1) {
+                            StyleConstants.setForeground(stylesetCur, new Color(154, 127, 112));
                             boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
-                    	}
-                    	else {
-                    		StyleConstants.setForeground(stylesetCur, Color.MAGENTA);
+                        }
+                        else {
+                            StyleConstants.setForeground(stylesetCur, Color.MAGENTA);
                             boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
-                    	}
+                        }
                         break;
                     case 7:
-                    	if (setting.colorBlindModeCheck == 1) {
-                    		StyleConstants.setForeground(stylesetCur, new Color(99, 106, 141));
+                        if (setting.colorBlindModeCheck == 1) {
+                            StyleConstants.setForeground(stylesetCur, new Color(99, 106, 141));
                             boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
-                    	}
-                    	else {
-                    		StyleConstants.setForeground(stylesetCur, Color.RED);
+                        }
+                        else {
+                            StyleConstants.setForeground(stylesetCur, Color.RED);
                             boardDoc.setCharacterAttributes(offset + j, 1, stylesetCur, true);
-                    	}
+                        }
                         break;
                 }
-                
+
             }
         }
 	}
-	
+
 	public void drawNext() {
 		StringBuffer sb = new StringBuffer();
 		sb.append("\n");
@@ -849,8 +851,8 @@ public class InnerItemBoard extends JPanel{
 		}
 		nextArea.setText(sb.toString());
 		colorBlindModeNext();
-		
-		
+
+
 		for(int i = 0; i < nextBoard.length; i++) {
 			int offset = i * 6 + 2;
 			for (int j = 0; j < nextBoard[0].length; j++) {
@@ -862,7 +864,7 @@ public class InnerItemBoard extends JPanel{
 			}
 		}
     }
-	
+
 	public void itemSet() {
 		Random rnd = new Random(System.currentTimeMillis());
 		itemType = rnd.nextInt(5) + 8;
@@ -885,7 +887,7 @@ public class InnerItemBoard extends JPanel{
 			CRemoveBlock CR = new CRemoveBlock(next);
 			next = CR.getItemBlock();
 			break;
-		case 12: 
+		case 12:
 			next.setShape(new int [][] {
 				{0, 12, 12, 0},
 				{12, 12, 12, 12}
@@ -895,7 +897,7 @@ public class InnerItemBoard extends JPanel{
 			break;
 		}
 	}
-	
+
 	public void lRItem() {
 		line = new ArrayList<Integer>() {{add(itemY);}};
 		Iterator<Integer> iter = line.iterator();
@@ -920,14 +922,14 @@ public class InnerItemBoard extends JPanel{
 			itemApplied = true;
 		}
 	}
-	
+
 	public void cRItem() {
 		for (int i = 0; i < HEIGHT; i++) {
 			board[i][itemX] = 0;
 		}
 		lRItem();
 	}
-	
+
 	public int getItemX() {
 		for (int i = 0; i < curr.height(); i++) {
 			for (int j = 0; j < curr.width(); j++) {
@@ -937,7 +939,7 @@ public class InnerItemBoard extends JPanel{
 		}
 		return 0;
 	}
-	
+
 	public int getItemY() {
 		for (int i = 0; i < curr.height(); i++) {
 			for (int j = 0; j < curr.width(); j++) {
@@ -947,15 +949,15 @@ public class InnerItemBoard extends JPanel{
 		}
 		return 0;
 	}
-	
+
 	public int getBoardVal(int i, int j) {
 		return board[i][j];
 	}
-	
+
 	public void setBoardVal(int i, int j, int val) {
 		board[i][j] = val;
 	}
-	
+
 	public void colorBlindMode(SimpleAttributeSet styleSet, Block block) {
         if (setting.colorBlindModeCheck == 1) {
             StyleConstants.setForeground(styleSet, block.getColorBlind());
@@ -1099,7 +1101,6 @@ public class InnerItemBoard extends JPanel{
         eraseCnt = 0;
         intervalByMode = setting.intervalNumber;
         this.board = new int[20][10];
-        this.attackBoard = new int[10][10];
         blockFix = false;
     	notMove = false;
     	itemFlag = false;
@@ -1171,29 +1172,29 @@ public class InnerItemBoard extends JPanel{
         placeBlock();
         drawBoard();
     }
-   
-    public void setScore() {
-        String scoretxt = Integer.toString(score);
-        String prescoretxt = scoreLb2.getText();
-        scoreLb2.setText(scoretxt);
-    }
 
-    public void getScore(int lines, String mode) {
+	public void setScore() {
+		String scoretxt = Integer.toString(score);
+		String prescoretxt = scoreLb2.getText();
+		scoreLb2.setText(scoretxt);
+	}
+
+	public void getScore(int lines, String mode) {
 		int scorePre = lines;
 		if(mode == "line") {
 			updateSroce(scorePre, mode);
 		}else if(mode=="block") {
 			updateSroce(1, mode);
 		}
-    }
 
+	}
 
-    public int getNowScore() {
-        int score = this.score;
-        return score;
-    }
+	public int getNowScore() {
+		int score = this.score;
+		return score;
+	}
 
-    public int updateSroce(int sc, String mode) {
+	public int updateSroce(int sc, String mode) {
 		if(mode =="line") {
 			if(sc>0 && sc<=5) {
 				this.score += 10;
@@ -1235,18 +1236,18 @@ public class InnerItemBoard extends JPanel{
     public void setAttackBoard(int[][] attackBoard) {
         this.attackBoard = attackBoard;
     }
-    
+
     public int[][] getBoard() {
         return board;
     }
-    
+
     public void setAttackLineCount(int attackLineCount) {
         this.attackLineCount = attackLineCount;
     }
     public int getAttackLineCount() {
         return attackLineCount;
     }
-    
+
     public void setStylesetSize(int size1, int size2, int size3) {
         StyleConstants.setFontSize(stylesetBr, size1);
         StyleConstants.setFontSize(stylesetCur, size1);
@@ -1255,14 +1256,16 @@ public class InnerItemBoard extends JPanel{
         drawBoard();
         drawNext();
     }
-    
+
+    //max - (200, 60), default - (150, 50)
     public void setRtSize(int xSize, int ySize, int ySize2) {
         scorePanel.setPreferredSize(new Dimension(xSize, ySize));
         levelPanel.setPreferredSize(new Dimension(xSize, ySize));
         nextArea.setPreferredSize(new Dimension(xSize, xSize));
         attackArea.setPreferredSize(new Dimension(ySize2, ySize2));
     }
-    
+
+    //max - 17, default - nothing,
     public void setLbSize(int size) {
         scoreLb1.setFont(new Font(null, Font.BOLD, size));
         scoreLb2.setFont(new Font(null, Font.BOLD, size));

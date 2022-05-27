@@ -38,7 +38,7 @@ import static se.tetris.setting.SettingCode.screenWidth;
 
 public class InnerBoard extends JPanel {
 
-	public static String BattleMode;
+    public static String BattleMode;
 
     public static Board innerBoardMain;
     private static final long serialVersionUID = 2434035659171694595L;
@@ -439,23 +439,22 @@ public class InnerBoard extends JPanel {
         x = 3;
         y = 0;
         if (isGameOver() == true) {
-
-            String winner;
+        	String winner;
             if (name == "Player1") {
                 winner = "Player2";
             }
             else
                 winner = "Player1";
 
-        	if(BattleMode == "Battle") {
-        		BattleBoard.gameStop();
-        	}else if(BattleMode == "TimeBattle") {
-        		TimeBattleBoard.gameStop();
-        		TimeBattleBoard.collisionStop();
+            if(BattleMode == "Battle") {
+                BattleBoard.gameStop();
+            }else if(BattleMode == "TimeBattle") {
+                TimeBattleBoard.gameStop();
+                TimeBattleBoard.collisionStop();
 
-        		TimeBattleBoard.ColPlayer = winner;
-        		return;
-        	}
+                TimeBattleBoard.ColPlayer = winner;
+                return;
+            }
 
             String[] overOption = {"종료하기", "다시하기"};
 
@@ -465,14 +464,14 @@ public class InnerBoard extends JPanel {
 
             int over = JOptionPane.showOptionDialog(null, winner + "이(가) 게임에서 승리했습니다!", "종료", 0, 0, null, overOption, overOption[0]);
 
-        	if(BattleMode == "Battle") {
+            if(BattleMode == "Battle") {
                 if (over == 0) {
-                	BattleBoard.gameClose();
+                    BattleBoard.gameClose();
                 }
                 if (over == 1) {
                     BattleBoard.gameReset();
                 }
-        	}
+            }
         }
         else {
             eraseNext();
@@ -500,7 +499,6 @@ public class InnerBoard extends JPanel {
                     board[i][j] = board[i-1][j];
                 }
             }
-            index = 0;
             eraseCnt++;
             getScore(eraseCnt, "line");
             setScore();
@@ -521,7 +519,6 @@ public class InnerBoard extends JPanel {
                 }
             }
         }
-
         return false;
     }
 
@@ -556,20 +553,22 @@ public class InnerBoard extends JPanel {
     public void moveDown() {
         eraseCurr();
 
-		getScore(eraseCnt, "block");
-		setScore();
+        getScore(eraseCnt, "block");
+        setScore();
 
         if (collisionBottom()) {
+            lineRemove();
             collisionOccur();
             if (whoAttacked) {
                 attackedFunction();
-                BattleBoard.drawAttack();
+                BattleBoard.drawEmptyAttack();
                 placeBlock();
                 drawBoard();
             }
+        } else {
+            y++;
+            lineRemove();
         }
-        else y++;
-        lineRemove();
         if (!isGameOver()) {
             placeBlock();
             drawBoard();
@@ -753,19 +752,18 @@ public class InnerBoard extends JPanel {
     }
 
     //interval 함수
-    //interval 함수
     public int getInterval(int blockNumber, int eraseCnt) {
         //생성
         if (blockNumber == 30 || blockNumber == 60 || blockNumber == 80 || blockNumber == 100 || blockNumber == 120) {
             if (intervalByMode == 1000) {
-				getScore(2 * eraseCnt, "std");
-				setScore();
+                getScore(5*eraseCnt, "std");
+                setScore();
             } else if (intervalByMode == 2000) {
-				getScore(1 * eraseCnt, "std");
-				setScore();
+                getScore(11*eraseCnt, "std");
+                setScore();
             } else if (intervalByMode == 800) {
-				getScore(3 * eraseCnt, "std");
-				setScore();
+                getScore(20*eraseCnt, "std");
+                setScore();
             }
         }
         //삭제
@@ -774,58 +772,40 @@ public class InnerBoard extends JPanel {
                 intervalByModeForChange = 1000;
                 level = 1;
                 levelLb2.setText(Integer.toString(level));
-				getScore(1 * eraseCnt, "std");
-				setScore();
             } else if (eraseCnt < 10 && eraseCnt >= 5) {
                 intervalByModeForChange = (int) (1000 * 0.9);
                 level = 2;
                 levelLb2.setText(Integer.toString(level));
-				getScore(1 * eraseCnt, "std");
-				setScore();
             } else if (eraseCnt < 15 && eraseCnt >= 10) {
                 intervalByModeForChange = (int) (1000 * 0.9 * 0.9);
                 level = 3;
                 levelLb2.setText(Integer.toString(level));
-				getScore(1 * eraseCnt, "std");
-				setScore();
             } else if (eraseCnt < 20 && eraseCnt >= 15) {
                 intervalByModeForChange = (int) (1000 * 0.9 * 0.9 * 0.9);
                 level = 4;
                 levelLb2.setText(Integer.toString(level));
-				getScore(2 * eraseCnt, "std");
-				setScore();
             } else if (eraseCnt < 25 && eraseCnt >= 20) {
                 intervalByModeForChange = (int) (1000 * 0.9 * 0.9 * 0.9 * 0.9);
                 level = 5;
                 levelLb2.setText(Integer.toString(level));
-				getScore(2 * eraseCnt, "std");
-				setScore();
             } else if (eraseCnt < 30 && eraseCnt >= 25) {
                 intervalByModeForChange = (int) (1000 * 0.9 * 0.9 * 0.9 * 0.9 * 0.9);
                 level = 6;
                 levelLb2.setText(Integer.toString(level));
-				getScore(2 * eraseCnt, "std");
-				setScore();
             } else if (eraseCnt >= 30) {
                 intervalByModeForChange = (int) (1000 * 0.9 * 0.9 * 0.9 * 0.9 * 0.9 * 0.9);
                 level = 7;
                 levelLb2.setText(Integer.toString(level));
-				getScore(3 * eraseCnt, "std");
-				setScore();
             }
         } else if (intervalByMode == 2000) {
             if (eraseCnt < 5 && eraseCnt >= 0) {
                 intervalByModeForChange = 2000;
                 level = 1;
                 levelLb2.setText(Integer.toString(level));
-				getScore(2 * eraseCnt, "std");
-				setScore();
             } else if (eraseCnt < 10 && eraseCnt >= 5) {
                 intervalByModeForChange = (int) (2000 * 0.92);
                 level = 2;
                 levelLb2.setText(Integer.toString(level));
-				getScore(2 * eraseCnt, "std");
-				setScore();
             } else if (eraseCnt < 15 && eraseCnt >= 10) {
                 intervalByModeForChange = (int) (2000 * 0.92 * 0.92);
                 level = 3;
@@ -963,49 +943,49 @@ public class InnerBoard extends JPanel {
         drawBoard();
     }
 
-	public void setScore() {
-		String scoretxt = Integer.toString(score);
-		String prescoretxt = scoreLb2.getText();
-		scoreLb2.setText(scoretxt);
-	}
+    public void setScore() {
+        String scoretxt = Integer.toString(score);
+        String prescoretxt = scoreLb2.getText();
+        scoreLb2.setText(scoretxt);
+    }
 
-	public void getScore(int lines, String mode) {
-		int scorePre = lines;
-		if(mode == "line") {
-			updateSroce(scorePre, mode);
-		}else if(mode=="block") {
-			updateSroce(1, mode);
-		}
+    public void getScore(int lines, String mode) {
+        int scorePre = lines;
+        if(mode == "line") {
+            updateSroce(scorePre, mode);
+        }else if(mode=="block") {
+            updateSroce(1, mode);
+        }
 
-	}
+    }
 
-	public int getNowScore() {
-		int score = this.score;
-		return score;
-	}
+    public int getNowScore() {
+        int score = this.score;
+        return score;
+    }
 
-	public int updateSroce(int sc, String mode) {
-		if(mode =="line") {
-			if(sc>0 && sc<=5) {
-				this.score += 10;
-			}else if(sc>5 && sc<=10) {
-				this.score += 15;
-			}else {
-				this.score += 20;
-			}
-			if(sc%3 ==0) {
-				this.score += 3*sc;
-			}
-			if(sc%11 ==0) {
-				this.score += 11;
-			}
-		}else if(mode=="block") {
-			this.score += sc;
-		}
+    public int updateSroce(int sc, String mode) {
+        if(mode =="line") {
+            if(sc>0 && sc<=5) {
+                this.score += 10;
+            }else if(sc>5 && sc<=10) {
+                this.score += 15;
+            }else {
+                this.score += 20;
+            }
+            if(sc%3 ==0) {
+                this.score += 3*sc;
+            }
+            if(sc%11 ==0) {
+                this.score += 11;
+            }
+        }else if(mode=="block") {
+            this.score += sc;
+        }
 
-		setScore();
-		return score;
-	}
+        setScore();
+        return score;
+    }
 
     public void gameStop() {
         timer.stop();
