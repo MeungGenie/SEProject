@@ -16,7 +16,7 @@ class GetIntervalTest {
 		for(int eraseCnt = 0; eraseCnt <31; eraseCnt++) {
 			if (eraseCnt < 5 && eraseCnt >= 0) {
 				if((eraseCnt + 1) % 5 == 0) {
-					System.out.println("지워진 줄 개수 : " + (eraseCnt + 1));
+					System.out.println("\n지워진 줄 개수 : " + (eraseCnt + 1));
 					assertEquals(interval.interval(easyRate, normalRate), easyRate - normalRate);
 					assertEquals(interval.interval(normalRate, hardRate), normalRate - hardRate);
 					System.out.println("easy 속도 : " + String.format("%.6f",easyRate) +

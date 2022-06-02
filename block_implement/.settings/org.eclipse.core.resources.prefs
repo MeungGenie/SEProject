@@ -1,3 +1,6 @@
 eclipse.preferences.version=1
 encoding//src/se/tetris/component/Board.java=UTF-8
+encoding//src/se/tetris/component/InnerItemBoard.java=UTF-8
 encoding//src/se/tetris/component/ItemBoard.java=UTF-8
+encoding//src/se/tetris/component/StartBattle.java=UTF-8
+encoding//src/se/tetris/data/DBCalls.java=UTF-8

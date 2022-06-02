@@ -40,9 +40,6 @@ public class DBCalls extends DBConnectionManager {
 			int r = pstmt.executeUpdate(); 
 			// pstmt.excuteQuery() : select 
 			// pstmt.excuteUpdate() : insert, update, delete .. 
-			
-			
-			System.out.println("º¯°æµÈ row : " + r);
 
 			conn.close();
 		} catch (SQLException e) {
@@ -83,10 +80,10 @@ public class DBCalls extends DBConnectionManager {
 			}
 
 			for (int i = 0; i < scoreList.size(); i++) {
-				System.out.println("·©Å· : " + scoreList.get(i).getRank());
-				System.out.println("ÀÌ¸§ : " + scoreList.get(i).getNickName());
-				System.out.println("Á¡¼ö : " + scoreList.get(i).getScore());
-				System.out.println("·¹º§ : " + scoreList.get(i).getLevel());
+				System.out.println("ëž­í‚¹ : " + scoreList.get(i).getRank());
+				System.out.println("ì´ë¦„ : " + scoreList.get(i).getNickName());
+				System.out.println("ì ìˆ˜ : " + scoreList.get(i).getScore());
+				System.out.println("ë ˆë²¨ : " + scoreList.get(i).getLevel());
 			}
 
 			conn.close();
@@ -126,10 +123,10 @@ public class DBCalls extends DBConnectionManager {
 			}
 
 			for (int i = 0; i < scoreList.size(); i++) {
-				System.out.println("·©Å· : " + scoreList.get(i).getRank());
-				System.out.println("ÀÌ¸§ : " + scoreList.get(i).getNickName());
-				System.out.println("Á¡¼ö : " + scoreList.get(i).getScore());
-				System.out.println("·¹º§ : " + scoreList.get(i).getLevel());
+				System.out.println("ëž­í‚¹ : " + scoreList.get(i).getRank());
+				System.out.println("ì´ë¦„ : " + scoreList.get(i).getNickName());
+				System.out.println("ì ìˆ˜ : " + scoreList.get(i).getScore());
+				System.out.println("ë ˆë²¨ : " + scoreList.get(i).getLevel());
 			}
 
 			conn.close();
@@ -309,10 +306,10 @@ public class DBCalls extends DBConnectionManager {
 			}
 
 			for (int i = 0; i < ItemNormalScoreList.size(); i++) {
-//				System.out.println("·©Å· : " + StdScoreList.get(i).getRank());
-//				System.out.println("ÀÌ¸§ : " + StdScoreList.get(i).getNickName());
-//				System.out.println("Á¡¼ö : " + StdScoreList.get(i).getScore());
-//				System.out.println("·¹º§ : " + StdScoreList.get(i).getLevel());
+//				System.out.println("ëž­í‚¹ : " + StdScoreList.get(i).getRank());
+//				System.out.println("ì´ë¦„ : " + StdScoreList.get(i).getNickName());
+//				System.out.println("ì ìˆ˜ : " + StdScoreList.get(i).getScore());
+//				System.out.println("ë ˆë²¨ : " + StdScoreList.get(i).getLevel());
 			}
 
 			conn.close();
@@ -360,10 +357,10 @@ public class DBCalls extends DBConnectionManager {
 			}
 
 			for (int i = 0; i < ItemEasyScoreList.size(); i++) {
-//				System.out.println("·©Å· : " + StdScoreList.get(i).getRank());
-//				System.out.println("ÀÌ¸§ : " + StdScoreList.get(i).getNickName());
-//				System.out.println("Á¡¼ö : " + StdScoreList.get(i).getScore());
-//				System.out.println("·¹º§ : " + StdScoreList.get(i).getLevel());
+//				System.out.println("ëž­í‚¹ : " + StdScoreList.get(i).getRank());
+//				System.out.println("ì´ë¦„ : " + StdScoreList.get(i).getNickName());
+//				System.out.println("ì ìˆ˜ : " + StdScoreList.get(i).getScore());
+//				System.out.println("ë ˆë²¨ : " + StdScoreList.get(i).getLevel());
 			}
 
 			conn.close();
@@ -410,10 +407,10 @@ public class DBCalls extends DBConnectionManager {
 			}
 
 			for (int i = 0; i < ItemHardScoreList.size(); i++) {
-//				System.out.println("·©Å· : " + StdScoreList.get(i).getRank());
-//				System.out.println("ÀÌ¸§ : " + StdScoreList.get(i).getNickName());
-//				System.out.println("Á¡¼ö : " + StdScoreList.get(i).getScore());
-//				System.out.println("·¹º§ : " + StdScoreList.get(i).getLevel());
+//				System.out.println("ëž­í‚¹ : " + StdScoreList.get(i).getRank());
+//				System.out.println("ì´ë¦„ : " + StdScoreList.get(i).getNickName());
+//				System.out.println("ì ìˆ˜ : " + StdScoreList.get(i).getScore());
+//				System.out.println("ë ˆë²¨ : " + StdScoreList.get(i).getLevel());
 			}
 
 			conn.close();
@@ -477,8 +474,6 @@ public class DBCalls extends DBConnectionManager {
 				count = rs.getInt(1);
 			}
 
-			System.out.println("Get Window Setting : " + count);
-
 			Result = count;
 
 			conn.close();
@@ -530,7 +525,7 @@ public class DBCalls extends DBConnectionManager {
 				count = rs.getInt(1);
 			}
 
-			System.out.println("Get Color Setting : " + count);
+			//System.out.println("Get Color Setting : " + count);
 
 			Result = count;
 
@@ -583,7 +578,61 @@ public class DBCalls extends DBConnectionManager {
 				count = rs.getInt(1);
 			}
 
-			System.out.println("Get Level Setting : " + count);
+			//System.out.println("Get Level Setting : " + count);
+
+			Result = count;
+
+			conn.close();
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+
+		return Result;
+	}
+	
+	
+	public void UpdateKeySetting(int Code) {
+		String sql = "";
+
+		if (Code >= 0 && Code < 2) {
+			sql = "UPDATE StInit set type = " + String.valueOf(Code) + " where id = 4";
+		} else {
+			System.out.println("Key Setting : Code Error");
+		}
+
+		try {
+			Connection conn = DriverManager.getConnection(url);
+
+			Statement stmt = conn.createStatement();
+			stmt.executeUpdate(sql);
+
+			conn.close();
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+
+	}
+
+	public int getKeySetting() {
+		int Result = 0;
+
+		String sql = "select type from StInit Where id = 4;";
+
+		try {
+			Connection conn = DriverManager.getConnection(url);
+
+			Statement stmt = conn.createStatement();
+			stmt.execute(sql);
+
+			ResultSet rs = stmt.executeQuery(sql);
+
+			int count = 0;
+
+			while (rs.next()) {
+				count = rs.getInt(1);
+			}
+
+			//System.out.println("Get Key Setting : " + count);
 
 			Result = count;
 
